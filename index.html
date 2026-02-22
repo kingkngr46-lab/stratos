@@ -1,29 +1,618 @@
-<!DOCTYPE html>
+<!DOCTYPE html><title>Executive Hub | Kingshuk Stratos</title>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Executive Hub | Kingshuk Stratos</title>
+    <!-- ===== PWA SUPPORT ===== -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#6366f1">
 
-  <title>My First PWA</title>
+<!-- iOS PWA support -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Stratos">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Outfit:wght@300;600;700&family=Syne:wght@800&family=Nunito:wght@700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-  <!-- Manifest Link -->
-  <link rel="manifest" href="manifest.json">
+    <style>
+        :root {
+            --bg: #050506;
+            --sidebar-bg: rgba(13, 14, 18, 0.95);
+            --card-glass: rgba(20, 22, 28, 0.75);
+            --accent: #6366f1;
+            --accent-glow: rgba(99, 102, 241, 0.3);
+            --neon-blue: #00d2ff;
+            --neon-purple: #9d50bb;
+            --text-main: #f8fafc;
+            --text-muted: #64748b;
+            --sidebar-width: 260px;
+            --sidebar-collapsed: 80px;
+            --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
 
-  <!-- Theme Color -->
-  <meta name="theme-color" content="#4f46e5">
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 10px; }
 
-  <!-- iOS Support -->
-  <meta name="apple-mobile-web-app-capable" content="yes">
+        body {
+            background-color: var(--bg);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            display: flex; height: 100vh; overflow: hidden; position: relative;
+        }
+
+        #bg-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.35; }
+
+        /* --- SIDEBAR --- */
+        .sidebar {
+            width: var(--sidebar-width); background: var(--sidebar-bg);
+            backdrop-filter: blur(20px); display: flex; flex-direction: column;
+            border-right: 1px solid rgba(255,255,255,0.05); transition: var(--transition); z-index: 1001;
+        }
+        .sidebar.collapsed { width: var(--sidebar-collapsed); }
+
+        .nav-list { flex: 1; padding: 25px 15px; overflow-y: auto; }
+        .nav-item {
+            display: flex; align-items: center; padding: 15px;
+            color: var(--text-muted); text-decoration: none; border-radius: 14px;
+            margin-bottom: 8px; transition: 0.2s; white-space: nowrap; cursor: pointer;
+        }
+        .nav-item:hover, .nav-item.active { background: rgba(99, 102, 241, 0.1); color: var(--accent); }
+        .nav-item i { min-width: 25px; font-size: 1.2rem; margin-right: 20px; }
+        
+        .chevron { margin-left: auto; transition: transform 0.3s; font-size: 0.8rem; }
+        .nav-item.menu-open .chevron { transform: rotate(180deg); }
+
+        .sidebar.collapsed .nav-text, .sidebar.collapsed .chevron { opacity: 0; display: none; }
+
+        /* Goal Submenu */
+        .submenu { margin-left: 45px; border-left: 1px solid rgba(255,255,255,0.05); overflow: hidden; transition: max-height 0.4s ease; max-height: 0; }
+        .submenu.open { max-height: 500px; margin-bottom: 15px; }
+        .sub-item { padding: 10px 15px; font-size: 0.85rem; color: var(--text-muted); cursor: pointer; border-radius: 8px; transition: 0.2s; }
+        .sub-item:hover, .sub-item.active { color: white; background: rgba(255,255,255,0.05); }
+        .sidebar.collapsed .submenu { display: none; }
+
+        /* --- MAIN CONTENT --- */
+        .main { flex: 1; padding: 40px; overflow-y: auto; transition: var(--transition); position: relative; }
+
+        /* --- HEADER --- */
+        .header-cluster { display: flex; align-items: center; justify-content: space-between; margin-bottom: 35px; }
+        .welcome-text { font-family: 'Outfit'; font-size: 2.2rem; font-weight: 500; }
+        .name-span { background: linear-gradient(90deg, #fff, var(--accent), #fff); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: shine 4s linear infinite; }
+        @keyframes shine { to { background-position: 200% center; } }
+        
+        .pfp-wrap { width: 60px; height: 60px; border-radius: 50%; padding: 2px; background: linear-gradient(135deg, var(--accent), #ec4899); animation: pulse-glow 3s infinite alternate; }
+        .pfp-inner { width: 100%; height: 100%; border-radius: 50%; overflow: hidden; border: 2px solid var(--bg); }
+        .pfp-inner img { width: 100%; height: 100%; object-fit: cover; }
+        @keyframes pulse-glow { from { box-shadow: 0 0 10px rgba(99, 102, 241, 0.2); } to { box-shadow: 0 0 20px rgba(99, 102, 241, 0.5); } }
+
+        /* --- QUICK ACTIONS --- */
+        .quick-actions { display: flex; gap: 12px; margin-bottom: 30px; flex-wrap: wrap; }
+        .action-btn { background: var(--card-glass); border: 1px solid rgba(255,255,255,0.1); color: var(--text-main); padding: 10px 20px; border-radius: 12px; text-decoration: none; font-size: 0.85rem; font-weight: 600; display: flex; align-items: center; gap: 8px; transition: 0.3s; cursor: pointer; }
+        .action-btn:hover { border-color: var(--accent); transform: translateY(-2px); background: rgba(99, 102, 241, 0.1); }
+
+        /* --- TOP GRID --- */
+        .top-grid { display: grid; grid-template-columns: 1fr 2fr; gap: 25px; margin-bottom: 25px; }
+        .clock-card { background: var(--card-glass); border-radius: 24px; padding: 30px; border: 1px solid rgba(255,255,255,0.05); text-align: center; }
+        .digital-clock { font-family: 'Outfit'; font-size: 3rem; font-weight: 700; letter-spacing: -1px; }
+        .session-card { background: linear-gradient(135deg, #13141c, #0a0b10); border-radius: 24px; padding: 30px; display: flex; align-items: center; justify-content: space-between; border: 1px solid rgba(255,255,255,0.08); }
+
+        /* --- DASHBOARD GRID --- */
+        .dashboard-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 25px; }
+        .card { background: var(--card-glass); backdrop-filter: blur(15px); border-radius: 24px; padding: 25px; border: 1px solid rgba(255,255,255,0.05); }
+
+        /* --- PROGRESS BARS --- */
+        .bar-bg { height: 8px; background: rgba(0,0,0,0.3); border-radius: 10px; overflow: hidden; margin: 15px 0 20px; }
+        .bar-fill { height: 100%; background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple)); transition: 0.8s; }
+
+        /* --- GOAL LIST --- */
+        .goal-list { list-style: none; margin-top: 15px; }
+        .goal-row { display: flex; align-items: center; background: rgba(255,255,255,0.03); padding: 12px 15px; border-radius: 12px; margin-bottom: 8px; transition: 0.3s; }
+        .goal-row.done { opacity: 0.4; }
+        .goal-row span { flex: 1; font-size: 0.95rem; }
+        .goal-row.done span { text-decoration: line-through; }
+        .check-box { width: 22px; height: 22px; border: 2px solid var(--neon-blue); border-radius: 6px; margin-right: 15px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; }
+        .btn-del { margin-left: auto; cursor: pointer; opacity: 0.3; transition: 0.2s; }
+        .btn-del:hover { opacity: 1; color: #ff4d4d; }
+
+        .add-input { background: rgba(0,0,0,0.2); border: 1px solid #333; padding: 10px; border-radius: 10px; color: #fff; width: 75%; outline: none; }
+        .btn-add { background: var(--accent); border: none; padding: 10px 15px; border-radius: 10px; color: #fff; cursor: pointer; font-weight: 600; }
+
+        /* --- POMODORO --- */
+        .pomo-wrap { display: none; margin-top: 20px; padding: 15px; border-radius: 15px; background: rgba(255,255,255,0.03); }
+        .focus-active .pomo-wrap { display: block; }
+        .pomo-display { font-size: 2.5rem; font-family: 'Outfit'; font-weight: 700; color: var(--accent); }
+
+        /* --- FOCUS MODE OVERRIDES --- */
+        .focus-active .sidebar { width: 0; visibility: hidden; }
+        .focus-active .hide-on-focus { display: none !important; }
+        .focus-active .main { padding: 10vh 20vw; }
+        .focus-active .digital-clock { font-size: 5rem; color: #fff; }
+        .focus-active .card { border: none; background: transparent; text-align: center; }
+
+        /* --- AI CHAT --- */
+        .ai-chat { position: fixed; bottom: 30px; right: 30px; width: 320px; background: var(--card-glass); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.1); border-radius: 24px; box-shadow: 0 20px 40px rgba(0,0,0,0.4); z-index: 2000; transition: var(--transition); }
+        .ai-chat.minimized { height: 60px; width: 180px; overflow: hidden; }
+        .ai-head { padding: 18px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+        .ai-body { height: 350px; display: flex; flex-direction: column; }
+        .msg-box { flex: 1; padding: 15px; overflow-y: auto; font-size: 0.85rem; border-top: 1px solid rgba(255,255,255,0.05); }
+        .ai-input-wrap { padding: 15px; display: flex; gap: 10px; }
+        .ai-input-wrap input { flex: 1; background: transparent; border: none; color: #fff; outline: none; }
+
+        textarea { width: 100%; height: 180px; background: rgba(0,0,0,0.2); border-radius: 15px; padding: 15px; color: #fff; border: 1px solid rgba(255,255,255,0.05); resize: none; font-family: inherit; }
+        .btn-focus { position: fixed; bottom: 30px; left: 30px; padding: 15px 30px; border-radius: 50px; border: none; background: var(--text-main); color: #000; font-weight: 700; cursor: pointer; z-index: 2000; display: flex; align-items: center; gap: 10px; }
+
+        @media (max-width: 1024px) { .top-grid, .dashboard-grid { grid-template-columns: 1fr; } }
+    </style>
 </head>
-<body>
-  <h1>🚀 My First PWA</h1>
-  <p>This works offline!</p>
+<body id="body">
 
-  <script>
-    if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.register("service-worker.js")
-        .then(() => console.log("Service Worker Registered"));
-    }
-  </script>
+    <canvas id="bg-canvas"></canvas>
+
+    <nav class="sidebar" id="sidebar">
+        <div style="padding: 30px; display: flex; align-items: center; justify-content: space-between;">
+            <span class="nav-text" style="font-family: 'Syne'; font-weight: 800; letter-spacing: 4px; color: #fff;">Stratos</span>
+            <i class="fas fa-bars" onclick="toggleSidebar()" style="cursor:pointer; color: #fff;"></i>
+        </div>
+        
+        <div class="nav-list">
+            <div class="nav-item" id="goals-header" onclick="toggleGoalsMenu()">
+                <i class="fas fa-bullseye"></i>
+                <span class="nav-text">Goals</span>
+                <i class="fas fa-chevron-down chevron"></i>
+            </div>
+
+            <div id="goalsSub" class="submenu open">
+                <div class="sub-item active" onclick="switchTab('daily')">Daily Objectives</div>
+                <div class="sub-item" onclick="switchTab('weekly')">Weekly Focus</div>
+                <div class="sub-item" onclick="switchTab('biweekly')">Bi-Weekly</div>
+                <div class="sub-item" onclick="switchTab('monthly')">Monthly Growth</div>
+                <div class="sub-item" onclick="switchTab('quarterly')">Quarterly</div>
+                 <div class="sub-item" onclick="switchTab('halfyearly')">Half Yearly</div>
+                <div class="sub-item" onclick="switchTab('yearly')">Yearly Vision</div>
+            </div>
+
+            <a href="https://prashashak.brightchamps.com/teacher-list" target="_blank" class="nav-item">
+                <i class="fas fa-rocket"></i><span class="nav-text">Prashashak</span>
+            </a>
+            <a href="https://calendar.google.com" target="_blank" class="nav-item">
+                <i class="fas fa-calendar-day"></i><span class="nav-text">Timeline</span>
+            </a>
+            <a href="https://gemini.google.com" target="_blank" class="nav-item">
+                <i class="fas fa-microchip"></i><span class="nav-text">AI Neural</span>
+            </a>
+            <div class="nav-item" onclick="resetAll()" style="color: #ffb100; margin-top: 10px;">
+                <i class="fas fa-sync"></i><span class="nav-text">Reset Sector</span>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main">
+        <div class="header-cluster hide-on-focus">
+            <h1 class="welcome-text">Welcome, <span class="name-span">Kingshuk</span></h1>
+            <div style="display: flex; gap: 15px; align-items: center;">
+                <div class="action-btn" onclick="shareWA()" style="padding: 10px;"><i class="fab fa-whatsapp" style="color:#25d366; margin:0;"></i></div>
+                <div class="pfp-wrap">
+                    <div class="pfp-inner"><img src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=100"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="quick-actions hide-on-focus" id="action-area">
+            <a href="https://github.com" target="_blank" class="action-btn"><i class="fab fa-github"></i> Repository</a>
+            <a href="https://chatgpt.com" target="_blank" class="action-btn"><i class="fas fa-bolt"></i> GPT-4</a>
+            <a href="https://youtube.com" target="_blank" class="action-btn"><i class="fab fa-youtube"></i> Archive</a>
+            <button class="action-btn" onclick="addNewLink()" style="border-style: dashed; opacity: 0.6;">+ Bind New</button>
+        </div>
+
+        <div class="top-grid">
+            <div class="clock-card">
+                <div id="clock" class="digital-clock">00:00:00</div>
+                <p id="date" class="hide-on-focus" style="color: var(--text-muted); margin-top: 8px;">Monday, Jan 01</p>
+                
+                <div class="pomo-wrap">
+                    <div class="pomo-display" id="pomo-timer">25:00</div>
+                    <button onclick="startPomo()" id="pomo-btn" style="background:none; border:1px solid var(--accent); color:var(--accent); padding:8px 20px; border-radius:30px; cursor:pointer; margin-top:10px;">Begin Ritual</button>
+                </div>
+            </div>
+
+            <div class="session-card hide-on-focus">
+                <div>
+                    <h3 style="font-family: 'Nunito'; color: #ff9f1c; font-size: 1.4rem;">Kiren's Sessions</h3>
+                    <p id="session-timer" style="font-weight: 400; color: var(--text-muted); margin-top: 5px;">Calculating next window...</p>
+                </div>
+                <button onclick="window.open('https://meet.google.com/kdk-reax-npm','_blank')" style="background: #ff9f1c; color: #fff; border: none; padding: 15px 35px; border-radius: 50px; cursor: pointer; font-weight: 700;">Join Now</button>
+            </div>
+        </div>
+
+        <div class="dashboard-grid">
+            <div class="card hide-on-focus">
+                <h4 id="category-label" style="color: var(--accent); font-size: 0.8rem; letter-spacing: 2px; margin-bottom: 5px;">STRATEGIC TARGETS</h4>
+                <h2 id="category-title" style="font-family: 'Outfit'; margin-bottom: 10px;">Daily Targets ⚡</h2>
+                
+                <div style="display:flex; justify-content:space-between; font-size:0.9rem; color:var(--text-muted);">
+                    <span>System Integrity</span>
+                    <span id="progress-pct" style="color:var(--neon-blue); font-weight:bold;">0%</span>
+                </div>
+                <div class="bar-bg"><div id="progress-bar" class="bar-fill" style="width: 0%"></div></div>
+
+                <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                    <input type="text" id="goal-input" class="add-input" placeholder="Initiate new target..." onkeypress="if(event.key==='Enter') addGoal()">
+                    <button class="btn-add" onclick="addGoal()">ADD</button>
+                </div>
+                <div class="goal-list" id="goal-list-container"></div>
+            </div>
+
+            <div class="card hide-on-focus">
+                <h4 style="color: var(--text-muted); font-size: 0.8rem; margin-bottom: 15px;">GLOBAL INTEL</h4>
+                <div id="news-icon" style="font-size: 1.5rem; color: var(--accent); margin-bottom: 10px;"><i class="fas fa-bolt"></i></div>
+                <h3 id="news-title" style="font-family: 'Outfit';">Initializing...</h3>
+                <p id="news-desc" style="color: var(--text-muted); font-size: 0.9rem; margin-top: 5px;">Fetching high-frequency data.</p>
+                <div class="news-strip" style="position: relative; height: 2px; background: rgba(255,255,255,0.05); margin-top: 20px;">
+                    <div id="news-prog" style="position: absolute; left: 0; top: 0; height: 100%; background: var(--accent); width: 0%;"></div>
+                </div>
+            </div>
+
+            <div class="card hide-on-focus" style="padding:0; overflow:hidden;">
+                <img id="nature-img" src="https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05" style="width:100%; height:160px; object-fit:cover; opacity:0.7;">
+                <div style="padding:20px;">
+                    <p id="quote-text" style="font-style: italic; line-height: 1.4; color: #cbd5e1;">"The best way to predict the future is to create it."</p>
+                    <p id="quote-author" style="color: var(--text-muted); font-size: 0.8rem; margin-top: 10px;">— Peter Drucker</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <h4 class="hide-on-focus" style="color: var(--text-muted); font-size: 0.8rem; margin-bottom: 15px;">MISSION LOG</h4>
+                <textarea id="notes-area" placeholder="Secure deep work notes..."></textarea>
+            </div>
+        </div>
+    </main>
+
+    <div class="ai-chat" id="ai-chat">
+        <div class="ai-head" onclick="toggleAI()">
+            <span><i class="fas fa-comment-dots" style="color:var(--accent)"></i> Sam </span>
+            <i class="fas fa-chevron-down" id="ai-chevron"></i>
+        </div>
+        <div class="ai-body">
+            <div class="msg-box" id="msg-box">Ready for deployment, Kingshuk. Goal system synced.</div>
+            <div class="ai-input-wrap">
+                <input type="text" id="ai-input" placeholder="Query data...">
+                <button onclick="askAI()" style="background:none; border:none; color:var(--accent); cursor:pointer;"><i class="fas fa-paper-plane"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <button class="btn-focus" onclick="toggleFocus()"><i class="fas fa-eye-slash"></i> FOCUS MODE</button>
+    <!-- Install App Button -->
+<button id="installBtn"
+  style="
+    position: fixed;
+    bottom: 30px;
+    right: 120px;
+    padding: 14px 22px;
+    border-radius: 50px;
+    border: none;
+    background: #6366f1;
+    color: white;
+    font-weight: 700;
+    cursor: pointer;
+    display: none;
+    z-index: 3000;
+  ">
+  📲 Install App
+</button>
+    <script src="quotes.js"></script>
+    <script>
+        // --- 1. NEURAL MESH BACKGROUND ---
+        const canvas = document.getElementById('bg-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        function initBg() {
+            canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+            particles = [];
+            for(let i=0; i<85; i++) particles.push({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, vx: (Math.random()-0.5)*0.4, vy: (Math.random()-0.5)*0.4 });
+        }
+        function drawBg() {
+            ctx.clearRect(0,0,canvas.width,canvas.height);
+            ctx.fillStyle = "#6366f1"; ctx.strokeStyle = "rgba(99, 102, 241, 0.15)";
+            particles.forEach((p, i) => {
+                p.x += p.vx; p.y += p.vy;
+                if(p.x<0 || p.x>canvas.width) p.vx *= -1;
+                if(p.y<0 || p.y>canvas.height) p.vy *= -1;
+                ctx.beginPath(); ctx.arc(p.x, p.y, 1.2, 0, Math.PI*2); ctx.fill();
+                for(let j=i+1; j<particles.length; j++) {
+                    let d = Math.hypot(p.x-particles[j].x, p.y-particles[j].y);
+                    if(d<160) { ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(particles[j].x, particles[j].y); ctx.stroke(); }
+                }
+            });
+            requestAnimationFrame(drawBg);
+        }
+        window.addEventListener('resize', initBg); initBg(); drawBg();
+
+        // --- 2. GOAL LOGIC ---
+        let currentTab = 'daily';
+        const categories = {
+            daily: "Daily Targets ⚡", weekly: "Weekly Focus 🔮", biweekly: "Bi-Weekly Focus 📈", 
+            monthly: "Monthly Growth 💎", quarterly: "Quarterly Review 📊", halfyearly: "Half - Yearly 📆", yearly: "Yearly Vision 🏆"
+        };
+
+        let goals = JSON.parse(localStorage.getItem("stratos_goals_v1")) || {
+            daily: ["Walk 7,000 steps","Jogged for 600 Counts","Forward Bending for 100 counts", "Vajrasana 11-15 min"],
+            weekly: ["Upload Finance Video - "],
+            biweekly: [],
+            monthly: ["₹70K Income Target"],
+            quarterly: ["Skill Acquisition"],
+            yearly: ["Total Corpus ₹6-8L"]
+        };
+        let completed = JSON.parse(localStorage.getItem("stratos_done_v1")) || {
+            daily: [], weekly: [], biweekly: [], monthly: [], quarterly: [], yearly: []
+        };
+
+        function toggleGoalsMenu() {
+            const sub = document.getElementById('goalsSub');
+            const header = document.getElementById('goals-header');
+            sub.classList.toggle('open');
+            header.classList.toggle('menu-open');
+        }
+
+        function switchTab(tab) {
+            currentTab = tab;
+            document.querySelectorAll('.sub-item').forEach(el => el.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+            document.getElementById('category-title').innerText = categories[tab];
+            renderGoals();
+        }
+
+        function renderGoals() {
+            const container = document.getElementById('goal-list-container');
+            const list = goals[currentTab] || [];
+            const done = completed[currentTab] || [];
+            const pct = list.length ? Math.round(done.length/list.length*100) : 0;
+
+            document.getElementById('progress-pct').innerText = pct + "%";
+            document.getElementById('progress-bar').style.width = pct + "%";
+
+            container.innerHTML = list.map((g, i) => `
+                <div class="goal-row ${done.includes(g) ? 'done' : ''}">
+                    <div class="check-box" onclick="toggleGoal('${g}')">${done.includes(g) ? '✓' : ''}</div>
+                
+                    <span>${g.replace(/(https?:\/\/\S+)/g,'<button onclick="window.open(\'$1\',\'_blank\')" style="margin-left:8px;padding:4px 10px;border-radius:8px;border:none;background:#6366f1;color:white;cursor:pointer;font-size:0.75rem;">OPEN</button>')}</span>
+
+                    <i class="fas fa-trash-alt btn-del" onclick="removeGoal(${i})"></i>
+                </div>
+            `).join('');
+        }
+
+        function addGoal() {
+            const input = document.getElementById('goal-input');
+            if(!input.value.trim()) return;
+            if(!goals[currentTab]) goals[currentTab] = [];
+            goals[currentTab].push(input.value.trim());
+            input.value = "";
+            saveData();
+        }
+
+        function toggleGoal(name) {
+            if(!completed[currentTab]) completed[currentTab] = [];
+            const idx = completed[currentTab].indexOf(name);
+            idx > -1 ? completed[currentTab].splice(idx, 1) : completed[currentTab].push(name);
+            saveData();
+        }
+
+        function removeGoal(index) {
+            const item = goals[currentTab][index];
+            goals[currentTab].splice(index, 1);
+            if(completed[currentTab]) {
+                const dIdx = completed[currentTab].indexOf(item);
+                if(dIdx > -1) completed[currentTab].splice(dIdx, 1);
+            }
+            saveData();
+        }
+
+        function resetAll() {
+            if(confirm("Clear progress for " + currentTab + " sector?")) {
+                completed[currentTab] = [];
+                saveData();
+            }
+        }
+
+        function saveData() {
+            localStorage.setItem("stratos_goals_v1", JSON.stringify(goals));
+            localStorage.setItem("stratos_done_v1", JSON.stringify(completed));
+            renderGoals();
+        }
+
+        // --- 3. CORE UI FUNCTIONS ---
+        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('collapsed'); }
+        function toggleAI() { 
+            document.getElementById('ai-chat').classList.toggle('minimized');
+            document.getElementById('ai-chevron').classList.toggle('fa-chevron-up');
+        }
+        function toggleFocus() { 
+            const isFocus = document.body.classList.toggle('focus-active'); 
+            const btn = document.querySelector('.btn-focus');
+            btn.innerHTML = isFocus ? '<i class="fas fa-th"></i> DASHBOARD' : '<i class="fas fa-eye-slash"></i> FOCUS MODE';
+        }
+
+        // --- 4. POMODORO RITUAL ---
+        let pomoInterval;
+        let timeLeft = 1500;
+        function startPomo() {
+            clearInterval(pomoInterval);
+            const btn = document.getElementById('pomo-btn');
+            if(btn.innerText === "Stop") { btn.innerText = "Begin Ritual"; timeLeft = 1500; updatePomoDisplay(); return; }
+            btn.innerText = "Stop";
+            pomoInterval = setInterval(() => {
+                timeLeft--;
+                updatePomoDisplay();
+                if(timeLeft <= 0) { clearInterval(pomoInterval); alert("Ritual Complete."); }
+            }, 1000);
+        }
+        function updatePomoDisplay() {
+            const m = Math.floor(timeLeft/60); const s = timeLeft%60;
+            document.getElementById('pomo-timer').innerText = `${m}:${s < 10 ? '0' : ''}${s}`;
+        }
+
+        // --- 5. CLOCK & SESSION ---
+        function updateMain() {
+            const now = new Date();
+            document.getElementById('clock').innerText = now.toLocaleTimeString([], { hour12: false });
+            document.getElementById('date').innerText = now.toLocaleDateString([], { weekday: 'long', month: 'short', day: 'numeric' });
+
+            const sessionDays = [1, 2, 3];
+            let next = new Date(now);
+            next.setHours(19, 0, 0, 0);
+
+            while (!sessionDays.includes(next.getDay()) || next <= now) {
+                next.setDate(next.getDate() + 1);
+                next.setHours(19, 0, 0, 0);
+            }
+
+            const diff = next - now;
+            const h = Math.floor(diff / 3600000);
+            const m = Math.floor((diff % 3600000) / 60000);
+            document.getElementById('session-timer').innerText = `⏳ ${h}h ${m}m to Kiren's Space`;
+        }
+        setInterval(updateMain, 1000);
+        updateMain();
+
+        // --- 6. NEWS ROTATOR ---
+        const newsList = [
+            { t: "Deep Work", d: "Focus is the modern superpower. High intensity leads to high output.", i: "fa-brain" },
+            { t: "Compound Growth", d: "Small daily improvements result in massive yearly transformations.", i: "fa-chart-line" },
+            { t: "Executive State", d: "Decisions made in calmness yield the highest strategic value.", i: "fa-crown" }
+        ];
+        let nIdx = 0;
+        let newsProgVal = 0;
+        setInterval(() => {
+            newsProgVal += 1;
+            document.getElementById('news-prog').style.width = newsProgVal + "%";
+            if(newsProgVal >= 100) {
+                newsProgVal = 0;
+                nIdx = (nIdx + 1) % newsList.length;
+                document.getElementById('news-title').innerText = newsList[nIdx].t;
+                document.getElementById('news-desc').innerText = newsList[nIdx].d;
+                document.getElementById('news-icon').innerHTML = `<i class="fas ${newsList[nIdx].i}"></i>`;
+            }
+        }, 100);
+        // --- QUOTES DATA ---
+const quotes = [
+{ text: "The best way to predict the future is to create it.", author: "Peter Drucker" },
+{ text: "Discipline is choosing between what you want now and what you want most.", author: "Abraham Lincoln" },
+{ text: "Success is the sum of small efforts repeated daily.", author: "Robert Collier" },
+{ text: "Discipline is the bridge between goals and accomplishment.", author: "Jim Rohn" },
+{ text: "Risk comes from not knowing what you are doing.", author: "Warren Buffett" },
+{ text: "The best investment you can make is in yourself.", author: "Warren Buffett" },
+{ text: "Formal education will make you a living; self-education will make you a fortune.", author: "Jim Rohn" },
+{ text: "You do not rise to the level of your goals. You fall to the level of your systems.", author: "James Clear" },
+{ text: "Success usually comes to those who are too busy to be looking for it.", author: "Henry David Thoreau" },
+{ text: "Don’t wish it were easier. Wish you were better.", author: "Jim Rohn" },
+{ text: "Great leaders are willing to sacrifice their own interests for the good of the team.", author: "John C. Maxwell" },
+{ text: "The way to get started is to quit talking and begin doing.", author: "Walt Disney" },
+{ text: "You must expect great things of yourself before you can do them.", author: "Michael Jordan" },
+{ text: "If you are not willing to risk the usual, you will have to settle for the ordinary.", author: "Jim Rohn" },
+{ text: "Time is more valuable than money. You can get more money, but you cannot get more time.", author: "Jim Rohn" },
+{ text: "Opportunities don't happen. You create them.", author: "Chris Grosser" },
+{ text: "The secret of getting ahead is getting started.", author: "Mark Twain" },
+{ text: "An investment in knowledge pays the best interest.", author: "Benjamin Franklin" },
+{ text: "If you don't design your own life plan, chances are you'll fall into someone else's plan.", author: "Jim Rohn" },
+{ text: "Success is not in what you have, but who you are.", author: "Bo Bennett" },
+{ text: "The biggest risk is not taking any risk.", author: "Mark Zuckerberg" },
+{ text: "Action is the foundational key to all success.", author: "Pablo Picasso" },
+{ text: "Dream big. Start small. Act now.", author: "Robin Sharma" },
+{ text: "Leaders think and talk about solutions. Followers think and talk about problems.", author: "Brian Tracy" },
+{ text: "Do not save what is left after spending, but spend what is left after saving.", author: "Warren Buffett" },
+{ text: "Success is walking from failure to failure with no loss of enthusiasm.", author: "Winston Churchill" },
+{ text: "If you really want to do something, you’ll find a way. If you don’t, you’ll find an excuse.", author: "Jim Rohn" },
+{ text: "Small disciplines repeated with consistency every day lead to great achievements.", author: "John C. Maxwell" },
+{ text: "The successful warrior is the average man, with laser-like focus.", author: "Bruce Lee" },
+{ text: "Do what you can, with what you have, where you are.", author: "Theodore Roosevelt" },
+{ text: "What gets measured gets improved.", author: "Peter Drucker" },
+{ text: "Leadership is the capacity to translate vision into reality.", author: "Warren Bennis" },
+{ text: "Wealth consists not in having great possessions, but in having few wants.", author: "Epictetus" },
+{ text: "Success doesn’t come from what you do occasionally, it comes from what you do consistently.", author: "Marie Forleo" },
+{ text: "The harder you work for something, the greater you’ll feel when you achieve it.", author: "Unknown" },
+{ text: "Efficiency is doing things right; effectiveness is doing the right things.", author: "Peter Drucker" },
+{ text: "If opportunity doesn’t knock, build a door.", author: "Milton Berle" },
+{ text: "The only place where success comes before work is in the dictionary.", author: "Vidal Sassoon" },
+{ text: "Success is simple. Do what’s right, the right way, at the right time.", author: "Arnold H. Glasow" },
+{ text: "Fortune favors the bold.", author: "Virgil" },
+{ text: "Focus on being productive instead of busy.", author: "Tim Ferriss" },
+{ text: "Great things never come from comfort zones.", author: "Roy T. Bennett" },
+{ text: "You cannot escape the responsibility of tomorrow by evading it today.", author: "Abraham Lincoln" },
+{ text: "Success is how high you bounce when you hit bottom.", author: "George S. Patton" },
+{ text: "A goal without a plan is just a wish.", author: "Antoine de Saint-Exupéry" },
+{ text: "Never depend on single income. Make investment to create a second source.", author: "Warren Buffett" },
+{ text: "The man who moves a mountain begins by carrying away small stones.", author: "Confucius" },
+{ text: "Energy and persistence conquer all things.", author: "Benjamin Franklin" },
+{ text: "Don’t be busy. Be productive.", author: "Unknown" },
+{ text: "If you want to lift yourself up, lift up someone else.", author: "Booker T. Washington" },
+{ text: "The future depends on what you do today.", author: "Mahatma Gandhi" },
+{ text: "Success is a series of small wins.", author: "Unknown" },
+{ text: "Leaders don’t create followers, they create more leaders.", author: "Tom Peters" },
+{ text: "The best leaders create a culture where people feel safe to take risks.", author: "Simon Sinek" },
+{ text: "Your income grows to the extent you grow.", author: "T. Harv Eker" },
+{ text: "Money grows on the tree of persistence.", author: "Japanese Proverb" },
+{ text: "Success is the result of preparation, hard work, and learning from failure.", author: "Colin Powell" },
+{ text: "You don’t get paid for the hour. You get paid for the value you bring.", author: "Jim Rohn" },
+{ text: "Leadership is influence, nothing more, nothing less.", author: "John C. Maxwell" },
+{ text: "Work harder on yourself than you do on your job.", author: "Jim Rohn" },
+{ text: "Do not let what you cannot do interfere with what you can do.", author: "John Wooden" },
+{ text: "Growth is painful. Change is painful. But nothing is as painful as staying stuck.", author: "N. R. Narayana Murthy" }
+];
+
+    
+// --- SHOW RANDOM QUOTE ---
+function showRandomQuote() {
+    const q = quotes[Math.floor(Math.random() * quotes.length)];
+    document.getElementById("quote-text").innerText = `"${q.text}"`;
+    document.getElementById("quote-author").innerText = `— ${q.author}`;
+}
+        // --- 7. PERSISTENCE & EXTRAS ---
+        function addNewLink() {
+            const name = prompt("Button Name:");
+            const url = prompt("Destination URL (with https://):");
+            if(name && url) {
+                const links = JSON.parse(localStorage.getItem('stratos_links') || "[]");
+                links.push({name, url});
+                localStorage.setItem('stratos_links', JSON.stringify(links));
+                location.reload();
+            }
+        }
+        function loadLinks() {
+            const links = JSON.parse(localStorage.getItem('stratos_links') || "[]");
+            links.forEach(l => {
+                const a = document.createElement('a');
+                a.className = "action-btn"; a.href = l.url; a.target = "_blank";
+                a.innerHTML = `<i class="fas fa-link"></i> ${l.name}`;
+                document.getElementById('action-area').insertBefore(a, document.getElementById('action-area').lastElementChild);
+            });
+        }
+        loadLinks();
+
+        const area = document.getElementById('notes-area');
+        area.value = localStorage.getItem('stratos_notes') || "";
+        area.addEventListener('input', () => localStorage.setItem('stratos_notes', area.value));
+
+        function shareWA() {
+            let msg = `🚀 Stratos Progress [${categories[currentTab]}]: ${document.getElementById('progress-pct').innerText} Completed.`;
+            window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`);
+        }
+
+        renderGoals();
+        showRandomQuote();
+        setInterval(showRandomQuote, 52000);
+          
+   // Register Service Worker (PWA)
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+      navigator.serviceWorker
+        .register("service-worker.js")
+        .then(() => console.log("✅ Service Worker registered"))
+        .catch(err => console.error("❌ SW registration failed:", err));
+    });
+  }
+    </script>
 </body>
 </html>
