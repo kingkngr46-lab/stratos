@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover,maximum-scale=1.0,user-scalable=no"/>
+<meta name="theme-color" content="#05080c"/>
+<meta name="description" content="Stratos — Executive Hub. Goals, vitals, and the build, tracked in one command center."/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="Stratos"/>
+<meta name="application-name" content="Stratos"/>
+<link rel="manifest" href="manifest.json"/>
+<link rel="apple-touch-icon" sizes="192x192" href="icon-192.png"/>
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png"/>
+<link rel="icon" type="image/png" sizes="512x512" href="icon-512.png"/>
+<title>Stratos — Executive Hub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=JetBrains+Mono:wght@400;500;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#05080c;--panel:#0b1119;--panel2:#111a24;--fg:#dce8ee;--muted:#5f7683;
+  --cyan:#00d9ff;--cyan-light:#7eeeff;--cyan-glow:rgba(0,217,255,.13);--cyan-line:rgba(0,217,255,.22);
+  --amber:#ffb020;--amber-light:#ffd280;--amber-glow:rgba(255,176,32,.13);
+  --violet:#9b7bf0;--violet-light:#c4b0ff;--violet-glow:rgba(155,123,240,.13);
+  --rose:#f0578f;--rose-light:#ff9ec2;--rose-glow:rgba(240,87,143,.13);
+  --green:#3ddc84;--red:#fb7185;--radius:4px;--nav-h:64px;
+  --safe-top:env(safe-area-inset-top,0px);--safe-bottom:env(safe-area-inset-bottom,0px);
+}
+html{height:100%;font-size:16px}
+body{font-family:'DM Sans',system-ui,sans-serif;color:var(--fg);line-height:1.55;min-height:100vh;-webkit-font-smoothing:antialiased;overflow-x:hidden;
+  background:
+    linear-gradient(rgba(0,217,255,.035) 1px, transparent 1px) 0 0/100% 28px,
+    radial-gradient(ellipse 900px 500px at 20% -10%, rgba(0,217,255,.08), transparent 60%),
+    radial-gradient(ellipse 800px 600px at 100% 0%, rgba(255,176,32,.06), transparent 55%),
+    var(--bg);
+  background-attachment:fixed;
+}
+.font-display{font-family:'Rajdhani',sans-serif;text-transform:uppercase;letter-spacing:.03em}
+.font-mono{font-family:'JetBrains Mono',monospace}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-thumb{background:var(--cyan-line);border-radius:99px}
+
+#app{max-width:520px;margin:0 auto;padding:max(calc(var(--safe-top) + 1rem),1.3rem) 1rem calc(var(--nav-h) + 2rem)}
+
+/* ── HUD panel: the signature element — corner brackets on every panel ── */
+.hud{position:relative;background:var(--panel);border:1px solid rgba(0,217,255,.14);border-radius:var(--radius);padding:1rem 1.05rem;margin-bottom:.7rem}
+.hud::before,.hud::after{content:'';position:absolute;width:10px;height:10px;pointer-events:none}
+.hud::before{top:-1px;left:-1px;border-top:2px solid var(--cyan);border-left:2px solid var(--cyan)}
+.hud::after{bottom:-1px;right:-1px;border-bottom:2px solid var(--cyan);border-right:2px solid var(--cyan)}
+.hud.amber::before,.hud.amber::after{border-color:var(--amber)}
+.hud.violet::before,.hud.violet::after{border-color:var(--violet)}
+.hud.rose::before,.hud.rose::after{border-color:var(--rose)}
+.hud.active{border-color:rgba(255,176,32,.4);background:linear-gradient(180deg,var(--amber-glow),var(--panel) 65%)}
+.hud.locked{opacity:.5}
+
+/* ── Header / page title ── */
+.page-hdr{margin-bottom:1.2rem}
+.eyebrow{display:flex;align-items:center;gap:.45rem;font-family:'JetBrains Mono',monospace;font-size:.65rem;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:.5rem}
+.eyebrow::before{content:'';width:6px;height:6px;background:var(--accent,var(--cyan));box-shadow:0 0 8px var(--accent,var(--cyan))}
+h1.hero{font-family:'Rajdhani',sans-serif;text-transform:uppercase;font-size:clamp(1.5rem,7vw,1.9rem);font-weight:700;letter-spacing:.01em;color:var(--fg);line-height:1.15}
+h1.hero em{font-style:normal;color:var(--cyan-light)}
+.sub{color:var(--muted);font-size:.8rem;margin-top:.45rem;line-height:1.55;font-family:'DM Sans',sans-serif;text-transform:none;letter-spacing:0}
+
+/* ── Clock ── */
+.clock-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:1rem}
+.clock{font-family:'JetBrains Mono',monospace;font-size:1.9rem;font-weight:700;color:var(--cyan-light);letter-spacing:.02em;text-shadow:0 0 16px rgba(0,217,255,.35)}
+.clock-date{font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--muted);text-align:right;text-transform:uppercase;letter-spacing:.08em}
+
+/* ── Greeting ── */
+.greet{font-family:'Rajdhani',sans-serif;font-size:1.5rem;font-weight:700;text-transform:uppercase;letter-spacing:.02em;margin-bottom:1rem}
+.greet span{color:var(--cyan-light)}
+
+/* ── Integrity ring ── */
+.integrity-wrap{display:flex;align-items:center;gap:1.1rem}
+.integrity-ring{position:relative;width:96px;height:96px;flex:none}
+.integrity-ring svg{transform:rotate(-90deg)}
+.integrity-num{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.integrity-num b{font-family:'JetBrains Mono',monospace;font-size:1.35rem;color:var(--cyan-light)}
+.integrity-num span{font-size:.55rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.integrity-label{font-family:'JetBrains Mono',monospace;font-size:.62rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.35rem}
+.twin-mini{display:flex;gap:.6rem;margin-top:.5rem}
+.twin-mini-item{flex:1}
+.twin-mini-lbl{font-size:.6rem;color:var(--muted);font-family:'JetBrains Mono',monospace;text-transform:uppercase;margin-bottom:.25rem;display:flex;justify-content:space-between}
+.twin-mini-bar{height:4px;background:rgba(255,255,255,.06);border-radius:99px;overflow:hidden}
+.twin-mini-fill{height:100%;border-radius:99px}
+
+/* ── Quick links ── */
+.link-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.55rem}
+.link-chip{position:relative;background:var(--panel2);border:1px solid rgba(0,217,255,.12);border-radius:var(--radius);padding:.7rem .5rem;text-align:center;text-decoration:none;color:var(--fg);font-size:.68rem;font-weight:600;font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.03em;cursor:pointer;transition:.15s}
+.link-chip:hover{border-color:var(--cyan);color:var(--cyan-light)}
+.link-chip.add{color:var(--muted);border-style:dashed}
+
+/* ── Ritual timer ── */
+.ritual-time{font-family:'JetBrains Mono',monospace;font-size:2.6rem;font-weight:700;text-align:center;color:var(--amber-light);letter-spacing:.03em;text-shadow:0 0 18px rgba(255,176,32,.3);margin:.3rem 0 .8rem}
+.ritual-btns{display:flex;gap:.5rem}
+.btn{flex:1;font-family:'JetBrains Mono',monospace;font-size:.72rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;padding:.6rem;border-radius:var(--radius);border:1px solid rgba(0,217,255,.35);color:var(--cyan-light);background:transparent;cursor:pointer;text-align:center}
+.btn.primary{background:var(--cyan);color:#00131a;border-color:var(--cyan)}
+.btn.amber{border-color:rgba(255,176,32,.4);color:var(--amber-light)}
+.btn.amber.primary{background:var(--amber);color:#1a0f00;border-color:var(--amber)}
+.btn.full{width:100%;margin-top:.5rem}
+
+/* ── Intel list ── */
+.intel-item{display:flex;gap:.55rem;padding:.5rem 0;border-bottom:1px solid rgba(255,255,255,.05);font-size:.78rem}
+.intel-item:last-child{border-bottom:none}
+.intel-dot{flex:none;width:5px;height:5px;border-radius:50%;background:var(--cyan);margin-top:.5rem;box-shadow:0 0 6px var(--cyan)}
+
+/* ── Kiren session ── */
+.session-status{font-family:'JetBrains Mono',monospace;font-size:1.1rem;color:var(--violet-light);margin:.3rem 0}
+.field{margin-bottom:.65rem}
+.field label{font-size:.65rem;color:var(--muted);display:block;margin-bottom:.3rem;font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.05em}
+input[type=time],input[type=number],input[type=text],input[type=url],select{background:var(--panel2);border:1px solid rgba(0,217,255,.16);color:var(--fg);border-radius:var(--radius);padding:.5rem .7rem;font-family:'JetBrains Mono',monospace;font-size:.82rem;width:100%}
+
+/* ── Mission log ── */
+.log-line{display:flex;gap:.6rem;font-size:.78rem}
+.log-tag{font-family:'JetBrains Mono',monospace;font-size:.6rem;color:var(--cyan-light);background:var(--cyan-glow);padding:.15rem .4rem;border-radius:3px;flex:none;height:fit-content;text-transform:uppercase}
+.log-ts{font-family:'JetBrains Mono',monospace;font-size:.6rem;color:var(--muted);margin-top:.3rem}
+
+/* ── Section header ── */
+.sec-hdr{margin:1.4rem 0 .7rem;display:flex;align-items:baseline;gap:.5rem}
+.sec-tag{font-family:'JetBrains Mono',monospace;font-size:.62rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted)}
+.sec-title{font-family:'Rajdhani',sans-serif;text-transform:uppercase;font-size:1.05rem;font-weight:700;letter-spacing:.02em}
+
+/* ── Goal accordions ── */
+.accordion{background:var(--panel);border:1px solid rgba(0,217,255,.14);border-radius:var(--radius);margin-bottom:.6rem;overflow:hidden}
+.accordion-hdr{display:flex;justify-content:space-between;align-items:center;padding:.85rem 1rem;cursor:pointer}
+.accordion-hdr-l{display:flex;align-items:center;gap:.6rem}
+.accordion-tier{font-family:'JetBrains Mono',monospace;font-size:.6rem;color:var(--muted);border:1px solid rgba(255,255,255,.12);border-radius:3px;padding:.1rem .35rem}
+.accordion-name{font-family:'Rajdhani',sans-serif;text-transform:uppercase;font-weight:700;font-size:.95rem;letter-spacing:.02em}
+.accordion-count{font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--cyan-light)}
+.accordion-chev{color:var(--muted);transition:transform .2s;font-size:.7rem}
+.accordion-body{padding:0 1rem 1rem}
+.goal-item{display:flex;align-items:flex-start;gap:.6rem;padding:.45rem 0;border-bottom:1px solid rgba(255,255,255,.04)}
+.goal-item:last-child{border-bottom:none}
+.goal-cb{flex:none;width:19px;height:19px;border:1.5px solid rgba(0,217,255,.4);border-radius:3px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.goal-cb.done{background:var(--cyan);border-color:var(--cyan)}
+.goal-cb svg{width:11px;height:11px;opacity:0}
+.goal-cb.done svg{opacity:1}
+.goal-text{flex:1;font-size:.82rem}
+.goal-text.done{color:var(--muted);text-decoration:line-through}
+.goal-del{flex:none;color:var(--muted);font-size:.9rem;cursor:pointer;padding:0 .2rem}
+.add-goal-row{display:flex;gap:.4rem;margin-top:.6rem}
+.add-goal-row input{flex:1}
+
+/* ── Channel workflow (nested in Bi-Weekly) ── */
+.channel-block{background:var(--panel2);border-radius:var(--radius);padding:.75rem;margin-top:.5rem;border:1px solid rgba(255,255,255,.05)}
+.channel-block-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem}
+.channel-block-name{font-weight:600;font-size:.8rem;font-family:'Rajdhani',sans-serif;text-transform:uppercase}
+.tag{font-family:'JetBrains Mono',monospace;font-size:.55rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:.15rem .4rem;border-radius:3px}
+.tag.unlocked{background:var(--amber);color:#1a0f00}
+.tag.locked{background:rgba(255,255,255,.08);color:var(--muted)}
+.wf-steps{display:flex;flex-wrap:wrap;gap:.3rem;margin-top:.4rem}
+.wf-step{font-family:'JetBrains Mono',monospace;font-size:.62rem;padding:.25rem .5rem;border-radius:3px;background:var(--panel);color:var(--muted);border:1px solid rgba(255,255,255,.06);cursor:pointer}
+.wf-step.done{background:var(--amber-glow);color:var(--amber-light);border-color:rgba(255,176,32,.3)}
+
+/* ── Gate box (phase/stage) ── */
+.gate-box{background:rgba(0,0,0,.25);border-radius:3px;padding:.6rem .7rem;margin-top:.5rem}
+.gate-label{font-family:'JetBrains Mono',monospace;font-size:.6rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:.3rem}
+.gate-check{display:flex;align-items:center;gap:.5rem;font-size:.74rem;padding:.22rem 0;cursor:pointer}
+.gate-check .cb{width:15px;height:15px;border-radius:3px;border:1.5px solid rgba(255,255,255,.25);flex:none}
+.gate-check .cb.done{background:var(--green);border-color:var(--green)}
+
+/* ── Sleep / Vitals bar chart ── */
+.bar-chart{display:flex;align-items:flex-end;gap:.28rem;height:110px;margin:.8rem 0 .3rem;padding:0 .1rem}
+.bar-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:.3rem;height:100%;justify-content:flex-end}
+.bar{width:100%;border-radius:3px 3px 1px 1px;background:rgba(255,255,255,.08);transition:height .3s ease}
+.bar.good{background:var(--cyan)}
+.bar.low{background:rgba(240,87,143,.6)}
+.bar-day{font-size:.55rem;color:var(--muted);font-family:'JetBrains Mono',monospace}
+.streak-row{display:flex;gap:.6rem;margin-top:.9rem}
+.streak-box{flex:1;background:var(--panel2);border-radius:var(--radius);padding:.7rem;text-align:center}
+.streak-val{font-family:'JetBrains Mono',monospace;font-size:1.15rem;color:var(--cyan-light)}
+.streak-lbl{font-size:.58rem;color:var(--muted);margin-top:.15rem;text-transform:uppercase;letter-spacing:.06em;font-family:'JetBrains Mono',monospace}
+
+.note{background:var(--cyan-glow);border:1px solid var(--cyan-line);border-radius:var(--radius);padding:.7rem .8rem;font-size:.75rem;color:var(--cyan-light);line-height:1.5;margin:.7rem 0;font-family:'DM Sans',sans-serif}
+.note.amber{background:var(--amber-glow);border-color:rgba(255,176,32,.28);color:var(--amber-light)}
+.note.rose{background:var(--rose-glow);border-color:rgba(240,87,143,.28);color:var(--rose-light)}
+.note b{color:var(--fg)}
+
+#toast{position:fixed;bottom:calc(var(--nav-h) + 16px + var(--safe-bottom));left:50%;transform:translateX(-50%) translateY(120px);z-index:9999;background:rgba(11,17,25,.98);border:1px solid var(--cyan-line);border-radius:3px;padding:.55rem 1.2rem;font-size:.72rem;font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.05em;color:var(--cyan-light);transition:transform .35s cubic-bezier(.34,1.56,.64,1);pointer-events:none;white-space:nowrap;max-width:90vw}
+#toast.show{transform:translateX(-50%) translateY(0)}
+
+nav{position:fixed;bottom:0;left:0;right:0;z-index:100;background:rgba(5,8,12,.97);backdrop-filter:blur(20px);border-top:1px solid var(--cyan-line);padding-bottom:var(--safe-bottom)}
+.nav-scroll{display:flex;max-width:520px;margin:0 auto}
+.nav-btn{flex:1;background:none;border:none;color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:.6rem;font-weight:600;text-transform:uppercase;letter-spacing:.04em;padding:.6rem .3rem calc(.55rem + var(--safe-bottom));display:flex;flex-direction:column;align-items:center;gap:.25rem;cursor:pointer;height:var(--nav-h)}
+.nav-btn svg{width:19px;height:19px;opacity:.5}
+.nav-btn.active{color:var(--cyan-light)}
+.nav-btn.active svg{opacity:1}
+.nav-btn[data-tab="goals"].active{color:var(--amber-light)}
+.nav-btn[data-tab="vitals"].active{color:var(--rose-light)}
+</style>
+</head>
+<body>
+<div id="app"></div>
+
+<nav>
+  <div class="nav-scroll">
+    <button class="nav-btn active" data-tab="hub" onclick="switchTab('hub')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4M4.9 4.9l2.8 2.8M16.3 16.3l2.8 2.8M4.9 19.1l2.8-2.8M16.3 7.7l2.8-2.8"/></svg>
+      Hub
+    </button>
+    <button class="nav-btn" data-tab="goals" onclick="switchTab('goals')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg>
+      Goals
+    </button>
+    <button class="nav-btn" data-tab="vitals" onclick="switchTab('vitals')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 12h4l2 8 4-16 2 8h6"/></svg>
+      Vitals
+    </button>
+  </div>
+</nav>
+
+<script>
+/* ───────────────────────── Storage ───────────────────────── */
+const LS_KEY = 'stratos_v1';
+function loadState(){ try{ return JSON.parse(localStorage.getItem(LS_KEY)) || {}; }catch(e){ return {}; } }
+function saveState(s){ localStorage.setItem(LS_KEY, JSON.stringify(s)); }
+function todayKey(){ return new Date().toISOString().slice(0,10); }
+function uid(){ return Math.random().toString(36).slice(2,9); }
+
+const DEFAULT_LINKS = [
+  {name:'Prashashak', url:'https://prashashak.brightchamps.com/teacher-list'},
+  {name:'Timeline', url:'https://calendar.google.com'},
+  {name:'AI Neural', url:'https://gemini.google.com'},
+  {name:'Repository', url:'https://github.com'},
+  {name:'GPT-4', url:'https://chatgpt.com'},
+  {name:'Archive', url:'https://youtube.com'},
+];
+
+function defaultGoals(stop){
+  const mk = (text)=>({id:uid(), text, done:false});
+  return {
+    daily: [mk('Hold a fixed wake-up time'), mk(`Stop working by ${stop}`), mk('No screens in the last 20 min before lying down'), mk("Log last night's sleep")],
+    weekly: [mk('Content work only on the 2 designated days'), mk('Tutoring: zero cancellations, fast doubt-resolution')],
+    biweekly: [mk('Publish 1 long-form video on the active channel'), mk('Cut 1–2 shorts from it'), mk('Post to LinkedIn')],
+    monthly: [mk("Hold this month's phase gate criteria"), mk('Review whether the current phase is honestly ready to advance')],
+    quarterly: [mk('Re-check email list / site metrics against this Stage target'), mk('Only decide on the Tech channel once Phase 3 is actually reached')],
+    halfyearly: [mk('Reach the next income Stage target'), mk('Confirm pace is sustainable at this stage before advancing')],
+    yearly: [mk('Tutoring becomes optional income, not required'), mk('We The Mind + Savoring Money run as a systemized business')]
+  };
+}
+
+let state = Object.assign({
+  wake:'07:00', stop:'23:00',
+  contentDays:['wed','sun'],
+  dailyChecks:{}, sleepLog:{},
+  phase:0, phaseGates:{}, channelWork:{},
+  stage:1, stageGates:{},
+  goals:null,
+  links: DEFAULT_LINKS.slice(),
+  kiren: { day:'', time:'', url:'' },
+  openAccordion: 'daily'
+}, loadState());
+if(!state.goals) state.goals = defaultGoals(state.stop);
+function persist(){ saveState(state); }
+
+function showToast(msg){
+  let t = document.getElementById('toast');
+  if(!t){ t = document.createElement('div'); t.id='toast'; document.body.appendChild(t); }
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(window._toastT);
+  window._toastT = setTimeout(()=>t.classList.remove('show'), 1600);
+}
+
+/* ───────────────────────── Shared data (Phases / Stages) ───────────────────────── */
+const PHASES = [
+  { id:0, name:'Phase 0 — Stabilize', gates:['Fixed wake time held for 2+ consecutive weeks','Hard work-stop time held most nights','Sleep logged most days this week'] },
+  { id:1, name:'Phase 1 — Savoring Money', gates:['Phase 0 gates held for the full 4 weeks','At least 2 long-form videos published on schedule','No missed uploads caused by exhaustion'] },
+  { id:2, name:'Phase 2 — We The Mind (Math/Science)', gates:['Phase 1 has run ~2 months without slipping','Comfortable increasing weekly output before adding this'] },
+  { id:3, name:'Phase 3 — Tech (decide, don\u2019t assume)', gates:['Phases 1 and 2 both stable','Genuinely have spare hours, not borrowed ones'] },
+];
+const CHANNELS = [
+  { id:'savoringmoney', name:'Savoring Money', phaseReq:1, steps:['Topic','Script','Record','Edit','Thumbnail','Upload','Short','LinkedIn'] },
+  { id:'wtmmathsci', name:'We The Mind — Math/Sci', phaseReq:2, steps:['Topic','Script','Record','Edit','Thumbnail','Upload','Short','LinkedIn'] },
+  { id:'tech', name:'Tech Channel', phaseReq:3, steps:['Decide if worth starting'] },
+];
+const STAGES = [
+  { id:1, name:'Stage 1 — Foundation', income:'₹1,00,000–1,10,000/mo', gates:['Tutoring income at/above target for 3 consecutive months','Phase 1 channel running with zero missed uploads','Sleep gates still holding'] },
+  { id:2, name:'Stage 2 — First Revenue Stream', income:'₹1.5–2,00,000/mo', gates:['2 consecutive months of stable combined income','Phase 1 (and 2, if started) still running without slipping','No new sleep debt reappearing'] },
+  { id:3, name:'Stage 3 — Systemize', income:'₹3–5,00,000/mo', gates:['Revenue stable enough to pay a freelancer without dipping into personal income','You\u2019ve actually decided on Tech — yes or no'] },
+  { id:4, name:'Stage 4 — Scale', income:'₹10,00,000+/mo', gates:['Team consistently produces without you in every step','Personal health metrics still holding at this scale'] },
+];
+
+function last14Dates(){ const arr=[]; for(let i=13;i>=0;i--){ const d=new Date(); d.setDate(d.getDate()-i); arr.push(d.toISOString().slice(0,10)); } return arr; }
+function last7Sleep(){ return last14Dates().slice(-7).filter(d=>state.sleepLog[d]!=null).map(d=>state.sleepLog[d]); }
+function avg7Sleep(){ const v=last7Sleep(); return v.length? v.reduce((a,b)=>a+b,0)/v.length : 0; }
+function currentStreak(){
+  let streak=0; const dates=last14Dates().slice().reverse();
+  for(const d of dates){ const v=state.sleepLog[d]; if(v==null) break; if(v>=7) streak++; else break; }
+  return streak;
+}
+function buildPct(){
+  const phasePct = state.phase/(PHASES.length-1);
+  const stagePct = (state.stage-1)/(STAGES.length-1);
+  return Math.round(((phasePct+stagePct)/2)*100);
+}
+function vitalsPct(){ return Math.min(100, Math.round((avg7Sleep()/7)*100)); }
+function integrityPct(){ return Math.round((buildPct()+vitalsPct())/2); }
+
+/* ───────────────────────── Render: HUB ───────────────────────── */
+function renderHub(){
+  const now = new Date();
+  const dow = ['sun','mon','tue','wed','thu','fri','sat'][now.getDay()];
+  const isContentDay = state.contentDays.includes(dow);
+  const integrity = integrityPct();
+  const vPct = vitalsPct(), bPct = buildPct();
+  const circumference = 2*Math.PI*42;
+  const dash = (integrity/100)*circumference;
+
+  let h = `<div class="clock-row">
+    <div class="clock font-mono" id="liveClock">--:--:--</div>
+    <div class="clock-date" id="liveDate">—</div>
+  </div>`;
+
+  h += `<div class="greet">Welcome, <span>Kingshuk</span></div>`;
+
+  h += `<div class="hud">
+    <div class="integrity-wrap">
+      <div class="integrity-ring">
+        <svg width="96" height="96" viewBox="0 0 96 96">
+          <circle cx="48" cy="48" r="42" fill="none" stroke="rgba(255,255,255,.06)" stroke-width="7"/>
+          <circle cx="48" cy="48" r="42" fill="none" stroke="url(#g1)" stroke-width="7" stroke-linecap="round"
+            stroke-dasharray="${circumference}" stroke-dashoffset="${circumference-dash}"/>
+          <defs><linearGradient id="g1" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#ffb020"/><stop offset="100%" stop-color="#00d9ff"/>
+          </linearGradient></defs>
+        </svg>
+        <div class="integrity-num"><b>${integrity}%</b><span>Integrity</span></div>
+      </div>
+      <div style="flex:1">
+        <div class="integrity-label">System Status</div>
+        <div style="font-family:'Rajdhani',sans-serif;font-weight:700;text-transform:uppercase;font-size:1.05rem;color:${integrity>=60?'var(--cyan-light)':'var(--amber-light)'}">${integrity>=75?'Nominal':integrity>=45?'Stabilizing':'Rebuilding'}</div>
+        <div class="twin-mini">
+          <div class="twin-mini-item">
+            <div class="twin-mini-lbl"><span>Vitals</span><span>${vPct}%</span></div>
+            <div class="twin-mini-bar"><div class="twin-mini-fill" style="width:${vPct}%;background:var(--cyan)"></div></div>
+          </div>
+          <div class="twin-mini-item">
+            <div class="twin-mini-lbl"><span>Build</span><span>${bPct}%</span></div>
+            <div class="twin-mini-bar"><div class="twin-mini-fill" style="width:${bPct}%;background:var(--amber)"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>`;
+
+  h += isContentDay
+    ? `<div class="note amber">📡 Today is a designated content day. Check Goals → Bi-Weekly for the active channel's workflow.</div>`
+    : `<div class="note">🌿 Not a content day. Tutoring and rest only.</div>`;
+
+  h += `<div class="sec-hdr"><div class="sec-tag" style="color:var(--cyan-light)">01</div><div class="sec-title">Quick Access</div></div>`;
+  h += `<div class="link-grid">`;
+  state.links.forEach((l,i)=>{
+    h += `<a class="link-chip" href="${l.url}" target="_blank" rel="noopener">${l.name}</a>`;
+  });
+  h += `<div class="link-chip add" onclick="addLink()">+ Bind New</div>`;
+  h += `</div>`;
+
+  h += `<div class="sec-hdr"><div class="sec-tag" style="color:var(--amber-light)">02</div><div class="sec-title">Focus Ritual</div></div>`;
+  h += `<div class="hud amber">
+    <div class="ritual-time font-mono" id="ritualDisplay">${fmtTime(window._ritual.remaining)}</div>
+    <div class="ritual-btns">
+      <button class="btn amber ${!window._ritual.running?'primary':''}" onclick="ritualToggle()">${window._ritual.running?'Pause':'Begin Ritual'}</button>
+      <button class="btn amber" onclick="ritualReset()">Reset</button>
+    </div>
+  </div>`;
+
+  h += `<div class="sec-hdr"><div class="sec-tag" style="color:var(--violet-light)">03</div><div class="sec-title">Kiren's Sessions</div></div>`;
+  h += `<div class="hud violet">
+    <div class="session-status font-mono">${kirenStatus()}</div>
+    <div class="field"><label>Day</label>
+      <select onchange="setKiren('day', this.value)">
+        <option value="">— not set —</option>
+        ${['mon','tue','wed','thu','fri','sat','sun'].map(d=>`<option value="${d}" ${state.kiren.day===d?'selected':''}>${d.toUpperCase()}</option>`).join('')}
+      </select>
+    </div>
+    <div class="field"><label>Time</label><input type="time" value="${state.kiren.time}" onchange="setKiren('time', this.value)"/></div>
+    <div class="field"><label>Session link (optional)</label><input type="url" placeholder="https://..." value="${state.kiren.url||''}" onchange="setKiren('url', this.value)"/></div>
+    ${state.kiren.url ? `<a class="btn violet-solid full" style="display:block;text-decoration:none;background:var(--violet);color:#0a0614;border-color:var(--violet)" href="${state.kiren.url}" target="_blank">Join Now</a>` : ''}
+  </div>`;
+
+  h += `<div class="sec-hdr"><div class="sec-tag" style="color:var(--cyan-light)">04</div><div class="sec-title">Global Intel</div></div>`;
+  h += `<div class="hud">${renderIntel()}</div>`;
+
+  h += `<div class="sec-hdr"><div class="sec-tag" style="color:var(--rose-light)">05</div><div class="sec-title">Mission Log</div></div>`;
+  h += `<div class="hud rose">
+    <div class="log-line"><span class="log-tag">SAM</span><span>${missionLogLine()}</span></div>
+    <div class="log-ts">${now.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'})}</div>
+  </div>`;
+
+  return h;
+}
+
+function fmtTime(sec){ const m=Math.floor(sec/60), s=sec%60; return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`; }
+
+function renderIntel(){
+  const items = [];
+  const streak = currentStreak();
+  const v = vitalsPct();
+  if(streak===0) items.push('Sleep streak reset. Phase 0\u2019s gate needs 2+ consecutive weeks \u2265 7h before anything advances.');
+  else items.push(`Sleep streak: ${streak} night${streak===1?'':'s'} \u2265 7h. Gate needs 14.`);
+  const dow = ['sun','mon','tue','wed','thu','fri','sat'][new Date().getDay()];
+  if(state.contentDays.includes(dow)) items.push('Content slot is open today \u2014 route it through Goals \u2192 Bi-Weekly.');
+  else items.push('No content slot today. That\u2019s by design, not a gap.');
+  const ph = PHASES[state.phase];
+  items.push(`Active phase: ${ph.name.replace(/Phase \d — /,'')}. ${state.phase < PHASES.length-1 ? 'Advance only when its gate is honestly checked.' : 'Final phase reached.'}`);
+  return items.map(t=>`<div class="intel-item"><div class="intel-dot"></div><div>${t}</div></div>`).join('');
+}
+
+function missionLogLine(){
+  const integrity = integrityPct();
+  if(integrity < 40) return 'Integrity low. Recommend holding all fronts \u2014 sleep gate takes priority over every other objective, Kingshuk.';
+  if(integrity < 70) return 'Stabilizing. Hold current phase until the gates clear \u2014 no new fronts.';
+  return 'Systems nominal. Goal sync current. Ready when you are, Kingshuk.';
+}
+
+function kirenStatus(){
+  if(!state.kiren.day || !state.kiren.time) return 'No recurring window set.';
+  const dayIdx = ['sun','mon','tue','wed','thu','fri','sat'].indexOf(state.kiren.day);
+  const [hh,mm] = state.kiren.time.split(':').map(Number);
+  const now = new Date();
+  let target = new Date(now);
+  target.setHours(hh,mm,0,0);
+  let diffDays = (dayIdx - now.getDay() + 7) % 7;
+  target.setDate(now.getDate()+diffDays);
+  if(diffDays===0 && target < now) target.setDate(target.getDate()+7);
+  const diffMs = target - now;
+  if(diffMs < 30*60*1000 && diffMs > -60*60*1000) return 'LIVE WINDOW — Join Now';
+  const dd = Math.floor(diffMs/(1000*60*60*24));
+  const hh2 = Math.floor((diffMs/(1000*60*60))%24);
+  const mm2 = Math.floor((diffMs/(1000*60))%60);
+  return `Next window in ${dd>0?dd+'d ':''}${hh2}h ${mm2}m`;
+}
+
+window.addLink = function(){
+  const name = prompt('Link name (e.g. Notion):');
+  if(!name) return;
+  const url = prompt('URL (include https://):');
+  if(!url) return;
+  state.links.push({name, url}); persist(); render();
+};
+window.setKiren = function(key, val){ state.kiren[key]=val; persist(); render(); };
+
+/* ───────────────────────── Ritual timer (runtime, not persisted mid-count) ───────────────────────── */
+window._ritual = { remaining: 25*60, running:false, interval:null };
+window.ritualToggle = function(){
+  const r = window._ritual;
+  if(r.running){ clearInterval(r.interval); r.running=false; }
+  else{
+    r.running = true;
+    r.interval = setInterval(()=>{
+      r.remaining--;
+      if(r.remaining<=0){ clearInterval(r.interval); r.running=false; r.remaining=0; showToast('Ritual complete'); }
+      if(currentTab==='hub'){ const el=document.getElementById('ritualDisplay'); if(el) el.textContent = fmtTime(r.remaining); }
+    },1000);
+  }
+  render();
+};
+window.ritualReset = function(){ const r=window._ritual; clearInterval(r.interval); r.running=false; r.remaining=25*60; render(); };
+
+/* ───────────────────────── Render: GOALS ───────────────────────── */
+const TIERS = [
+  {key:'daily', label:'Daily Objectives'},
+  {key:'weekly', label:'Weekly Focus'},
+  {key:'biweekly', label:'Bi-Weekly'},
+  {key:'monthly', label:'Monthly Growth'},
+  {key:'quarterly', label:'Quarterly'},
+  {key:'halfyearly', label:'Half Yearly'},
+  {key:'yearly', label:'Yearly Vision'},
+];
+
+function renderGoals(){
+  let h = `<div class="page-hdr" style="--accent:var(--amber)">
+    <div class="eyebrow">Strategic Targets</div>
+    <h1 class="hero">Seven horizons, <em>one</em> system.</h1>
+    <p class="sub">Each tier holds real items from the plan, plus anything you add. Tap to expand, check off, or add your own.</p>
+  </div>`;
+
+  TIERS.forEach(t=>{
+    const items = state.goals[t.key] || [];
+    const doneCount = items.filter(i=>i.done).length;
+    const isOpen = state.openAccordion === t.key;
+    h += `<div class="accordion">
+      <div class="accordion-hdr" onclick="toggleAccordion('${t.key}')">
+        <div class="accordion-hdr-l">
+          <span class="accordion-tier">${t.key==='daily'?'D':t.key==='weekly'?'W':t.key==='biweekly'?'2W':t.key==='monthly'?'M':t.key==='quarterly'?'Q':t.key==='halfyearly'?'6M':'Y'}</span>
+          <span class="accordion-name">${t.label}</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:.6rem">
+          <span class="accordion-count">${doneCount}/${items.length}</span>
+          <span class="accordion-chev" style="transform:rotate(${isOpen?90:0}deg)">▸</span>
+        </div>
+      </div>`;
+    if(isOpen){
+      h += `<div class="accordion-body">`;
+      items.forEach(g=>{
+        h += `<div class="goal-item">
+          <div class="goal-cb ${g.done?'done':''}" onclick="toggleGoal('${t.key}','${g.id}')">
+            <svg viewBox="0 0 12 12" fill="none"><polyline points="1.5,6 4.5,9 10.5,3" stroke="#05080c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div class="goal-text ${g.done?'done':''}">${g.text}</div>
+          <div class="goal-del" onclick="delGoal('${t.key}','${g.id}')">×</div>
+        </div>`;
+      });
+      if(t.key==='biweekly'){
+        h += `<div style="margin-top:.7rem">`;
+        CHANNELS.forEach(c=>{
+          const locked = state.phase < c.phaseReq;
+          h += `<div class="channel-block" style="${locked?'opacity:.5':''}">
+            <div class="channel-block-hdr">
+              <div class="channel-block-name">${c.name}</div>
+              <span class="tag ${locked?'locked':'unlocked'}">${locked?'Locked':'Unlocked'}</span>
+            </div>
+            ${locked ? `<div style="font-size:.68rem;color:var(--muted)">Unlocks at Phase ${c.phaseReq}</div>` : `
+              <div class="wf-steps">${c.steps.map((s,i)=>{
+                const key=`${c.id}_${i}`; const done=!!state.channelWork[key];
+                return `<span class="wf-step ${done?'done':''}" onclick="toggleWf('${key}')">${s}</span>`;
+              }).join('')}</div>
+              <button class="btn" style="margin-top:.5rem;width:auto;padding:.35rem .7rem;font-size:.62rem" onclick="resetWf('${c.id}',${c.steps.length})">Reset</button>
+            `}
+          </div>`;
+        });
+        h += `</div>`;
+      }
+      if(t.key==='monthly' || t.key==='quarterly'){
+        const phase = PHASES[state.phase];
+        h += `<div class="gate-box">
+          <div class="gate-label">Current: ${phase.name}</div>
+          ${phase.gates.map((g,gi)=>{
+            const gk = `phase${phase.id}_gate${gi}`; const done=!!state.phaseGates[gk];
+            return `<div class="gate-check" onclick="toggleGate('${gk}')"><div class="cb ${done?'done':''}"></div>${g}</div>`;
+          }).join('')}
+        </div>
+        ${state.phase < PHASES.length-1 ? `<button class="btn full" style="margin-top:.5rem" onclick="advancePhase()">Advance Phase</button>` : ''}`;
+      }
+      if(t.key==='halfyearly' || t.key==='yearly'){
+        const stage = STAGES[state.stage-1];
+        h += `<div class="gate-box">
+          <div class="gate-label">Current: ${stage.name} — ${stage.income}</div>
+          ${stage.gates.map((g,gi)=>{
+            const gk = `stage${stage.id}_gate${gi}`; const done=!!state.stageGates[gk];
+            return `<div class="gate-check" onclick="toggleStageGate('${gk}')"><div class="cb ${done?'done':''}"></div>${g}</div>`;
+          }).join('')}
+        </div>
+        ${state.stage < STAGES.length ? `<button class="btn full" style="margin-top:.5rem" onclick="advanceStage()">Advance Stage</button>` : ''}`;
+      }
+      h += `<div class="add-goal-row">
+        <input type="text" id="add_${t.key}" placeholder="Add a target..." onkeydown="if(event.key==='Enter')addGoal('${t.key}')"/>
+        <button class="btn" style="flex:none;padding:.5rem .8rem" onclick="addGoal('${t.key}')">Add</button>
+      </div>`;
+      h += `</div>`;
+    }
+    h += `</div>`;
+  });
+
+  return h;
+}
+
+window.toggleAccordion = function(key){ state.openAccordion = state.openAccordion===key ? null : key; persist(); render(); };
+window.toggleGoal = function(tier, id){ const g=state.goals[tier].find(x=>x.id===id); if(g){ g.done=!g.done; persist(); render(); } };
+window.delGoal = function(tier, id){ state.goals[tier] = state.goals[tier].filter(x=>x.id!==id); persist(); render(); };
+window.addGoal = function(tier){
+  const el = document.getElementById(`add_${tier}`);
+  if(!el || !el.value.trim()) return;
+  state.goals[tier].push({id:uid(), text:el.value.trim(), done:false});
+  persist(); render();
+};
+window.toggleWf = function(key){ state.channelWork[key]=!state.channelWork[key]; persist(); render(); };
+window.resetWf = function(id,n){ for(let i=0;i<n;i++) delete state.channelWork[`${id}_${i}`]; persist(); render(); showToast('Reset'); };
+window.toggleGate = function(gk){ state.phaseGates[gk]=!state.phaseGates[gk]; persist(); render(); };
+window.advancePhase = function(){ if(state.phase<PHASES.length-1){ state.phase++; persist(); render(); showToast('Phase advanced'); } };
+window.toggleStageGate = function(gk){ state.stageGates[gk]=!state.stageGates[gk]; persist(); render(); };
+window.advanceStage = function(){ if(state.stage<STAGES.length){ state.stage++; persist(); render(); showToast('Stage advanced'); } };
+
+/* ───────────────────────── Render: VITALS ───────────────────────── */
+function renderVitals(){
+  const tk = todayKey();
+  const todayVal = state.sleepLog[tk];
+  const dates = last14Dates();
+  const maxH = 9;
+  const streak = currentStreak();
+  const logged = Object.keys(state.sleepLog).length;
+
+  let h = `<div class="page-hdr" style="--accent:var(--rose)">
+    <div class="eyebrow">Vitals // Sleep Telemetry</div>
+    <h1 class="hero">This is the <em>real</em> gate.</h1>
+    <p class="sub">No phase or stage advances on a good story about it — only when this actually clears the line, for weeks.</p>
+  </div>`;
+
+  h += `<div class="hud rose">
+    <div class="field"><label>Hours slept last night</label>
+      <input type="number" min="0" max="14" step="0.5" value="${todayVal ?? ''}" placeholder="e.g. 6.5" onchange="logSleep('${tk}', this.value)"/>
+    </div>
+    <div class="bar-chart">`;
+  dates.forEach(d=>{
+    const v = state.sleepLog[d];
+    const pct = v!=null ? Math.min(100,(v/maxH)*100) : 3;
+    const cls = v==null ? '' : v>=7 ? 'good' : 'low';
+    h += `<div class="bar-col"><div class="bar ${cls}" style="height:${pct}%"></div><div class="bar-day">${new Date(d).getDate()}</div></div>`;
+  });
+  h += `</div>
+    <div class="streak-row">
+      <div class="streak-box"><div class="streak-val">${streak}</div><div class="streak-lbl">Streak ≥7h</div></div>
+      <div class="streak-box"><div class="streak-val">${logged}</div><div class="streak-lbl">Nights logged</div></div>
+    </div>
+  </div>`;
+
+  h += `<div class="sec-hdr"><div class="sec-tag" style="color:var(--cyan-light)">SCHEDULE</div><div class="sec-title">Non-negotiables</div></div>`;
+  const checks = state.dailyChecks[tk] || {};
+  h += `<div class="hud">`;
+  [['wake','Held a fixed wake-up time'],['stop',`Stopped working by ${state.stop}`],['winddown','No screens 20 min before lying down'],['sleeplog',"Logged last night's sleep"]].forEach(([key,label])=>{
+    const done = !!checks[key];
+    h += `<div class="goal-item">
+      <div class="goal-cb ${done?'done':''}" onclick="toggleCheck('${tk}','${key}')">
+        <svg viewBox="0 0 12 12" fill="none"><polyline points="1.5,6 4.5,9 10.5,3" stroke="#05080c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="goal-text ${done?'done':''}">${label}</div>
+    </div>`;
+  });
+  h += `<div class="field" style="margin-top:.7rem"><label>Wake-up time</label><input type="time" value="${state.wake}" onchange="setTime('wake',this.value)"/></div>
+  <div class="field"><label>Hard work-stop time</label><input type="time" value="${state.stop}" onchange="setTime('stop',this.value)"/></div>
+  </div>`;
+
+  h += `<div class="note rose">Phase 0's gate asks for <b>2+ consecutive weeks</b> of this streak holding, most nights ≥7h.</div>`;
+  return h;
+}
+
+window.logSleep = function(tk, val){
+  const n = parseFloat(val);
+  if(isNaN(n)){ delete state.sleepLog[tk]; } else { state.sleepLog[tk]=n; }
+  if(!state.dailyChecks[tk]) state.dailyChecks[tk]={};
+  state.dailyChecks[tk].sleeplog = !isNaN(n);
+  persist(); render(); showToast('Logged');
+};
+window.toggleCheck = function(tk,key){
+  if(!state.dailyChecks[tk]) state.dailyChecks[tk]={};
+  state.dailyChecks[tk][key]=!state.dailyChecks[tk][key];
+  persist(); render();
+};
+window.setTime = function(key,val){ state[key]=val; persist(); showToast('Saved'); };
+
+/* ───────────────────────── Tabs ───────────────────────── */
+const sections = { hub: renderHub, goals: renderGoals, vitals: renderVitals };
+let currentTab = 'hub';
+function render(){ document.getElementById('app').innerHTML = sections[currentTab](); }
+window.switchTab = function(tab){
+  currentTab = tab;
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.toggle('active', b.dataset.tab===tab));
+  render();
+  scrollTo({top:0,behavior:'smooth'});
+};
+
+/* ───────────────────────── Live clock ───────────────────────── */
+function tickClock(){
+  if(currentTab!=='hub') return;
+  const now = new Date();
+  const c = document.getElementById('liveClock');
+  const d = document.getElementById('liveDate');
+  if(c) c.textContent = now.toLocaleTimeString('en-GB');
+  if(d) d.textContent = now.toLocaleDateString('en-US',{weekday:'long',month:'short',day:'numeric'});
+}
+setInterval(tickClock, 1000);
+
+render();
+tickClock();
+
+if('serviceWorker' in navigator){
+  window.addEventListener('load', ()=>{ navigator.serviceWorker.register('sw.js').catch(()=>{}); });
+}
+</script>
+</body>
+</html>
