@@ -1,47 +1,47 @@
-# 🛰️ Stratos — Executive Hub
+# 🎯 Mission Control
 
-Stratos, kept fully intact — plus everything from the Daily Structure PWA merged in as its real engine. One app, three tabs.
+Vitality, Stratos, and Pit Stop — merged into one installable app, as three tabs under one roof. Now a fully detailed PWA: full icon set, iOS splash screens, offline fallback, update detection, and an in-app About panel.
 
----
-
-## Files
+## Files (keep all of these together in the same folder)
 
 | File | Purpose |
-|------|---------|
-| `index.html` | The whole app |
-| `manifest.json` | PWA install metadata |
-| `sw.js` | Offline service worker |
-| `icon-192.png` / `icon-512.png` | HUD ring icon — cyan (vitals) + amber (build) |
-
-## What merged where
-
-Nothing from Stratos was dropped — everything now actually works instead of showing placeholder states:
-
-| Stratos element | Now |
 |---|---|
-| Welcome banner, live clock | Real live clock, not frozen at 00:00:00 |
-| Quick links (Prashashak, Timeline, AI Neural, Repository, GPT-4, Archive) | All live links, plus "+ Bind New" to add your own |
-| "Begin Ritual" timer | A real 25:00 countdown — start, pause, reset |
-| Kiren's Sessions ("Calculating next window...") | Set a real recurring day/time (+ optional link) — it computes the actual countdown, or shows "LIVE WINDOW" |
-| Global Intel ("Initializing...") | Real intel, computed from your own data — sleep streak, today's content-day status, active phase |
-| Mission Log (Sam) | A real status line that changes based on your integrity score, not a fixed message |
-| System Integrity 0% | A real ring, computed as an even blend of Vitals (sleep) and Build (phase + stage progress) |
-| Daily Targets / ADD | Became the full **Goals** tab — 7 real horizons, pre-loaded with your actual plan, plus your own "Add" per tier |
+| `index.html` | The whole app — all three tabs live in this one file |
+| `manifest.json` | PWA install metadata — full icon set, shortcuts, display modes |
+| `sw.js` | Versioned offline service worker with update detection |
+| `icon-72.png` … `icon-512.png` | Full icon set (72/96/128/144/152/192/384/512px) for Android, Windows, and favicons |
+| `splash-*.png` | iOS launch/splash screens for common iPhone and iPad sizes |
+| `README.md` | This file |
 
 ## The 3 tabs
 
-- **Hub** — clock, integrity ring (the same "sleep and build carry equal weight" idea from Daily Structure, now as one ring plus the twin mini-bars underneath), quick links, Focus Ritual, Kiren's Sessions, Global Intel, Mission Log
-- **Goals** — Daily Objectives → Weekly Focus → Bi-Weekly → Monthly Growth → Quarterly → Half Yearly → Yearly Vision, each an expandable accordion. Bi-Weekly holds the 3 channels (Savoring Money / We The Mind Math-Sci / Tech) with their per-video workflow, locked until their Phase unlocks. Monthly/Quarterly hold the Phase gate; Half Yearly/Yearly hold the Stage gate. Every tier has its own "Add a target" input.
-- **Vitals** — the sleep log, bar chart, and streak from Daily Structure, unchanged — this is still the real gate everything else is judged against.
+- **🥗 Vitality** — daily food/movement/water tracker with Bengali & budget-friendly meal options, a supplement corner, emoji on every item, a 14-day heatmap, and a streak counter.
+- **🛰️ Stratos** — executive hub: Hub / Goals / Vitals, now with your real tutoring links (Infinity Learn, Voage Learning, Tutoring MaPhy) and all three recurring sessions (Kiren, Dharshinie, Kaushik) with live countdowns.
+- **🧯 Pit Stop** — the 90-second emotional reset, with 4 additional scenarios, rotating exercises, and a real animated breathing pacer.
 
-## Deploy to GitHub Pages
+## What "detailed PWA" means here
 
-Same repo you already have at `kingkngr46-lab.github.io/stratos` works — replace its contents with these 5 files (back up the old ones first if you want the original source), or point a fresh repo/Pages site at this folder.
+- **Full icon set** — 8 sizes so Android, iOS, and desktop installs all get a crisp icon instead of a blurry upscale.
+- **iOS splash screens** — a proper launch screen instead of a blank white flash when opening from the home screen.
+- **Offline fallback** — if a request fails entirely with no cache match, navigations fall back to the cached app shell instead of showing a browser error page.
+- **Update detection** — when you redeploy a new version, an in-app banner ("A new version is ready — Refresh") appears instead of silently serving stale content.
+- **About panel** (ℹ️ button, top right) — shows install status, offline readiness, local storage used, and a quick per-app status line (Vitality streak, Stratos phase). Tap the ℹ️ any time.
+- **Manifest shortcuts** — long-press the installed icon (Android) to jump straight into Vitality, Stratos, or Pit Stop.
 
 ## Install
 
-Add to Home Screen from Chrome (Android) or Safari's Share sheet (iOS). Works offline after first load. All data — goals, sleep log, links, phase/stage progress — stays in this device's local storage only.
+Open `index.html` on a real web host (GitHub Pages, Netlify, etc. — service workers and install prompts need `https://` or `localhost`, not a bare local file).
+- **Android/Chrome**: the Install banner appears automatically, or use the menu → "Add to Home Screen"
+- **iOS/Safari**: Share sheet → "Add to Home Screen" (you'll now see a proper splash screen on launch)
 
-## One thing worth remembering
+## Deploy to GitHub Pages
 
-The Daily Structure PWA still exists as its own file if you ever want it back standalone — this build folds its logic in but doesn't delete the original.
+Push all the files above to a repo, enable Pages, done. Same idea as the original Stratos repo.
+
+## Bumping the version later
+
+If you edit `index.html` again, bump `VERSION` at the top of `sw.js` (e.g. `v2` → `v3`) so the update banner correctly detects the change and offers a refresh instead of silently serving the old cached copy.
+
+## Data & privacy
+
+Everything — Vitality's checklist history, Stratos's goals/sleep log/sessions, Pit Stop's session count — stays in this device's local storage only. Nothing is sent anywhere.
