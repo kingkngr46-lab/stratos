@@ -1,4 +1,4 @@
-const VERSION = 'v2';
+const VERSION = 'v5';
 const CACHE = `mission-control-${VERSION}`;
 const ASSETS = [
   './',
@@ -12,6 +12,12 @@ const ASSETS = [
   './icon-192.png',
   './icon-384.png',
   './icon-512.png',
+  './nature-1.png',
+  './nature-2.png',
+  './nature-3.png',
+  './nature-4.png',
+  './nature-5.png',
+  './nature-6.png',
 ];
 
 self.addEventListener('install', e=>{
@@ -54,7 +60,6 @@ self.addEventListener('fetch', e=>{
   );
 });
 
-// let the page ask this worker to activate immediately after an update is found
 self.addEventListener('message', e=>{
   if(e.data === 'SKIP_WAITING') self.skipWaiting();
 });

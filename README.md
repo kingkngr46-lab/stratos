@@ -11,13 +11,20 @@ Vitality, Stratos, and Pit Stop — merged into one installable app, as three ta
 | `sw.js` | Versioned offline service worker with update detection |
 | `icon-72.png` … `icon-512.png` | Full icon set (72/96/128/144/152/192/384/512px) for Android, Windows, and favicons |
 | `splash-*.png` | iOS launch/splash screens for common iPhone and iPad sizes |
+| `nature-1.png` … `nature-6.png` | Original nature/animal illustrations for Office Hours' Quiet Corner rotator |
 | `README.md` | This file |
 
-## The 3 tabs
+## The 5 tabs (Dashboard opens first)
 
+- **🏠 Dashboard** — the home screen. Live summary cards for Vitality, Stratos, Office Hours, and Pit Stop, each tappable to jump straight to that tab. If any tutoring session is starting within about an hour, a red alert banner appears right at the top with a direct Join Now button — you don't have to be on the Office Hours tab to catch it.
 - **🥗 Vitality** — daily food/movement/water tracker with Bengali & budget-friendly meal options, a supplement corner, emoji on every item, a 14-day heatmap, and a streak counter.
-- **🛰️ Stratos** — executive hub: Hub / Goals / Vitals, now with your real tutoring links (Infinity Learn, Voage Learning, Tutoring MaPhy) and all three recurring sessions (Kiren, Dharshinie, Kaushik) with live countdowns.
-- **🧯 Pit Stop** — the 90-second emotional reset, with 4 additional scenarios, rotating exercises, and a real animated breathing pacer.
+- **🛰️ Stratos** — executive hub: Hub / Goals / Vitals, with quick links, a Focus Ritual timer, Focus Mode (declutters everything but the clock/timer), an animated particle background, a WhatsApp progress-share button, a rotating quote/insight ticker, and **Nova** — a warm, affectionate chat assistant grounded in your real stats.
+- **🎓 Office Hours** — every recurring session lives here now, under one **Tutoring Sessions** list: Kiren, Dharshinie, Kaushik, Darsh, and Simran, each with its own live countdown, schedule, and Join button (Darsh and Simran also get a Daily Report button). Admin forms (EdifyChamps Daily Report, Infinity Learn No-Show) sit above that, and a "Quiet Corner" — an original nature/animal illustration with a motivational quote — rotates below every 30 seconds.
+- **🧯 Pit Stop** — the 90-second emotional reset, with 9 scenarios, rotating exercises, and a real animated breathing pacer.
+
+Every clickable button, link, and chip across all five tabs plays a short synthesized click sound (Web Audio API — no external audio files, works fully offline).
+
+**Typography**: unified across the whole app — Fraunces (italic serif) for headings, Inter for body text, IBM Plex Mono (small caps) for labels, tags, and timestamps. Everything is center-aligned throughout, with the two horizontally-scrolling nav strips left-anchored so they stay scrollable.
 
 ## What "detailed PWA" means here
 

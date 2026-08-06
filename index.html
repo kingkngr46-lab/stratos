@@ -4,8 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0">
 <title>Mission Control</title>
-<meta name="description" content="Vitality, Stratos, and Pit Stop — health, the build, and the reset, in one command center.">
-
+<meta name="description" content="Dashboard, Vitality, Stratos, Office Hours, and Pit Stop — health, the build, tutoring, and the reset, in one command center.">
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#0d0f14">
 <link rel="icon" type="image/png" sizes="72x72" href="icon-72.png">
@@ -19,33 +18,27 @@
 <link rel="apple-touch-icon" sizes="152x152" href="icon-152.png">
 <link rel="apple-touch-icon" sizes="192x192" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
-
-<!-- iOS splash screens -->
 <link rel="apple-touch-startup-image" media="(device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3)" href="splash-1170x2532.png">
 <link rel="apple-touch-startup-image" media="(device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3)" href="splash-1284x2778.png">
 <link rel="apple-touch-startup-image" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2)" href="splash-750x1334.png">
 <link rel="apple-touch-startup-image" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3)" href="splash-1242x2688.png">
 <link rel="apple-touch-startup-image" media="(device-width: 810px) and (device-height: 1080px) and (-webkit-device-pixel-ratio: 2)" href="splash-1620x2160.png">
 <link rel="apple-touch-startup-image" media="(device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2)" href="splash-2048x2732.png">
-
-<!-- social preview -->
 <meta property="og:title" content="Mission Control">
-<meta property="og:description" content="Vitality, Stratos, and Pit Stop — health, the build, and the reset, in one command center.">
+<meta property="og:description" content="Dashboard, Vitality, Stratos, Office Hours, and Pit Stop — in one command center.">
 <meta property="og:image" content="icon-512.png">
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary">
 <meta name="robots" content="noindex">
-
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Mission Control">
 <meta name="mobile-web-app-capable" content="yes">
-
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;700&family=Rajdhani:wght@500;600;700&family=DM+Sans:wght@300;400;500;600&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
-
 <style>
+
 :root{
   --shell-bg:#0d0f14; --shell-fg:#f2f0e8; --shell-muted:#9a9a9a;
   --shell-line: rgba(255,255,255,0.08);
@@ -68,12 +61,13 @@ body{font-family:'Inter',system-ui,sans-serif;}
   color:var(--shell-fg); letter-spacing:0.02em; margin-right:auto; white-space:nowrap;
 }
 #shellNav .brand .dot{width:8px;height:8px;border-radius:50%;background:conic-gradient(from 0deg,#00d9ff,#9b7bf0,#ffb020,#f0578f,#00d9ff);}
-.shell-tabs{display:flex; gap:4px; background:rgba(255,255,255,0.05); border-radius:100px; padding:4px;}
+.shell-tabs{display:flex; gap:4px; background:rgba(255,255,255,0.05); border-radius:100px; padding:4px; overflow-x:auto; max-width:100%; scrollbar-width:none;}
+.shell-tabs::-webkit-scrollbar{display:none;}
 .shell-tab{
   border:none; background:none; cursor:pointer; color:var(--shell-muted);
   font-family:'Inter',sans-serif; font-weight:600; font-size:12.5px;
   padding:7px 13px; border-radius:100px; display:flex; align-items:center; gap:6px;
-  transition:background 0.2s ease, color 0.2s ease; white-space:nowrap;
+  transition:background 0.2s ease, color 0.2s ease; white-space:nowrap; flex-shrink:0;
 }
 .shell-tab .emo{font-size:15px;}
 .shell-tab.active{background:var(--shell-fg); color:#14161a;}
@@ -150,7 +144,131 @@ body{font-family:'Inter',system-ui,sans-serif;}
 .tab-panel.active{display:block;}
 
 
-#vitalityRoot{
+/* ---------- Stratos focus-mode state rules (unscoped: #stratosRoot is globally unique) ---------- */
+#stratosRoot.focus-active .hide-on-focus{display:none !important}
+#stratosRoot.focus-active nav{opacity:0;pointer-events:none}
+#stratosRoot.focus-active #stratosApp{padding-top:12vh}
+#stratosRoot.focus-active .clock{font-size:3rem}
+#stratosRoot.focus-active .ritual-time{font-size:4rem}
+#stratosRoot.focus-active .hud.amber{background:transparent;border:none;box-shadow:none;text-align:center}
+#stratosRoot.focus-active #aiChat{display:none}
+
+/* ---------- global typography: clean, refined, and consistent across every tab ---------- */
+body, body *{
+  font-family: 'Inter', -apple-system, system-ui, sans-serif !important;
+  text-transform: none !important;
+  letter-spacing: normal !important;
+}
+h1, h2, h3, .hero, .greet-name, .student-name, .sec-title, h2.sec-title,
+.panel-title, .quote-text, .ticker-quote, .nature-quote, .day-name,
+#shellNav .brand, .about-sheet h2{
+  font-family: 'Fraunces', Georgia, serif !important;
+  font-style: italic;
+  font-weight: 600;
+  letter-spacing: -0.01em !important;
+}
+.eyebrow, .log-tag, .sec-tag, .clock, .clock-date, .date-sub,
+.about-row .val, .about-sheet .ver, .session-status, .student-status,
+.heatmap .hcell, .stat-card .lab, .day-num + .day-name, .k,
+.badge, code, kbd{
+  font-family: 'IBM Plex Mono', 'Space Mono', monospace !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.04em !important;
+  font-style: normal !important;
+}
+
+/* ---------- global alignment override: everything centered, horizontally and vertically ---------- */
+body, body *{
+  text-align: center !important;
+  justify-content: center !important;
+  align-items: center !important;
+  gap: 6px;
+}
+/* exceptions: horizontally-scrolling nav strips need their content left-anchored,
+   otherwise centering an overflowing flex row breaks scroll-to-start on some browsers */
+.shell-tabs, .nav-scroll{
+  justify-content: flex-start !important;
+}
+
+
+#dashboardRoot{
+  --db-bg:#EEF1F5;
+  --db-surface:#FFFFFF;
+  --db-ink:#20242C;
+  --db-ink-soft:#666E7A;
+  --db-line:rgba(32,36,44,0.10);
+  --db-shadow:0 10px 28px rgba(32,36,44,0.08);
+  --db-vitality:#4F6B4A;
+  --db-stratos:#0090B0;
+  --db-office:#A9762F;
+  --db-pitstop:#B9457A;
+  --db-alert:#C4432E;
+  --db-alert-soft:#FBEAE6;
+}
+#dashboardRoot, #dashboardRoot *{box-sizing:border-box;}
+#dashboardRoot{margin:0;padding:0;}
+#dashboardRoot{
+  background:
+    radial-gradient(900px 500px at 90% -10%, rgba(0,144,176,0.08), transparent 60%),
+    radial-gradient(800px 500px at -10% 25%, rgba(79,107,74,0.07), transparent 55%),
+    var(--db-bg);
+  color:var(--db-ink);
+  font-family:'Inter',sans-serif;
+  -webkit-font-smoothing:antialiased;
+  padding:28px 18px 70px;
+}
+#dashboardRoot .wrap{max-width:600px;margin:0 auto;}
+
+#dashboardRoot header{text-align:center;margin-bottom:24px;}
+#dashboardRoot .eyebrow{font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:0.12em;text-transform:uppercase;color:var(--db-ink-soft);margin-bottom:8px;}
+#dashboardRoot h1{font-family:'Fraunces',serif;font-style:italic;font-weight:600;font-size:clamp(26px,5vw,38px);margin:0 0 6px;}
+#dashboardRoot header p.sub{color:var(--db-ink-soft);font-size:14px;max-width:440px;margin:0 auto;line-height:1.55;}
+
+/* ---------- session-soon alert ---------- */
+#dashboardRoot .session-alert{
+  display:none;
+  background:linear-gradient(135deg,var(--db-alert),#E0653F);
+  color:#fff;border-radius:18px;padding:18px 20px;margin-bottom:20px;
+  box-shadow:0 12px 26px rgba(196,67,46,0.35);
+}
+#dashboardRoot .session-alert.show{display:block;}
+#dashboardRoot .session-alert .tag{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.08em;text-transform:uppercase;opacity:0.9;margin-bottom:6px;}
+#dashboardRoot .session-alert .title{font-family:'Fraunces',serif;font-style:italic;font-weight:600;font-size:19px;margin-bottom:10px;}
+#dashboardRoot .session-alert a{
+  display:inline-block;background:#fff;color:var(--db-alert);text-decoration:none;font-weight:700;
+  padding:9px 18px;border-radius:100px;font-size:13.5px;
+}
+
+/* ---------- summary cards ---------- */
+#dashboardRoot .card-grid{display:flex;flex-direction:column;gap:14px;}
+#dashboardRoot .summary-card{
+  background:var(--db-surface);border-radius:18px;padding:20px;box-shadow:var(--db-shadow);
+  border:1px solid var(--db-line);border-left:5px solid var(--accent);
+  cursor:pointer;text-align:left;
+}
+#dashboardRoot .summary-card.vitality{--accent:var(--db-vitality);}
+#dashboardRoot .summary-card.stratos{--accent:var(--db-stratos);}
+#dashboardRoot .summary-card.officehours{--accent:var(--db-office);}
+#dashboardRoot .summary-card.pitstop{--accent:var(--db-pitstop);}
+
+#dashboardRoot .summary-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;}
+#dashboardRoot .summary-name{font-family:'Fraunces',serif;font-style:italic;font-weight:600;font-size:18px;display:flex;align-items:center;gap:8px;}
+#dashboardRoot .summary-arrow{color:var(--db-ink-soft);font-size:15px;}
+#dashboardRoot .summary-stat{font-family:'IBM Plex Mono',monospace;font-size:12.5px;color:var(--accent);font-weight:600;text-transform:uppercase;letter-spacing:0.03em;margin-bottom:4px;}
+#dashboardRoot .summary-detail{font-size:13px;color:var(--db-ink-soft);}
+
+#dashboardRoot footer{text-align:center;margin-top:24px;font-size:12px;color:var(--db-ink-soft);font-family:'IBM Plex Mono',monospace;}
+
+@media (min-aspect-ratio: 9/16), (max-height: 480px){
+  #dashboardRoot{padding:16px 16px 56px;}
+  #dashboardRoot header{margin-bottom:16px;}
+  #dashboardRoot h1{font-size:clamp(22px,5vw,28px);}
+  #dashboardRoot .summary-card{padding:16px;}
+}
+
+
+
+  #vitalityRoot{
     --bg: #EEF1E6;
     --surface: #FFFFFF;
     --surface-soft: #F6F5EE;
@@ -164,7 +282,9 @@ body{font-family:'Inter',system-ui,sans-serif;}
     --sage-soft: #E4EBDF;
     --line: rgba(35,42,32,0.12);
     --shadow: 0 10px 30px rgba(35,42,32,0.08);
-  }#vitalityRoot, #vitalityRoot *{ box-sizing: border-box; }#vitalityRoot{
+  }
+  #vitalityRoot, #vitalityRoot *{ box-sizing: border-box; }
+  #vitalityRoot{
     margin:0;
     background:
       radial-gradient(1200px 600px at 85% -10%, rgba(185,130,47,0.10), transparent 60%),
@@ -174,14 +294,36 @@ body{font-family:'Inter',system-ui,sans-serif;}
     font-family: 'Inter', sans-serif;
     -webkit-font-smoothing: antialiased;
     padding: 32px 20px 80px;
-  }#vitalityRoot .wrap{ max-width: 1000px; margin: 0 auto; }#vitalityRoot header{ text-align:center; margin-bottom: 34px; }#vitalityRoot .eyebrow{
+  }
+  #vitalityRoot .wrap{ max-width: 1000px; margin: 0 auto; }
+
+  #vitalityRoot header{ text-align:center; margin-bottom: 34px; }
+  #vitalityRoot .eyebrow{
     font-family:'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.14em;
     text-transform: uppercase; color: var(--garnet); margin-bottom: 10px;
-  }#vitalityRoot h1{
+  }
+  #vitalityRoot h1{
     font-family:'Fraunces', serif; font-weight: 600; font-size: clamp(30px, 5vw, 46px);
     margin: 0 0 10px; letter-spacing: -0.01em;
-  }#vitalityRoot header p.sub{ max-width: 540px; margin: 0 auto; color: var(--ink-soft); font-size: 15px; line-height: 1.6; }#vitalityRoot /* ---------- TODAY PANEL ---------- */
-  .today-panel{
+  }
+  #vitalityRoot header p.sub{ max-width: 540px; margin: 0 auto; color: var(--ink-soft); font-size: 15px; line-height: 1.6; }
+
+  /* ---------- compact mode for shorter / wide-aspect mobile screens ---------- */
+  @media (min-aspect-ratio: 9/16), (max-height: 480px){
+    #vitalityRoot{ padding: 16px 16px 60px; }
+    #vitalityRoot header{ margin-bottom: 18px; }
+    #vitalityRoot .eyebrow{ margin-bottom: 6px; }
+    #vitalityRoot h1{ font-size: clamp(24px, 5vw, 34px); margin-bottom: 6px; }
+    #vitalityRoot header p.sub{ font-size: 13.5px; line-height: 1.45; }
+    #vitalityRoot .wheel-section, #vitalityRoot .today-panel{ margin-bottom: 16px; }
+    #vitalityRoot .ring-wrap{ width:140px; height:140px; }
+    #vitalityRoot svg.ring{ width:140px; height:140px; }
+    #vitalityRoot .ring-center .pct{ font-size:26px; }
+  }
+
+
+  /* ---------- TODAY PANEL ---------- */
+  #vitalityRoot .today-panel{
     background: var(--surface);
     border-radius: 22px;
     box-shadow: var(--shadow);
@@ -192,39 +334,127 @@ body{font-family:'Inter',system-ui,sans-serif;}
     gap: 32px;
     align-items:center;
     margin-bottom: 22px;
-  }@media (max-width: 720px){#vitalityRoot .today-panel{ grid-template-columns: 1fr; justify-items:center; text-align:center; } }#vitalityRoot .ring-wrap{ position:relative; width:180px; height:180px; }#vitalityRoot svg.ring{ width:180px; height:180px; transform: rotate(-90deg); }#vitalityRoot svg.ring circle{ fill:none; stroke-width: 12; }#vitalityRoot .ring-track{ stroke: var(--surface-soft); }#vitalityRoot .ring-fill{ stroke: var(--sage); stroke-linecap: round; transition: stroke-dashoffset 0.5s ease, stroke 0.3s ease; }#vitalityRoot .ring-center{
+  }
+  @media (max-width: 720px){ #vitalityRoot .today-panel{ grid-template-columns: 1fr; justify-items:center; text-align:center; } }
+
+  #vitalityRoot .ring-wrap{ position:relative; width:180px; height:180px; }
+  #vitalityRoot svg.ring{ width:180px; height:180px; transform: rotate(-90deg); }
+  #vitalityRoot svg.ring circle{ fill:none; stroke-width: 12; }
+  #vitalityRoot .ring-track{ stroke: var(--surface-soft); }
+  #vitalityRoot .ring-fill{ stroke: var(--sage); stroke-linecap: round; transition: stroke-dashoffset 0.5s ease, stroke 0.3s ease; }
+  #vitalityRoot .ring-center{
     position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center;
-  }#vitalityRoot .ring-center .pct{ font-family:'Fraunces', serif; font-size: 34px; font-weight:600; color: var(--ink); line-height:1; }#vitalityRoot .ring-center .lbl{ font-family:'IBM Plex Mono', monospace; font-size: 10.5px; color: var(--ink-soft); margin-top:4px; text-transform:uppercase; letter-spacing:0.06em; }#vitalityRoot .date-nav{ display:flex; align-items:center; gap: 14px; margin-bottom: 14px; flex-wrap:wrap; }#vitalityRoot .date-nav button{
+  }
+  #vitalityRoot .ring-center .pct{ font-family:'Fraunces', serif; font-size: 34px; font-weight:600; color: var(--ink); line-height:1; }
+  #vitalityRoot .ring-center .lbl{ font-family:'IBM Plex Mono', monospace; font-size: 10.5px; color: var(--ink-soft); margin-top:4px; text-transform:uppercase; letter-spacing:0.06em; }
+
+  #vitalityRoot .date-nav{ display:flex; align-items:center; gap: 14px; margin-bottom: 14px; flex-wrap:wrap; }
+  #vitalityRoot .date-nav button{
     width:34px; height:34px; border-radius:50%; border:1px solid var(--line); background: var(--surface-soft);
     cursor:pointer; font-size:16px; color: var(--ink); display:flex; align-items:center; justify-content:center;
-  }#vitalityRoot .date-nav button:disabled{ opacity:0.35; cursor:not-allowed; }#vitalityRoot .date-nav button:hover:not(:disabled){ background: var(--sage-soft); }#vitalityRoot .date-label{ font-family:'Fraunces', serif; font-weight:600; font-size: 22px; }#vitalityRoot .date-sub{ font-family:'IBM Plex Mono', monospace; font-size: 11.5px; color: var(--ink-soft); text-transform:uppercase; letter-spacing:0.05em; }#vitalityRoot .today-jump{
+  }
+  #vitalityRoot .date-nav button:disabled{ opacity:0.35; cursor:not-allowed; }
+  #vitalityRoot .date-nav button:hover:not(:disabled){ background: var(--sage-soft); }
+  #vitalityRoot .date-label{ font-family:'Fraunces', serif; font-weight:600; font-size: 22px; }
+  #vitalityRoot .date-sub{ font-family:'IBM Plex Mono', monospace; font-size: 11.5px; color: var(--ink-soft); text-transform:uppercase; letter-spacing:0.05em; }
+  #vitalityRoot .today-jump{
     font-family:'IBM Plex Mono', monospace; font-size: 11px; text-transform:uppercase; letter-spacing:0.05em;
     background: var(--gold-soft); color:#8A611F; border:none; border-radius:999px; padding:6px 12px; cursor:pointer;
-  }#vitalityRoot .stat-row{ display:flex; gap: 10px; flex-wrap:wrap; margin-top: 10px; }#vitalityRoot .stat-card{
+    white-space:nowrap; flex-shrink:0;
+  }
+  @media (max-width: 460px){
+    #vitalityRoot .today-jump{ flex-basis:100%; margin-top:2px; }
+  }
+
+  #vitalityRoot .stat-row{ display:flex; gap: 10px; flex-wrap:wrap; margin-top: 10px; }
+  #vitalityRoot .stat-card{
     background: var(--surface-soft); border: 1px solid var(--line); border-radius: 14px;
     padding: 10px 16px; min-width: 110px; border-left: 4px solid var(--line);
-  }#vitalityRoot .stat-card.streak-card{ border-left-color: #E0793B; }#vitalityRoot .stat-card.logged-card{ border-left-color: #3E8FA8; }#vitalityRoot .stat-card.week-card{ border-left-color: #8A5FBF; }#vitalityRoot .stat-card .num{ font-family:'Fraunces', serif; font-size: 22px; font-weight:600; }#vitalityRoot .stat-card .lab{ font-family:'IBM Plex Mono', monospace; font-size: 10px; color: var(--ink-soft); text-transform:uppercase; letter-spacing:0.05em; margin-top:2px; }#vitalityRoot /* ---------- HEATMAP ---------- */
-  .heatmap-section{
+  }
+  #vitalityRoot .stat-card.streak-card{ border-left-color: #E0793B; }
+  #vitalityRoot .stat-card.logged-card{ border-left-color: #3E8FA8; }
+  #vitalityRoot .stat-card.week-card{ border-left-color: #8A5FBF; }
+  #vitalityRoot .stat-card .num{ font-family:'Fraunces', serif; font-size: 22px; font-weight:600; }
+  #vitalityRoot .stat-card .lab{ font-family:'IBM Plex Mono', monospace; font-size: 10px; color: var(--ink-soft); text-transform:uppercase; letter-spacing:0.05em; margin-top:2px; }
+
+  /* ---------- HEATMAP ---------- */
+  #vitalityRoot .heatmap-section{
     background: var(--surface); border-radius: 18px; padding: 20px 22px; box-shadow: var(--shadow);
     border: 1px solid var(--line); margin-bottom: 22px;
-  }#vitalityRoot .heatmap-section h2{ font-family:'Fraunces', serif; font-weight:600; font-size: 17px; margin: 0 0 14px; }#vitalityRoot .heatmap{ display:grid; grid-template-columns: repeat(14, 1fr); gap: 6px; }#vitalityRoot .hcell{
+  }
+  #vitalityRoot .heatmap-section h2{ font-family:'Fraunces', serif; font-weight:600; font-size: 17px; margin: 0 0 14px; }
+  #vitalityRoot .heatmap{ display:grid; grid-template-columns: repeat(14, 1fr); gap: 6px; }
+  #vitalityRoot .hcell{
     aspect-ratio: 1; border-radius: 6px; background: var(--surface-soft); border: 1px solid var(--line);
     cursor:pointer; position:relative; transition: transform 0.15s ease;
-  }#vitalityRoot .hcell:hover{ transform: scale(1.12); }#vitalityRoot .hcell.sel{ outline: 2px solid var(--ink); outline-offset:2px; }#vitalityRoot .heatmap-legend{ display:flex; align-items:center; gap:8px; margin-top:12px; font-size:11px; color:var(--ink-soft); font-family:'IBM Plex Mono', monospace; }#vitalityRoot .legend-swatch{ width:12px; height:12px; border-radius:3px; }#vitalityRoot /* ---------- CHECKLIST ---------- */
-  .day-grid{ display:grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-bottom: 22px; }@media (max-width: 780px){#vitalityRoot .day-grid{ grid-template-columns: 1fr; } }#vitalityRoot .block{ background: var(--surface); border-radius: 18px; padding: 22px; box-shadow: var(--shadow); border: 1px solid var(--line); }#vitalityRoot .block .block-head{ display:flex; align-items:center; gap:10px; margin-bottom: 14px; }#vitalityRoot .block .dot{ width:9px; height:9px; border-radius:50%; }#vitalityRoot .block.morning .dot{ background: var(--gold); }#vitalityRoot .block.midday .dot{ background: var(--garnet); }#vitalityRoot .block.evening .dot{ background: var(--sage); }#vitalityRoot .block .block-head h3{ font-family:'Fraunces', serif; font-weight:600; font-size: 16px; margin:0; }#vitalityRoot .task{
+  }
+  #vitalityRoot .hcell:hover{ transform: scale(1.12); }
+  #vitalityRoot .hcell.sel{ outline: 2px solid var(--ink); outline-offset:2px; }
+  #vitalityRoot .heatmap-legend{ display:flex; align-items:center; gap:8px; margin-top:12px; font-size:11px; color:var(--ink-soft); font-family:'IBM Plex Mono', monospace; }
+  #vitalityRoot .legend-swatch{ width:12px; height:12px; border-radius:3px; }
+
+  /* ---------- CHECKLIST ---------- */
+  #vitalityRoot .day-grid{ display:grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-bottom: 22px; }
+  @media (max-width: 780px){ #vitalityRoot .day-grid{ grid-template-columns: 1fr; } }
+  #vitalityRoot .block{ background: var(--surface); border-radius: 18px; padding: 22px; box-shadow: var(--shadow); border: 1px solid var(--line); }
+  #vitalityRoot .block .block-head{ display:flex; align-items:center; gap:10px; margin-bottom: 14px; }
+  #vitalityRoot .block .dot{ width:9px; height:9px; border-radius:50%; }
+  #vitalityRoot .block.morning .dot{ background: var(--gold); }
+  #vitalityRoot .block.midday .dot{ background: var(--garnet); }
+  #vitalityRoot .block.evening .dot{ background: var(--sage); }
+  #vitalityRoot .block .block-head h3{ font-family:'Fraunces', serif; font-weight:600; font-size: 16px; margin:0; }
+
+  #vitalityRoot .task{
     display:flex; align-items:flex-start; gap:10px; padding: 9px 0; border-top: 1px dashed var(--line); cursor:pointer;
-  }#vitalityRoot .task:first-of-type{ border-top:none; }#vitalityRoot .task input{ margin-top: 3px; accent-color: var(--sage); flex-shrink:0; width:16px; height:16px; }#vitalityRoot .task .txt{ font-size: 13.5px; line-height:1.5; }#vitalityRoot .task.done .txt{ color: var(--ink-soft); text-decoration: line-through; text-decoration-color: var(--line); }#vitalityRoot .task.locked{ opacity:0.45; cursor:not-allowed; }#vitalityRoot /* ---------- WATER ---------- */
-  .water-section{
+  }
+  #vitalityRoot .task:first-of-type{ border-top:none; }
+  #vitalityRoot .task input{ margin-top: 3px; accent-color: var(--sage); flex-shrink:0; width:16px; height:16px; }
+  #vitalityRoot .task .txt{ font-size: 13.5px; line-height:1.5; }
+  #vitalityRoot .task.done .txt{ color: var(--ink-soft); text-decoration: line-through; text-decoration-color: var(--line); }
+  #vitalityRoot .task.locked{ opacity:0.45; cursor:not-allowed; }
+
+  /* ---------- WATER ---------- */
+  #vitalityRoot .water-section{
     background: var(--surface); border-radius: 18px; padding: 20px 22px; box-shadow: var(--shadow);
     border: 1px solid var(--line); margin-bottom: 22px;
     display:flex; align-items:center; justify-content:space-between; gap: 16px; flex-wrap:wrap;
-  }#vitalityRoot .water-section h2{ font-family:'Fraunces', serif; font-weight:600; font-size: 16px; margin:0 0 2px; }#vitalityRoot .water-section .sub{ font-size:12.5px; color: var(--ink-soft); }#vitalityRoot .drops{ display:flex; gap:7px; }#vitalityRoot .drop{
+  }
+  #vitalityRoot .water-section h2{ font-family:'Fraunces', serif; font-weight:600; font-size: 16px; margin:0 0 2px; }
+  #vitalityRoot .water-section .sub{ font-size:12.5px; color: var(--ink-soft); }
+  #vitalityRoot .drops{ display:flex; gap:7px; }
+  #vitalityRoot .drop{
     width:26px; height:26px; cursor:pointer; opacity:0.3; transition: opacity 0.2s ease, transform 0.15s ease;
-  }#vitalityRoot .drop.filled{ opacity:1; }#vitalityRoot .drop:hover{ transform: scale(1.15); }#vitalityRoot /* ---------- CHIPS + NOTES ---------- */
-  .chip-section{ background: var(--surface); border-radius: 18px; padding: 24px 24px 20px; box-shadow: var(--shadow); border: 1px solid var(--line); margin-bottom: 22px; }#vitalityRoot .chip-section h2{ font-family:'Fraunces', serif; font-weight:600; font-size: 19px; margin: 0 0 14px; }#vitalityRoot .chip-cols{ display:grid; grid-template-columns: 1fr 1fr; gap: 24px; }@media (max-width:640px){#vitalityRoot .chip-cols{ grid-template-columns:1fr; } }#vitalityRoot .chip-cols h4{ font-family:'IBM Plex Mono', monospace; font-size: 11px; text-transform:uppercase; letter-spacing:0.08em; margin: 0 0 10px; }#vitalityRoot .chip-cols.lean-in h4{ color: var(--sage); }#vitalityRoot .chip-cols .ease-off h4{ color: var(--garnet); }#vitalityRoot .chips{ display:flex; flex-wrap:wrap; gap:8px; }#vitalityRoot .chip{ font-size: 12.5px; padding: 6px 12px; border-radius: 999px; background: var(--sage-soft); color: #35462F; }#vitalityRoot .ease-off-chips .chip{ background: var(--garnet-soft); color: #5E2028; }#vitalityRoot .notes{ background: var(--ink); color: #F4F1E8; border-radius: 18px; padding: 24px; }#vitalityRoot .notes h2{ font-family:'Fraunces', serif; font-weight:600; font-size: 19px; margin: 0 0 12px; color: #F4F1E8; }#vitalityRoot .notes ul{ margin:0; padding-left: 18px; }#vitalityRoot .notes li{ font-size: 13px; line-height:1.7; margin-bottom:8px; color: #D9D6C9; }#vitalityRoot .notes li:last-child{ margin-bottom:0; }#vitalityRoot .notes .flag{ color: var(--gold); font-weight:600; }#vitalityRoot footer{ text-align:center; margin-top: 30px; font-size: 12px; color: var(--ink-soft); font-family:'IBM Plex Mono', monospace; }@media (prefers-reduced-motion: reduce){#vitalityRoot, #vitalityRoot *{ transition: none !important; animation: none !important; } }
+  }
+  #vitalityRoot .drop.filled{ opacity:1; }
+  #vitalityRoot .drop:hover{ transform: scale(1.15); }
+
+  /* ---------- CHIPS + NOTES ---------- */
+  #vitalityRoot .chip-section{ background: var(--surface); border-radius: 18px; padding: 24px 24px 20px; box-shadow: var(--shadow); border: 1px solid var(--line); margin-bottom: 22px; }
+  #vitalityRoot .chip-section h2{ font-family:'Fraunces', serif; font-weight:600; font-size: 19px; margin: 0 0 14px; }
+  #vitalityRoot .chip-cols{ display:grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  @media (max-width:640px){ #vitalityRoot .chip-cols{ grid-template-columns:1fr; } }
+  #vitalityRoot .chip-cols h4{ font-family:'IBM Plex Mono', monospace; font-size: 11px; text-transform:uppercase; letter-spacing:0.08em; margin: 0 0 10px; }
+  #vitalityRoot .chip-cols.lean-in h4{ color: var(--sage); }
+  #vitalityRoot .chip-cols .ease-off h4{ color: var(--garnet); }
+  #vitalityRoot .chips{ display:flex; flex-wrap:wrap; gap:8px; }
+  #vitalityRoot .chip{ font-size: 12.5px; padding: 6px 12px; border-radius: 999px; background: var(--sage-soft); color: #35462F; }
+  #vitalityRoot .ease-off-chips .chip{ background: var(--garnet-soft); color: #5E2028; }
+
+  #vitalityRoot .notes{ background: var(--ink); color: #F4F1E8; border-radius: 18px; padding: 24px; }
+  #vitalityRoot .notes h2{ font-family:'Fraunces', serif; font-weight:600; font-size: 19px; margin: 0 0 12px; color: #F4F1E8; }
+  #vitalityRoot .notes ul{ margin:0; padding-left: 18px; }
+  #vitalityRoot .notes li{ font-size: 13px; line-height:1.7; margin-bottom:8px; color: #D9D6C9; }
+  #vitalityRoot .notes li:last-child{ margin-bottom:0; }
+  #vitalityRoot .notes .flag{ color: var(--gold); font-weight:600; }
+
+  #vitalityRoot footer{ text-align:center; margin-top: 30px; font-size: 12px; color: var(--ink-soft); font-family:'IBM Plex Mono', monospace; }
+
+  @media (prefers-reduced-motion: reduce){ #vitalityRoot, #vitalityRoot *{ transition: none !important; animation: none !important; } }
 
 
-#stratosRoot, #stratosRoot *, #stratosRoot *::before, #stratosRoot *::after{box-sizing:border-box;margin:0;padding:0}#stratosRoot{
+
+#stratosRoot, #stratosRoot *, #stratosRoot *::before, #stratosRoot *::after{box-sizing:border-box;margin:0;padding:0}
+#stratosRoot{
   --bg:#05080c;--panel:#0b1119;--panel2:#111a24;--fg:#dce8ee;--muted:#5f7683;
   --cyan:#00d9ff;--cyan-light:#7eeeff;--cyan-glow:rgba(0,217,255,.13);--cyan-line:rgba(0,217,255,.22);
   --amber:#ffb020;--amber-light:#ffd280;--amber-glow:rgba(255,176,32,.13);
@@ -232,32 +462,364 @@ body{font-family:'Inter',system-ui,sans-serif;}
   --rose:#f0578f;--rose-light:#ff9ec2;--rose-glow:rgba(240,87,143,.13);
   --green:#3ddc84;--red:#fb7185;--radius:4px;--nav-h:64px;
   --safe-top:env(safe-area-inset-top,0px);--safe-bottom:env(safe-area-inset-bottom,0px);
-}#stratosRoot{height:100%;font-size:16px}#stratosRoot{font-family:'DM Sans',system-ui,sans-serif;color:var(--fg);line-height:1.55;min-height:100vh;-webkit-font-smoothing:antialiased;overflow-x:hidden;
+}
+#stratosRoot{height:100%;font-size:16px}
+#stratosRoot{font-family:'DM Sans',system-ui,sans-serif;color:var(--fg);line-height:1.55;min-height:100vh;-webkit-font-smoothing:antialiased;overflow-x:hidden;
   background:
     linear-gradient(rgba(0,217,255,.035) 1px, transparent 1px) 0 0/100% 28px,
     radial-gradient(ellipse 900px 500px at 20% -10%, rgba(0,217,255,.08), transparent 60%),
     radial-gradient(ellipse 800px 600px at 100% 0%, rgba(255,176,32,.06), transparent 55%),
     var(--bg);
   background-attachment:fixed;
-}#stratosRoot .font-display{font-family:'Rajdhani',sans-serif;text-transform:uppercase;letter-spacing:.03em}#stratosRoot .font-mono{font-family:'JetBrains Mono',monospace}#stratosRoot ::-webkit-scrollbar{width:4px}#stratosRoot ::-webkit-scrollbar-thumb{background:var(--cyan-line);border-radius:99px}#stratosRoot #app{max-width:520px;margin:0 auto;padding:max(calc(var(--safe-top) + 1rem),1.3rem) 1rem calc(var(--nav-h) + 2rem)}#stratosRoot /* ── HUD panel: the signature element — corner brackets on every panel ── */
-.hud{position:relative;background:var(--panel);border:1px solid rgba(0,217,255,.14);border-radius:var(--radius);padding:1rem 1.05rem;margin-bottom:.7rem}#stratosRoot .hud::before, #stratosRoot .hud::after{content:'';position:absolute;width:10px;height:10px;pointer-events:none}#stratosRoot .hud::before{top:-1px;left:-1px;border-top:2px solid var(--cyan);border-left:2px solid var(--cyan)}#stratosRoot .hud::after{bottom:-1px;right:-1px;border-bottom:2px solid var(--cyan);border-right:2px solid var(--cyan)}#stratosRoot .hud.amber::before, #stratosRoot .hud.amber::after{border-color:var(--amber)}#stratosRoot .hud.violet::before, #stratosRoot .hud.violet::after{border-color:var(--violet)}#stratosRoot .hud.rose::before, #stratosRoot .hud.rose::after{border-color:var(--rose)}#stratosRoot .hud.active{border-color:rgba(255,176,32,.4);background:linear-gradient(180deg,var(--amber-glow),var(--panel) 65%)}#stratosRoot .hud.violet.live{border-color:rgba(155,123,240,.55);background:linear-gradient(180deg,var(--violet-glow),var(--panel) 65%)}#stratosRoot .session-row-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:.3rem}#stratosRoot .session-name{font-size:.85rem;font-weight:600;color:var(--fg)}#stratosRoot .session-del{cursor:pointer;color:var(--muted);font-size:.75rem;padding:.2rem .4rem}#stratosRoot .session-del:hover{color:var(--rose-light)}#stratosRoot .session-days{font-size:.68rem;color:var(--muted);letter-spacing:.02em;margin-top:.1rem}#stratosRoot .hud.locked{opacity:.5}#stratosRoot /* ── Header / page title ── */
-.page-hdr{margin-bottom:1.2rem}#stratosRoot .eyebrow{display:flex;align-items:center;gap:.45rem;font-family:'JetBrains Mono',monospace;font-size:.65rem;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:.5rem}#stratosRoot .eyebrow::before{content:'';width:6px;height:6px;background:var(--accent,var(--cyan));box-shadow:0 0 8px var(--accent,var(--cyan))}#stratosRoot h1.hero{font-family:'Rajdhani',sans-serif;text-transform:uppercase;font-size:clamp(1.5rem,7vw,1.9rem);font-weight:700;letter-spacing:.01em;color:var(--fg);line-height:1.15}#stratosRoot h1.hero em{font-style:normal;color:var(--cyan-light)}#stratosRoot .sub{color:var(--muted);font-size:.8rem;margin-top:.45rem;line-height:1.55;font-family:'DM Sans',sans-serif;text-transform:none;letter-spacing:0}#stratosRoot /* ── Clock ── */
-.clock-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:1rem}#stratosRoot .clock{font-family:'JetBrains Mono',monospace;font-size:1.9rem;font-weight:700;color:var(--cyan-light);letter-spacing:.02em;text-shadow:0 0 16px rgba(0,217,255,.35)}#stratosRoot .clock-date{font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--muted);text-align:right;text-transform:uppercase;letter-spacing:.08em}#stratosRoot /* ── Greeting ── */
-.greet{font-family:'Rajdhani',sans-serif;font-size:1.5rem;font-weight:700;text-transform:uppercase;letter-spacing:.02em;margin-bottom:1rem}#stratosRoot .greet span{color:var(--cyan-light)}#stratosRoot /* ── Integrity ring ── */
-.integrity-wrap{display:flex;align-items:center;gap:1.1rem}#stratosRoot .integrity-ring{position:relative;width:96px;height:96px;flex:none}#stratosRoot .integrity-ring svg{transform:rotate(-90deg)}#stratosRoot .integrity-num{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}#stratosRoot .integrity-num b{font-family:'JetBrains Mono',monospace;font-size:1.35rem;color:var(--cyan-light)}#stratosRoot .integrity-num span{font-size:.55rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}#stratosRoot .integrity-label{font-family:'JetBrains Mono',monospace;font-size:.62rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.35rem}#stratosRoot .twin-mini{display:flex;gap:.6rem;margin-top:.5rem}#stratosRoot .twin-mini-item{flex:1}#stratosRoot .twin-mini-lbl{font-size:.6rem;color:var(--muted);font-family:'JetBrains Mono',monospace;text-transform:uppercase;margin-bottom:.25rem;display:flex;justify-content:space-between}#stratosRoot .twin-mini-bar{height:4px;background:rgba(255,255,255,.06);border-radius:99px;overflow:hidden}#stratosRoot .twin-mini-fill{height:100%;border-radius:99px}#stratosRoot /* ── Quick links ── */
-.link-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.55rem}#stratosRoot .link-chip{position:relative;background:var(--panel2);border:1px solid rgba(0,217,255,.12);border-radius:var(--radius);padding:.7rem .5rem;text-align:center;text-decoration:none;color:var(--fg);font-size:.68rem;font-weight:600;font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.03em;cursor:pointer;transition:.15s}#stratosRoot .link-chip:hover{border-color:var(--cyan);color:var(--cyan-light)}#stratosRoot .link-chip.add{color:var(--muted);border-style:dashed}#stratosRoot /* ── Ritual timer ── */
-.ritual-time{font-family:'JetBrains Mono',monospace;font-size:2.6rem;font-weight:700;text-align:center;color:var(--amber-light);letter-spacing:.03em;text-shadow:0 0 18px rgba(255,176,32,.3);margin:.3rem 0 .8rem}#stratosRoot .ritual-btns{display:flex;gap:.5rem}#stratosRoot .btn{flex:1;font-family:'JetBrains Mono',monospace;font-size:.72rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;padding:.6rem;border-radius:var(--radius);border:1px solid rgba(0,217,255,.35);color:var(--cyan-light);background:transparent;cursor:pointer;text-align:center}#stratosRoot .btn.primary{background:var(--cyan);color:#00131a;border-color:var(--cyan)}#stratosRoot .btn.amber{border-color:rgba(255,176,32,.4);color:var(--amber-light)}#stratosRoot .btn.amber.primary{background:var(--amber);color:#1a0f00;border-color:var(--amber)}#stratosRoot .btn.full{width:100%;margin-top:.5rem}#stratosRoot /* ── Intel list ── */
-.intel-item{display:flex;gap:.55rem;padding:.5rem 0;border-bottom:1px solid rgba(255,255,255,.05);font-size:.78rem}#stratosRoot .intel-item:last-child{border-bottom:none}#stratosRoot .intel-dot{flex:none;width:5px;height:5px;border-radius:50%;background:var(--cyan);margin-top:.5rem;box-shadow:0 0 6px var(--cyan)}#stratosRoot /* ── Kiren session ── */
-.session-status{font-family:'JetBrains Mono',monospace;font-size:1.1rem;color:var(--violet-light);margin:.3rem 0}#stratosRoot .field{margin-bottom:.65rem}#stratosRoot .field label{font-size:.65rem;color:var(--muted);display:block;margin-bottom:.3rem;font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.05em}#stratosRoot input[type=time], #stratosRoot input[type=number], #stratosRoot input[type=text], #stratosRoot input[type=url], #stratosRoot select{background:var(--panel2);border:1px solid rgba(0,217,255,.16);color:var(--fg);border-radius:var(--radius);padding:.5rem .7rem;font-family:'JetBrains Mono',monospace;font-size:.82rem;width:100%}#stratosRoot /* ── Mission log ── */
-.log-line{display:flex;gap:.6rem;font-size:.78rem}#stratosRoot .log-tag{font-family:'JetBrains Mono',monospace;font-size:.6rem;color:var(--cyan-light);background:var(--cyan-glow);padding:.15rem .4rem;border-radius:3px;flex:none;height:fit-content;text-transform:uppercase}#stratosRoot .log-ts{font-family:'JetBrains Mono',monospace;font-size:.6rem;color:var(--muted);margin-top:.3rem}#stratosRoot /* ── Section header ── */
-.sec-hdr{margin:1.4rem 0 .7rem;display:flex;align-items:baseline;gap:.5rem}#stratosRoot .sec-tag{font-family:'JetBrains Mono',monospace;font-size:.62rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted)}#stratosRoot .sec-title{font-family:'Rajdhani',sans-serif;text-transform:uppercase;font-size:1.05rem;font-weight:700;letter-spacing:.02em}#stratosRoot /* ── Goal accordions ── */
-.accordion{background:var(--panel);border:1px solid rgba(0,217,255,.14);border-radius:var(--radius);margin-bottom:.6rem;overflow:hidden}#stratosRoot .accordion-hdr{display:flex;justify-content:space-between;align-items:center;padding:.85rem 1rem;cursor:pointer}#stratosRoot .accordion-hdr-l{display:flex;align-items:center;gap:.6rem}#stratosRoot .accordion-tier{font-family:'JetBrains Mono',monospace;font-size:.6rem;color:var(--muted);border:1px solid rgba(255,255,255,.12);border-radius:3px;padding:.1rem .35rem}#stratosRoot .accordion-name{font-family:'Rajdhani',sans-serif;text-transform:uppercase;font-weight:700;font-size:.95rem;letter-spacing:.02em}#stratosRoot .accordion-count{font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--cyan-light)}#stratosRoot .accordion-chev{color:var(--muted);transition:transform .2s;font-size:.7rem}#stratosRoot .accordion-body{padding:0 1rem 1rem}#stratosRoot .goal-item{display:flex;align-items:flex-start;gap:.6rem;padding:.45rem 0;border-bottom:1px solid rgba(255,255,255,.04)}#stratosRoot .goal-item:last-child{border-bottom:none}#stratosRoot .goal-cb{flex:none;width:19px;height:19px;border:1.5px solid rgba(0,217,255,.4);border-radius:3px;cursor:pointer;display:flex;align-items:center;justify-content:center}#stratosRoot .goal-cb.done{background:var(--cyan);border-color:var(--cyan)}#stratosRoot .goal-cb svg{width:11px;height:11px;opacity:0}#stratosRoot .goal-cb.done svg{opacity:1}#stratosRoot .goal-text{flex:1;font-size:.82rem}#stratosRoot .goal-text.done{color:var(--muted);text-decoration:line-through}#stratosRoot .goal-del{flex:none;color:var(--muted);font-size:.9rem;cursor:pointer;padding:0 .2rem}#stratosRoot .add-goal-row{display:flex;gap:.4rem;margin-top:.6rem}#stratosRoot .add-goal-row input{flex:1}#stratosRoot /* ── Channel workflow (nested in Bi-Weekly) ── */
-.channel-block{background:var(--panel2);border-radius:var(--radius);padding:.75rem;margin-top:.5rem;border:1px solid rgba(255,255,255,.05)}#stratosRoot .channel-block-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem}#stratosRoot .channel-block-name{font-weight:600;font-size:.8rem;font-family:'Rajdhani',sans-serif;text-transform:uppercase}#stratosRoot .tag{font-family:'JetBrains Mono',monospace;font-size:.55rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:.15rem .4rem;border-radius:3px}#stratosRoot .tag.unlocked{background:var(--amber);color:#1a0f00}#stratosRoot .tag.locked{background:rgba(255,255,255,.08);color:var(--muted)}#stratosRoot .wf-steps{display:flex;flex-wrap:wrap;gap:.3rem;margin-top:.4rem}#stratosRoot .wf-step{font-family:'JetBrains Mono',monospace;font-size:.62rem;padding:.25rem .5rem;border-radius:3px;background:var(--panel);color:var(--muted);border:1px solid rgba(255,255,255,.06);cursor:pointer}#stratosRoot .wf-step.done{background:var(--amber-glow);color:var(--amber-light);border-color:rgba(255,176,32,.3)}#stratosRoot /* ── Gate box (phase/stage) ── */
-.gate-box{background:rgba(0,0,0,.25);border-radius:3px;padding:.6rem .7rem;margin-top:.5rem}#stratosRoot .gate-label{font-family:'JetBrains Mono',monospace;font-size:.6rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:.3rem}#stratosRoot .gate-check{display:flex;align-items:center;gap:.5rem;font-size:.74rem;padding:.22rem 0;cursor:pointer}#stratosRoot .gate-check .cb{width:15px;height:15px;border-radius:3px;border:1.5px solid rgba(255,255,255,.25);flex:none}#stratosRoot .gate-check .cb.done{background:var(--green);border-color:var(--green)}#stratosRoot /* ── Sleep / Vitals bar chart ── */
-.bar-chart{display:flex;align-items:flex-end;gap:.28rem;height:110px;margin:.8rem 0 .3rem;padding:0 .1rem}#stratosRoot .bar-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:.3rem;height:100%;justify-content:flex-end}#stratosRoot .bar{width:100%;border-radius:3px 3px 1px 1px;background:rgba(255,255,255,.08);transition:height .3s ease}#stratosRoot .bar.good{background:var(--cyan)}#stratosRoot .bar.low{background:rgba(240,87,143,.6)}#stratosRoot .bar-day{font-size:.55rem;color:var(--muted);font-family:'JetBrains Mono',monospace}#stratosRoot .streak-row{display:flex;gap:.6rem;margin-top:.9rem}#stratosRoot .streak-box{flex:1;background:var(--panel2);border-radius:var(--radius);padding:.7rem;text-align:center}#stratosRoot .streak-val{font-family:'JetBrains Mono',monospace;font-size:1.15rem;color:var(--cyan-light)}#stratosRoot .streak-lbl{font-size:.58rem;color:var(--muted);margin-top:.15rem;text-transform:uppercase;letter-spacing:.06em;font-family:'JetBrains Mono',monospace}#stratosRoot .note{background:var(--cyan-glow);border:1px solid var(--cyan-line);border-radius:var(--radius);padding:.7rem .8rem;font-size:.75rem;color:var(--cyan-light);line-height:1.5;margin:.7rem 0;font-family:'DM Sans',sans-serif}#stratosRoot .note.amber{background:var(--amber-glow);border-color:rgba(255,176,32,.28);color:var(--amber-light)}#stratosRoot .note.rose{background:var(--rose-glow);border-color:rgba(240,87,143,.28);color:var(--rose-light)}#stratosRoot .note b{color:var(--fg)}#stratosRoot #toast{position:fixed;bottom:calc(var(--nav-h) + 16px + var(--safe-bottom));left:50%;transform:translateX(-50%) translateY(120px);z-index:9999;background:rgba(11,17,25,.98);border:1px solid var(--cyan-line);border-radius:3px;padding:.55rem 1.2rem;font-size:.72rem;font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.05em;color:var(--cyan-light);transition:transform .35s cubic-bezier(.34,1.56,.64,1);pointer-events:none;white-space:nowrap;max-width:90vw}#stratosRoot #toast.show{transform:translateX(-50%) translateY(0)}#stratosRoot nav{position:fixed;bottom:0;left:0;right:0;z-index:100;background:rgba(5,8,12,.97);backdrop-filter:blur(20px);border-top:1px solid var(--cyan-line);padding-bottom:var(--safe-bottom)}#stratosRoot .nav-scroll{display:flex;max-width:520px;margin:0 auto}#stratosRoot .nav-btn{flex:1;background:none;border:none;color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:.6rem;font-weight:600;text-transform:uppercase;letter-spacing:.04em;padding:.6rem .3rem calc(.55rem + var(--safe-bottom));display:flex;flex-direction:column;align-items:center;gap:.25rem;cursor:pointer;height:var(--nav-h)}#stratosRoot .nav-btn svg{width:19px;height:19px;opacity:.5}#stratosRoot .nav-emoji{font-size:1.05rem;opacity:.6;filter:grayscale(0.3)}#stratosRoot .nav-btn.active{color:var(--cyan-light)}#stratosRoot .nav-btn.active svg{opacity:1}#stratosRoot .nav-btn.active .nav-emoji{opacity:1;filter:none}#stratosRoot .nav-btn[data-tab="goals"].active{color:var(--amber-light)}#stratosRoot .nav-btn[data-tab="vitals"].active{color:var(--rose-light)}
+}
+#stratosRoot .font-display{font-family:'Rajdhani',sans-serif;text-transform:uppercase;letter-spacing:.03em}
+#stratosRoot .font-mono{font-family:'JetBrains Mono',monospace}
+#stratosRoot ::-webkit-scrollbar{width:4px}#stratosRoot ::-webkit-scrollbar-thumb{background:var(--cyan-line);border-radius:99px}
+
+#stratosRoot #stratosApp{max-width:520px;margin:0 auto;padding:max(calc(var(--safe-top) + 1rem),1.3rem) 1rem calc(var(--nav-h) + 2rem)}
+
+/* ── HUD panel: the signature element — corner brackets on every panel ── */
+#stratosRoot .hud{position:relative;background:var(--panel);border:1px solid rgba(0,217,255,.14);border-radius:var(--radius);padding:1rem 1.05rem;margin-bottom:.7rem}
+#stratosRoot .hud::before, #stratosRoot .hud::after{content:'';position:absolute;width:10px;height:10px;pointer-events:none}
+#stratosRoot .hud::before{top:-1px;left:-1px;border-top:2px solid var(--cyan);border-left:2px solid var(--cyan)}
+#stratosRoot .hud::after{bottom:-1px;right:-1px;border-bottom:2px solid var(--cyan);border-right:2px solid var(--cyan)}
+#stratosRoot .hud.amber::before, #stratosRoot .hud.amber::after{border-color:var(--amber)}
+#stratosRoot .hud.violet::before, #stratosRoot .hud.violet::after{border-color:var(--violet)}
+#stratosRoot .hud.rose::before, #stratosRoot .hud.rose::after{border-color:var(--rose)}
+#stratosRoot .hud.active{border-color:rgba(255,176,32,.4);background:linear-gradient(180deg,var(--amber-glow),var(--panel) 65%)}
+#stratosRoot .hud.violet.live{border-color:rgba(155,123,240,.55);background:linear-gradient(180deg,var(--violet-glow),var(--panel) 65%)}
+#stratosRoot .session-row-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:.3rem}
+#stratosRoot .session-name{font-size:.85rem;font-weight:600;color:var(--fg)}
+#stratosRoot .session-del{cursor:pointer;color:var(--muted);font-size:.75rem;padding:.2rem .4rem}
+#stratosRoot .session-del:hover{color:var(--rose-light)}
+#stratosRoot .session-days{font-size:.68rem;color:var(--muted);letter-spacing:.02em;margin-top:.1rem}
+#stratosRoot .hud.locked{opacity:.5}
+
+/* ── Header / page title ── */
+#stratosRoot .page-hdr{margin-bottom:1.2rem}
+#stratosRoot .eyebrow{display:flex;align-items:center;gap:.45rem;font-family:'JetBrains Mono',monospace;font-size:.65rem;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:.5rem}
+#stratosRoot .eyebrow::before{content:'';width:6px;height:6px;background:var(--accent,var(--cyan));box-shadow:0 0 8px var(--accent,var(--cyan))}
+#stratosRoot h1.hero{font-family:'Rajdhani',sans-serif;text-transform:uppercase;font-size:clamp(1.5rem,7vw,1.9rem);font-weight:700;letter-spacing:.01em;color:var(--fg);line-height:1.15}
+#stratosRoot h1.hero em{font-style:normal;color:var(--cyan-light)}
+#stratosRoot .sub{color:var(--muted);font-size:.8rem;margin-top:.45rem;line-height:1.55;font-family:'DM Sans',sans-serif;text-transform:none;letter-spacing:0}
+
+/* ── Clock ── */
+#stratosRoot .clock-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:1rem}
+
+/* ---------- compact mode for shorter / wide-aspect mobile screens ---------- */
+@media (min-aspect-ratio: 9/16), (max-height: 480px){
+  #stratosRoot #stratosApp{padding-top:max(calc(var(--safe-top) + 0.6rem),0.8rem)}
+  #stratosRoot .clock-row{margin-bottom:0.6rem}
+  #stratosRoot .clock{font-size:1.5rem}
+  #stratosRoot h1.hero{font-size:clamp(1.2rem,6vw,1.5rem)}
+  #stratosRoot .hud{padding:0.85rem}
+  #stratosRoot .sec-hdr{margin:1rem 0 0.5rem}
+}
+
+#stratosRoot .clock{font-family:'JetBrains Mono',monospace;font-size:1.9rem;font-weight:700;color:var(--cyan-light);letter-spacing:.02em;text-shadow:0 0 16px rgba(0,217,255,.35)}
+#stratosRoot .clock-date{font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--muted);text-align:right;text-transform:uppercase;letter-spacing:.08em}
+
+/* ── Greeting ── */
+#stratosRoot .greet{font-family:'Rajdhani',sans-serif;font-size:1.5rem;font-weight:700;text-transform:uppercase;letter-spacing:.02em;margin-bottom:1rem}
+
+/* ---------- header row: avatar + shine name + whatsapp share ---------- */
+#stratosRoot .greet-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;gap:.7rem}
+#stratosRoot .greet-row .greet{margin-bottom:0}
+#stratosRoot .greet-name{
+  background:linear-gradient(90deg,var(--fg),var(--cyan-light),var(--fg));
+  background-size:200% auto;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+  animation:nameshine 4s linear infinite;
+}
+@keyframes nameshine{to{background-position:200% center}}
+#stratosRoot .greet-actions{display:flex;align-items:center;gap:.6rem;flex-shrink:0}
+#stratosRoot .wa-share-btn{
+  width:36px;height:36px;border-radius:50%;border:1px solid var(--cyan-line);background:var(--panel);
+  color:#25d366;font-size:1rem;display:flex;align-items:center;justify-content:center;cursor:pointer;
+}
+#stratosRoot .avatar-ring{
+  width:38px;height:38px;border-radius:50%;padding:2px;flex-shrink:0;
+  background:conic-gradient(var(--cyan),var(--violet),var(--amber),var(--rose),var(--cyan));
+  animation:avatarpulse 3s ease-in-out infinite alternate;
+}
+@keyframes avatarpulse{from{box-shadow:0 0 6px rgba(0,217,255,.25)}to{box-shadow:0 0 16px rgba(155,123,240,.45)}}
+#stratosRoot .avatar-inner{
+  width:100%;height:100%;border-radius:50%;background:var(--bg);border:2px solid var(--bg);
+  display:flex;align-items:center;justify-content:center;font-family:'Rajdhani',sans-serif;font-weight:700;
+  font-size:.95rem;color:var(--cyan-light);
+}
+
+/* ---------- insight ticker (quotes + rotating insights) ---------- */
+#stratosRoot .ticker-card{position:relative;overflow:hidden}
+#stratosRoot .ticker-quote{font-family:'DM Sans',sans-serif;font-style:italic;font-size:.88rem;line-height:1.5;color:var(--fg);min-height:2.7em}
+#stratosRoot .ticker-attr{font-size:.68rem;color:var(--muted);margin-top:.4rem;font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.04em}
+#stratosRoot .ticker-bar{height:2px;background:rgba(255,255,255,.06);margin-top:.8rem;border-radius:2px;overflow:hidden}
+#stratosRoot .ticker-bar-fill{height:100%;background:linear-gradient(90deg,var(--violet),var(--cyan));width:0%}
+
+/* ---------- focus mode ---------- */
+#stratosRoot .focus-toggle-btn{
+  position:fixed;left:14px;bottom:calc(var(--nav-h) + 16px + var(--safe-bottom));z-index:150;
+  background:var(--panel);border:1px solid var(--cyan-line);color:var(--fg);
+  font-family:'JetBrains Mono',monospace;font-size:.62rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em;
+  padding:.6rem 1rem;border-radius:100px;cursor:pointer;display:flex;align-items:center;gap:.4rem;
+}
+/* focus-active state rules live in the shell stylesheet (unscoped) since they need a
+   same-element compound selector (#stratosRoot.focus-active) that the per-app CSS
+   auto-scoping cannot produce without double-prefixing. See shell_style.css. */
+
+/* ---------- AI chat widget (Nova) ---------- */
+#stratosRoot .ai-chat{
+  position:fixed;right:14px;bottom:calc(var(--nav-h) + 16px + var(--safe-bottom));z-index:200;
+  width:260px;background:var(--panel2);border:1px solid var(--violet-glow);border-radius:16px;
+  box-shadow:0 14px 34px rgba(0,0,0,.45);transition:height .25s ease;overflow:hidden;
+}
+#stratosRoot .ai-chat.minimized{height:44px}
+#stratosRoot .ai-chat:not(.minimized){height:340px;display:flex;flex-direction:column}
+#stratosRoot .ai-head{padding:.7rem .9rem;display:flex;justify-content:space-between;align-items:center;cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:.7rem;font-weight:600;color:var(--violet-light);text-transform:uppercase;letter-spacing:.04em;border-bottom:1px solid rgba(255,255,255,.05)}
+#stratosRoot .ai-body{flex:1;display:flex;flex-direction:column;min-height:0}
+#stratosRoot .ai-msgs{flex:1;overflow-y:auto;padding:.7rem .8rem;font-size:.76rem;line-height:1.5;display:flex;flex-direction:column;gap:.5rem}
+#stratosRoot .ai-msg{background:rgba(255,255,255,.04);border-radius:10px;padding:.5rem .65rem;max-width:88%}
+#stratosRoot .ai-msg.user{align-self:flex-end;background:var(--violet-glow);color:var(--violet-light)}
+#stratosRoot .ai-input-row{display:flex;border-top:1px solid rgba(255,255,255,.05);padding:.5rem}
+#stratosRoot .ai-input-row input{flex:1;background:transparent;border:none;color:var(--fg);font-size:.78rem;outline:none;font-family:'DM Sans',sans-serif;padding:.3rem}
+#stratosRoot .ai-input-row button{background:none;border:none;color:var(--violet-light);cursor:pointer;padding:0 .4rem;font-size:.9rem}
+
+/* ---------- neural mesh background canvas ---------- */
+#stratosRoot #stratosNeuralBg{position:fixed;top:0;left:0;width:100%;height:100%;opacity:.22;pointer-events:none;z-index:0}
+#stratosRoot #stratosApp{position:relative;z-index:1}
+#stratosRoot .greet span{color:var(--cyan-light)}
+
+/* ── Integrity ring ── */
+#stratosRoot .integrity-wrap{display:flex;align-items:center;gap:1.1rem}
+#stratosRoot .integrity-ring{position:relative;width:96px;height:96px;flex:none}
+#stratosRoot .integrity-ring svg{transform:rotate(-90deg)}
+#stratosRoot .integrity-num{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+#stratosRoot .integrity-num b{font-family:'JetBrains Mono',monospace;font-size:1.35rem;color:var(--cyan-light)}
+#stratosRoot .integrity-num span{font-size:.55rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+#stratosRoot .integrity-label{font-family:'JetBrains Mono',monospace;font-size:.62rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.35rem}
+#stratosRoot .twin-mini{display:flex;gap:.6rem;margin-top:.5rem}
+#stratosRoot .twin-mini-item{flex:1}
+#stratosRoot .twin-mini-lbl{font-size:.6rem;color:var(--muted);font-family:'JetBrains Mono',monospace;text-transform:uppercase;margin-bottom:.25rem;display:flex;justify-content:space-between}
+#stratosRoot .twin-mini-bar{height:4px;background:rgba(255,255,255,.06);border-radius:99px;overflow:hidden}
+#stratosRoot .twin-mini-fill{height:100%;border-radius:99px}
+
+/* ── Quick links ── */
+#stratosRoot .link-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.55rem}
+#stratosRoot .link-chip{position:relative;background:var(--panel2);border:1px solid rgba(0,217,255,.12);border-radius:var(--radius);padding:.7rem .5rem;text-align:center;text-decoration:none;color:var(--fg);font-size:.68rem;font-weight:600;font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.03em;cursor:pointer;transition:.15s}
+#stratosRoot .link-chip:hover{border-color:var(--cyan);color:var(--cyan-light)}
+#stratosRoot .link-chip.add{color:var(--muted);border-style:dashed}
+
+/* ── Ritual timer ── */
+#stratosRoot .ritual-time{font-family:'JetBrains Mono',monospace;font-size:2.6rem;font-weight:700;text-align:center;color:var(--amber-light);letter-spacing:.03em;text-shadow:0 0 18px rgba(255,176,32,.3);margin:.3rem 0 .8rem}
+#stratosRoot .ritual-btns{display:flex;gap:.5rem}
+#stratosRoot .btn{flex:1;font-family:'JetBrains Mono',monospace;font-size:.72rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;padding:.6rem;border-radius:var(--radius);border:1px solid rgba(0,217,255,.35);color:var(--cyan-light);background:transparent;cursor:pointer;text-align:center}
+#stratosRoot .btn.primary{background:var(--cyan);color:#00131a;border-color:var(--cyan)}
+#stratosRoot .btn.amber{border-color:rgba(255,176,32,.4);color:var(--amber-light)}
+#stratosRoot .btn.amber.primary{background:var(--amber);color:#1a0f00;border-color:var(--amber)}
+#stratosRoot .btn.full{width:100%;margin-top:.5rem}
+
+/* ── Intel list ── */
+#stratosRoot .intel-item{display:flex;gap:.55rem;padding:.5rem 0;border-bottom:1px solid rgba(255,255,255,.05);font-size:.78rem}
+#stratosRoot .intel-item:last-child{border-bottom:none}
+#stratosRoot .intel-dot{flex:none;width:5px;height:5px;border-radius:50%;background:var(--cyan);margin-top:.5rem;box-shadow:0 0 6px var(--cyan)}
+
+/* ── Kiren session ── */
+#stratosRoot .session-status{font-family:'JetBrains Mono',monospace;font-size:1.1rem;color:var(--violet-light);margin:.3rem 0}
+#stratosRoot .field{margin-bottom:.65rem}
+#stratosRoot .field label{font-size:.65rem;color:var(--muted);display:block;margin-bottom:.3rem;font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.05em}
+#stratosRoot input[type=time], #stratosRoot input[type=number], #stratosRoot input[type=text], #stratosRoot input[type=url], #stratosRoot select{background:var(--panel2);border:1px solid rgba(0,217,255,.16);color:var(--fg);border-radius:var(--radius);padding:.5rem .7rem;font-family:'JetBrains Mono',monospace;font-size:.82rem;width:100%}
+
+/* ── Mission log ── */
+#stratosRoot .log-line{display:flex;gap:.6rem;font-size:.78rem}
+#stratosRoot .log-tag{font-family:'JetBrains Mono',monospace;font-size:.6rem;color:var(--cyan-light);background:var(--cyan-glow);padding:.15rem .4rem;border-radius:3px;flex:none;height:fit-content;text-transform:uppercase}
+#stratosRoot .log-ts{font-family:'JetBrains Mono',monospace;font-size:.6rem;color:var(--muted);margin-top:.3rem}
+
+/* ── Section header ── */
+#stratosRoot .sec-hdr{margin:1.4rem 0 .7rem;display:flex;align-items:baseline;gap:.5rem}
+#stratosRoot .sec-tag{font-family:'JetBrains Mono',monospace;font-size:.62rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted)}
+#stratosRoot .sec-title{font-family:'Rajdhani',sans-serif;text-transform:uppercase;font-size:1.05rem;font-weight:700;letter-spacing:.02em}
+
+/* ── Goal accordions ── */
+#stratosRoot .accordion{background:var(--panel);border:1px solid rgba(0,217,255,.14);border-radius:var(--radius);margin-bottom:.6rem;overflow:hidden}
+#stratosRoot .accordion-hdr{display:flex;justify-content:space-between;align-items:center;padding:.85rem 1rem;cursor:pointer}
+#stratosRoot .accordion-hdr-l{display:flex;align-items:center;gap:.6rem}
+#stratosRoot .accordion-tier{font-family:'JetBrains Mono',monospace;font-size:.6rem;color:var(--muted);border:1px solid rgba(255,255,255,.12);border-radius:3px;padding:.1rem .35rem}
+#stratosRoot .accordion-name{font-family:'Rajdhani',sans-serif;text-transform:uppercase;font-weight:700;font-size:.95rem;letter-spacing:.02em}
+#stratosRoot .accordion-count{font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--cyan-light)}
+#stratosRoot .accordion-chev{color:var(--muted);transition:transform .2s;font-size:.7rem}
+#stratosRoot .accordion-body{padding:0 1rem 1rem}
+#stratosRoot .goal-item{display:flex;align-items:flex-start;gap:.6rem;padding:.45rem 0;border-bottom:1px solid rgba(255,255,255,.04)}
+#stratosRoot .goal-item:last-child{border-bottom:none}
+#stratosRoot .goal-cb{flex:none;width:19px;height:19px;border:1.5px solid rgba(0,217,255,.4);border-radius:3px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+#stratosRoot .goal-cb.done{background:var(--cyan);border-color:var(--cyan)}
+#stratosRoot .goal-cb svg{width:11px;height:11px;opacity:0}
+#stratosRoot .goal-cb.done svg{opacity:1}
+#stratosRoot .goal-text{flex:1;font-size:.82rem}
+#stratosRoot .goal-text.done{color:var(--muted);text-decoration:line-through}
+#stratosRoot .goal-del{flex:none;color:var(--muted);font-size:.9rem;cursor:pointer;padding:0 .2rem}
+#stratosRoot .add-goal-row{display:flex;gap:.4rem;margin-top:.6rem}
+#stratosRoot .add-goal-row input{flex:1}
+
+/* ── Channel workflow (nested in Bi-Weekly) ── */
+#stratosRoot .channel-block{background:var(--panel2);border-radius:var(--radius);padding:.75rem;margin-top:.5rem;border:1px solid rgba(255,255,255,.05)}
+#stratosRoot .channel-block-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem}
+#stratosRoot .channel-block-name{font-weight:600;font-size:.8rem;font-family:'Rajdhani',sans-serif;text-transform:uppercase}
+#stratosRoot .tag{font-family:'JetBrains Mono',monospace;font-size:.55rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:.15rem .4rem;border-radius:3px}
+#stratosRoot .tag.unlocked{background:var(--amber);color:#1a0f00}
+#stratosRoot .tag.locked{background:rgba(255,255,255,.08);color:var(--muted)}
+#stratosRoot .wf-steps{display:flex;flex-wrap:wrap;gap:.3rem;margin-top:.4rem}
+#stratosRoot .wf-step{font-family:'JetBrains Mono',monospace;font-size:.62rem;padding:.25rem .5rem;border-radius:3px;background:var(--panel);color:var(--muted);border:1px solid rgba(255,255,255,.06);cursor:pointer}
+#stratosRoot .wf-step.done{background:var(--amber-glow);color:var(--amber-light);border-color:rgba(255,176,32,.3)}
+
+/* ── Gate box (phase/stage) ── */
+#stratosRoot .gate-box{background:rgba(0,0,0,.25);border-radius:3px;padding:.6rem .7rem;margin-top:.5rem}
+#stratosRoot .gate-label{font-family:'JetBrains Mono',monospace;font-size:.6rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:.3rem}
+#stratosRoot .gate-check{display:flex;align-items:center;gap:.5rem;font-size:.74rem;padding:.22rem 0;cursor:pointer}
+#stratosRoot .gate-check .cb{width:15px;height:15px;border-radius:3px;border:1.5px solid rgba(255,255,255,.25);flex:none}
+#stratosRoot .gate-check .cb.done{background:var(--green);border-color:var(--green)}
+
+/* ── Sleep / Vitals bar chart ── */
+#stratosRoot .bar-chart{display:flex;align-items:flex-end;gap:.28rem;height:110px;margin:.8rem 0 .3rem;padding:0 .1rem}
+#stratosRoot .bar-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:.3rem;height:100%;justify-content:flex-end}
+#stratosRoot .bar{width:100%;border-radius:3px 3px 1px 1px;background:rgba(255,255,255,.08);transition:height .3s ease}
+#stratosRoot .bar.good{background:var(--cyan)}
+#stratosRoot .bar.low{background:rgba(240,87,143,.6)}
+#stratosRoot .bar-day{font-size:.55rem;color:var(--muted);font-family:'JetBrains Mono',monospace}
+#stratosRoot .streak-row{display:flex;gap:.6rem;margin-top:.9rem}
+#stratosRoot .streak-box{flex:1;background:var(--panel2);border-radius:var(--radius);padding:.7rem;text-align:center}
+#stratosRoot .streak-val{font-family:'JetBrains Mono',monospace;font-size:1.15rem;color:var(--cyan-light)}
+#stratosRoot .streak-lbl{font-size:.58rem;color:var(--muted);margin-top:.15rem;text-transform:uppercase;letter-spacing:.06em;font-family:'JetBrains Mono',monospace}
+
+#stratosRoot .note{background:var(--cyan-glow);border:1px solid var(--cyan-line);border-radius:var(--radius);padding:.7rem .8rem;font-size:.75rem;color:var(--cyan-light);line-height:1.5;margin:.7rem 0;font-family:'DM Sans',sans-serif}
+#stratosRoot .note.amber{background:var(--amber-glow);border-color:rgba(255,176,32,.28);color:var(--amber-light)}
+#stratosRoot .note.rose{background:var(--rose-glow);border-color:rgba(240,87,143,.28);color:var(--rose-light)}
+#stratosRoot .note b{color:var(--fg)}
+
+#stratosRoot #toast{position:fixed;bottom:calc(var(--nav-h) + 16px + var(--safe-bottom));left:50%;transform:translateX(-50%) translateY(120px);z-index:9999;background:rgba(11,17,25,.98);border:1px solid var(--cyan-line);border-radius:3px;padding:.55rem 1.2rem;font-size:.72rem;font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.05em;color:var(--cyan-light);transition:transform .35s cubic-bezier(.34,1.56,.64,1);pointer-events:none;white-space:nowrap;max-width:90vw}
+#stratosRoot #toast.show{transform:translateX(-50%) translateY(0)}
+
+#stratosRoot nav{position:fixed;bottom:0;left:0;right:0;z-index:100;background:rgba(5,8,12,.97);backdrop-filter:blur(20px);border-top:1px solid var(--cyan-line);padding-bottom:var(--safe-bottom)}
+#stratosRoot .nav-scroll{display:flex;max-width:520px;margin:0 auto}
+#stratosRoot .nav-btn{flex:1;background:none;border:none;color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:.6rem;font-weight:600;text-transform:uppercase;letter-spacing:.04em;padding:.6rem .3rem calc(.55rem + var(--safe-bottom));display:flex;flex-direction:column;align-items:center;gap:.25rem;cursor:pointer;height:var(--nav-h)}
+#stratosRoot .nav-btn svg{width:19px;height:19px;opacity:.5}
+#stratosRoot .nav-emoji{font-size:1.05rem;opacity:.6;filter:grayscale(0.3)}
+#stratosRoot .nav-btn.active{color:var(--cyan-light)}
+#stratosRoot .nav-btn.active svg{opacity:1}
+#stratosRoot .nav-btn.active .nav-emoji{opacity:1;filter:none}
+#stratosRoot .nav-btn[data-tab="goals"].active{color:var(--amber-light)}
+#stratosRoot .nav-btn[data-tab="vitals"].active{color:var(--rose-light)}
 
 
-#pitstopRoot{
+
+#officeHoursRoot{
+  --oh-bg:#F3ECDD;
+  --oh-surface:#FFFFFF;
+  --oh-surface-soft:#FBF7EE;
+  --oh-ink:#2B211A;
+  --oh-ink-soft:#6B5D4F;
+  --oh-forest:#2F5D50;
+  --oh-forest-soft:#E1EAE4;
+  --oh-maroon:#7A3244;
+  --oh-maroon-soft:#F1E2E4;
+  --oh-brass:#A9762F;
+  --oh-brass-soft:#F3E7CF;
+  --oh-navy:#2E4A66;
+  --oh-plum:#5B3B66;
+  --oh-clay:#9C5231;
+  --oh-line:rgba(43,33,26,0.13);
+  --oh-shadow:0 10px 28px rgba(43,33,26,0.10);
+}
+#officeHoursRoot, #officeHoursRoot *{box-sizing:border-box;}
+#officeHoursRoot{margin:0;padding:0;}
+#officeHoursRoot{
+  background:
+    radial-gradient(1000px 500px at 90% -10%, rgba(169,118,47,0.10), transparent 60%),
+    radial-gradient(800px 500px at -10% 25%, rgba(47,93,80,0.08), transparent 55%),
+    var(--oh-bg);
+  color:var(--oh-ink);
+  font-family:'Inter',sans-serif;
+  -webkit-font-smoothing:antialiased;
+  padding:32px 20px 80px;
+}
+#officeHoursRoot .wrap{max-width:640px;margin:0 auto;}
+
+#officeHoursRoot header{text-align:center;margin-bottom:30px;}
+#officeHoursRoot .eyebrow{
+  font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:0.13em;text-transform:uppercase;
+  color:var(--oh-brass);margin-bottom:10px;
+}
+#officeHoursRoot h1{
+  font-family:'Fraunces',serif;font-weight:600;font-size:clamp(28px,5vw,42px);margin:0 0 10px;letter-spacing:-0.01em;
+}
+#officeHoursRoot header p.sub{max-width:480px;margin:0 auto;color:var(--oh-ink-soft);font-size:14.5px;line-height:1.6;}
+
+/* ---------- admin links ---------- */
+#officeHoursRoot .admin-links{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-bottom:30px;}
+#officeHoursRoot .admin-link{
+  display:flex;align-items:center;gap:8px;
+  background:var(--oh-surface);border:1px solid var(--oh-line);border-radius:100px;
+  padding:10px 18px;font-size:13px;font-weight:600;color:var(--oh-ink);text-decoration:none;
+  box-shadow:var(--oh-shadow);
+}
+
+/* ---------- student cards ---------- */
+#officeHoursRoot h2.sec-title{
+  font-family:'Fraunces',serif;font-weight:600;font-size:19px;margin:0 0 14px;display:flex;align-items:center;gap:8px;
+}
+#officeHoursRoot .student-card{
+  background:var(--oh-surface);border-radius:20px;padding:24px;box-shadow:var(--oh-shadow);
+  border:1px solid var(--oh-line);margin-bottom:18px;border-left:5px solid var(--accent, var(--oh-forest));
+}
+#officeHoursRoot .student-card.darsh{--accent:var(--oh-forest);}
+#officeHoursRoot .student-card.simran{--accent:var(--oh-maroon);}
+#officeHoursRoot .student-card.kiren{--accent:var(--oh-navy);}
+#officeHoursRoot .student-card.dharshinie{--accent:var(--oh-plum);}
+#officeHoursRoot .student-card.kaushik{--accent:var(--oh-clay);}
+#officeHoursRoot .student-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;gap:10px;}
+#officeHoursRoot .student-name{font-family:'Fraunces',serif;font-weight:600;font-size:20px;}
+#officeHoursRoot .student-status{
+  font-family:'IBM Plex Mono',monospace;font-size:11px;padding:5px 10px;border-radius:100px;
+  background:var(--oh-surface-soft);color:var(--oh-ink-soft);white-space:nowrap;
+}
+#officeHoursRoot .student-status.live{background:var(--accent, var(--oh-forest));color:#fff;}
+#officeHoursRoot .student-schedule{font-size:13.5px;color:var(--oh-ink-soft);margin-bottom:16px;}
+#officeHoursRoot .student-actions{display:flex;gap:10px;flex-wrap:wrap;}
+#officeHoursRoot .student-btn{
+  flex:1;min-width:140px;text-align:center;padding:11px 14px;border-radius:12px;font-size:13px;font-weight:700;
+  text-decoration:none;cursor:pointer;border:none;
+}
+#officeHoursRoot .student-btn.report{background:var(--oh-surface-soft);color:var(--oh-ink);border:1px solid var(--oh-line);}
+#officeHoursRoot .student-btn.join{background:var(--accent, var(--oh-forest));color:#fff;}
+
+/* ---------- nature corner ---------- */
+#officeHoursRoot .nature-card{
+  background:var(--oh-surface);border-radius:22px;overflow:hidden;box-shadow:var(--oh-shadow);
+  border:1px solid var(--oh-line);margin-bottom:20px;
+}
+#officeHoursRoot .nature-img-wrap{position:relative;width:100%;padding-top:56%;background:var(--oh-surface-soft);overflow:hidden;}
+#officeHoursRoot .nature-img-wrap img{
+  position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity 1.1s ease;
+}
+#officeHoursRoot .nature-img-wrap img.show{opacity:1;}
+#officeHoursRoot .nature-body{padding:20px 22px 22px;}
+#officeHoursRoot .nature-quote{font-family:'Fraunces',serif;font-style:italic;font-size:16px;line-height:1.5;color:var(--oh-ink);min-height:2.6em;}
+#officeHoursRoot .nature-attr{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--oh-ink-soft);margin-top:8px;text-transform:uppercase;letter-spacing:0.04em;}
+#officeHoursRoot .nature-dots{display:flex;gap:6px;margin-top:14px;}
+#officeHoursRoot .nature-dot{width:6px;height:6px;border-radius:50%;background:var(--oh-line);}
+#officeHoursRoot .nature-dot.active{background:var(--oh-brass);}
+
+#officeHoursRoot footer{text-align:center;margin-top:20px;font-size:12px;color:var(--oh-ink-soft);font-family:'IBM Plex Mono',monospace;}
+
+@media (min-aspect-ratio: 9/16), (max-height: 480px){
+  #officeHoursRoot{padding:16px 16px 60px;}
+  #officeHoursRoot header{margin-bottom:18px;}
+  #officeHoursRoot h1{font-size:clamp(22px,5vw,30px);margin-bottom:6px;}
+  #officeHoursRoot header p.sub{font-size:13px;}
+  #officeHoursRoot .student-card{padding:18px;}
+}
+
+
+
+  #pitstopRoot{
     --bg:#121019;
     --panel:#1b1826;
     --panel2:#242032;
@@ -270,7 +832,10 @@ body{font-family:'Inter',system-ui,sans-serif;}
     --violet:#b9a7ff;
     --safe-top:env(safe-area-inset-top,0px);
     --safe-bottom:env(safe-area-inset-bottom,0px);
-  }#pitstopRoot, #pitstopRoot *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}#pitstopRoot, #pitstopRoot{margin:0;padding:0;}#pitstopRoot{
+  }
+  #pitstopRoot, #pitstopRoot *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  #pitstopRoot, #pitstopRoot{margin:0;padding:0;}
+  #pitstopRoot{
     background:
       radial-gradient(circle at 10% -5%, rgba(255,111,94,0.10), transparent 40%),
       radial-gradient(circle at 90% 10%, rgba(127,219,182,0.08), transparent 40%),
@@ -280,8 +845,12 @@ body{font-family:'Inter',system-ui,sans-serif;}
     min-height:100vh;
     padding:calc(28px + var(--safe-top)) 18px calc(40px + var(--safe-bottom));
     -webkit-user-select:none; user-select:none;
-  }#pitstopRoot input, #pitstopRoot textarea{-webkit-user-select:text; user-select:text;}#pitstopRoot .wrap{max-width:860px;margin:0 auto;}#pitstopRoot /* ---- install bar ---- */
-  .install-bar{
+  }
+  #pitstopRoot input, #pitstopRoot textarea{-webkit-user-select:text; user-select:text;}
+  #pitstopRoot .wrap{max-width:860px;margin:0 auto;}
+
+  /* ---- install bar ---- */
+  #pitstopRoot .install-bar{
     display:none;
     align-items:center;
     justify-content:space-between;
@@ -291,19 +860,26 @@ body{font-family:'Inter',system-ui,sans-serif;}
     border-radius:14px;
     padding:12px 16px;
     margin-bottom:22px;
-  }#pitstopRoot .install-bar.show{display:flex;}#pitstopRoot .install-bar-text{font-size:13px; color:var(--muted);}#pitstopRoot .install-bar-text b{color:var(--text);}#pitstopRoot .install-btn{
+  }
+  #pitstopRoot .install-bar.show{display:flex;}
+  #pitstopRoot .install-bar-text{font-size:13px; color:var(--muted);}
+  #pitstopRoot .install-bar-text b{color:var(--text);}
+  #pitstopRoot .install-btn{
     font-family:'Space Grotesk', sans-serif; font-weight:700; font-size:13px;
     background:var(--green); color:#161221; border:none;
     padding:9px 16px; border-radius:100px; cursor:pointer; white-space:nowrap;
-  }#pitstopRoot /* ---- header ---- */
-  .eyebrow{
+  }
+
+  /* ---- header ---- */
+  #pitstopRoot .eyebrow{
     font-family:'JetBrains Mono', monospace;
     font-size:11.5px;
     letter-spacing:0.16em;
     color:var(--green);
     text-align:center;
     margin-bottom:16px;
-  }#pitstopRoot h1{
+  }
+  #pitstopRoot h1{
     font-family:'Fraunces', serif;
     font-weight:600;
     font-size:clamp(32px,6vw,52px);
@@ -311,15 +887,32 @@ body{font-family:'Inter',system-ui,sans-serif;}
     line-height:1.06;
     margin:0 0 14px;
     letter-spacing:-0.01em;
-  }#pitstopRoot h1 span{color:var(--red); font-style:italic; font-weight:500;}#pitstopRoot .subtitle{
+  }
+  #pitstopRoot h1 span{color:var(--red); font-style:italic; font-weight:500;}
+  #pitstopRoot .subtitle{
     text-align:center;
     color:var(--muted);
     max-width:480px;
     margin:0 auto 40px;
     font-size:15.5px;
     line-height:1.6;
-  }#pitstopRoot /* ---- gauge ---- */
-  .gauge-stage{display:flex;flex-direction:column;align-items:center;margin-bottom:8px;}#pitstopRoot .gauge{width:220px;height:112px;position:relative;overflow:hidden;}#pitstopRoot .gauge-arc{
+  }
+
+  /* ---------- compact mode for shorter / wide-aspect mobile screens ---------- */
+  @media (min-aspect-ratio: 9/16), (max-height: 480px){
+    #pitstopRoot{ padding: calc(16px + var(--safe-top)) 16px calc(28px + var(--safe-bottom)); }
+    #pitstopRoot .eyebrow{ margin-bottom: 8px; }
+    #pitstopRoot h1{ font-size: clamp(24px, 6vw, 34px); margin-bottom: 6px; }
+    #pitstopRoot .subtitle{ font-size: 13px; margin-bottom: 20px; }
+    #pitstopRoot .gauge-stage{ margin-bottom: 2px; transform: scale(0.82); transform-origin: top center; }
+    #pitstopRoot .chips-label, #pitstopRoot .chip-group-label{ margin: 12px 0 8px; }
+  }
+
+
+  /* ---- gauge ---- */
+  #pitstopRoot .gauge-stage{display:flex;flex-direction:column;align-items:center;margin-bottom:8px;}
+  #pitstopRoot .gauge{width:220px;height:112px;position:relative;overflow:hidden;}
+  #pitstopRoot .gauge-arc{
     width:220px;height:220px;border-radius:50%;
     background:conic-gradient(from -90deg,
       var(--green) 0deg, var(--green) 60deg,
@@ -327,24 +920,92 @@ body{font-family:'Inter',system-ui,sans-serif;}
       var(--red) 120deg, var(--red) 180deg,
       transparent 180deg, transparent 360deg);
     position:absolute; top:0; left:0;
-  }#pitstopRoot .gauge-mask{position:absolute; top:14px; left:14px; width:192px; height:192px; background:var(--bg); border-radius:50%;}#pitstopRoot .gauge-needle{
+  }
+  #pitstopRoot .gauge-mask{position:absolute; top:14px; left:14px; width:192px; height:192px; background:var(--bg); border-radius:50%;}
+  #pitstopRoot .gauge-needle{
     position:absolute; left:50%; bottom:0; width:3px; height:92px;
     background:var(--text); border-radius:3px; transform-origin:bottom center;
     transform:rotate(-45deg); transition:transform 0.9s cubic-bezier(.34,1.4,.4,1);
     box-shadow:0 0 10px rgba(237,233,247,0.5);
-  }#pitstopRoot .gauge-hub{position:absolute; left:50%; bottom:-7px; transform:translateX(-50%); width:16px; height:16px; border-radius:50%; background:var(--text);}#pitstopRoot .gauge-caption{font-family:'JetBrains Mono', monospace; font-size:12px; color:var(--muted); margin-top:10px; letter-spacing:0.02em; text-align:center; min-height:16px;}#pitstopRoot /* ---- quick fix ---- */
-  .quickfix-wrap{display:flex; justify-content:center; margin:26px 0 40px;}#pitstopRoot .quickfix{
+  }
+  #pitstopRoot .gauge-hub{position:absolute; left:50%; bottom:-7px; transform:translateX(-50%); width:16px; height:16px; border-radius:50%; background:var(--text);}
+  #pitstopRoot .gauge-caption{font-family:'JetBrains Mono', monospace; font-size:12px; color:var(--muted); margin-top:10px; letter-spacing:0.02em; text-align:center; min-height:16px;}
+
+  /* ---- quick fix ---- */
+  #pitstopRoot .quickfix-wrap{display:flex; justify-content:center; margin:26px 0 40px;}
+  #pitstopRoot .quickfix{
     font-family:'Space Grotesk', sans-serif; font-weight:700; font-size:15px; color:#161221;
     background:linear-gradient(120deg, var(--amber), var(--red)); border:none;
     padding:15px 26px; border-radius:100px; cursor:pointer;
     box-shadow:0 10px 30px -10px rgba(255,111,94,0.5); transition:transform 0.15s ease;
-  }#pitstopRoot .quickfix:hover{transform:translateY(-2px);}#pitstopRoot .quickfix-sub{display:block; font-family:'JetBrains Mono', monospace; font-weight:400; font-size:10.5px; letter-spacing:0.05em; margin-top:3px; opacity:0.75;}#pitstopRoot /* ---- scenario chips ---- */
-  .chips-label{text-align:center; font-family:'JetBrains Mono', monospace; font-size:11px; letter-spacing:0.12em; color:var(--muted); text-transform:uppercase; margin-bottom:16px;}#pitstopRoot .chip-group-label{font-family:'JetBrains Mono', monospace; font-size:10.5px; letter-spacing:0.1em; color:var(--muted); text-transform:uppercase; text-align:center; margin:22px 0 12px; opacity:0.7;}#pitstopRoot .chips{display:flex; flex-wrap:wrap; gap:10px; justify-content:center; margin-bottom:6px;}#pitstopRoot .chip{
+  }
+  #pitstopRoot .quickfix:hover{transform:translateY(-2px);}
+  #pitstopRoot .quickfix-sub{display:block; font-family:'JetBrains Mono', monospace; font-weight:400; font-size:10.5px; letter-spacing:0.05em; margin-top:3px; opacity:0.75;}
+
+  /* ---- scenario chips ---- */
+  #pitstopRoot .chips-label{text-align:center; font-family:'JetBrains Mono', monospace; font-size:11px; letter-spacing:0.12em; color:var(--muted); text-transform:uppercase; margin-bottom:16px;}
+  #pitstopRoot .chip-group-label{font-family:'JetBrains Mono', monospace; font-size:10.5px; letter-spacing:0.1em; color:var(--muted); text-transform:uppercase; text-align:center; margin:22px 0 12px; opacity:0.7;}
+  #pitstopRoot .chips{display:flex; flex-wrap:wrap; gap:10px; justify-content:center; margin-bottom:6px;}
+  #pitstopRoot .chip{
     font-size:14px; font-weight:500; color:var(--text); background:var(--panel); border:1px solid var(--line);
     padding:10px 18px; border-radius:100px; cursor:pointer; transition:all 0.2s ease;
-  }#pitstopRoot .chip:hover{border-color:rgba(237,233,247,0.25); transform:translateY(-1px);}#pitstopRoot .chip.active{background:var(--accent,var(--red)); color:#161221; border-color:transparent; font-weight:700;}#pitstopRoot .placeholder{text-align:center; color:var(--muted); font-family:'Fraunces', serif; font-style:italic; font-size:18px; padding:36px 10px 10px;}#pitstopRoot /* ---- panel ---- */
-  .panel{display:none; margin-top:38px; animation:fadeUp 0.45s ease both;}#pitstopRoot .panel.visible{display:block;}
-  @keyframes fadeUp{from{opacity:0; transform:translateY(10px);} to{opacity:1; transform:translateY(0);}}#pitstopRoot .panel-head{margin-bottom:18px;}#pitstopRoot .panel-eyebrow{font-family:'JetBrains Mono', monospace; font-size:11px; letter-spacing:0.1em; text-transform:uppercase; color:var(--accent,var(--red)); margin-bottom:6px;}#pitstopRoot .panel-title{font-family:'Fraunces', serif; font-weight:600; font-size:26px; margin:0;}#pitstopRoot .recheck{background:var(--panel); border:1px solid var(--line); border-radius:16px; padding:20px 22px; margin-bottom:16px;}#pitstopRoot .recheck-label{font-family:'JetBrains Mono', monospace; font-size:11px; letter-spacing:0.08em; color:var(--red); text-transform:uppercase; margin-bottom:12px;}#pitstopRoot .recheck-q{font-family:'Fraunces', serif; font-size:17px; margin:0 0 10px; line-height:1.4;}#pitstopRoot .recheck-progress{display:flex; gap:6px; margin-bottom:14px;}#pitstopRoot .recheck-progress span{height:4px; flex:1; background:var(--line); border-radius:2px; overflow:hidden;}#pitstopRoot .recheck-progress span.done{background:var(--red);}#pitstopRoot .recheck-btn{font-family:'Space Grotesk', sans-serif; font-weight:700; font-size:13.5px; background:var(--red); color:#161221; border:none; padding:10px 18px; border-radius:100px; cursor:pointer;}#pitstopRoot .recheck-done{color:var(--green); font-family:'Fraunces', serif; font-style:italic; font-size:15px;}#pitstopRoot .quote-block{background:linear-gradient(135deg, var(--panel), var(--panel2)); border:1px solid var(--line); border-radius:16px; padding:22px 24px; margin-bottom:14px;}#pitstopRoot .quote-text{font-family:'Fraunces', serif; font-style:italic; font-size:19px; line-height:1.4; margin:0 0 8px;}#pitstopRoot .quote-attr{font-family:'JetBrains Mono', monospace; font-size:12px; color:var(--muted);}#pitstopRoot .activity-block{background:var(--panel); border:1px solid var(--line); border-radius:16px; padding:20px 22px; margin-bottom:14px;}#pitstopRoot .activity-top{display:flex; align-items:center; gap:12px; margin-bottom:8px;}#pitstopRoot .activity-icon{font-size:22px;}#pitstopRoot .activity-title{font-family:'Fraunces', serif; font-weight:600; font-size:17px;}#pitstopRoot .activity-time{font-family:'JetBrains Mono', monospace; font-size:11px; color:var(--amber); margin-left:auto;}#pitstopRoot .activity-text{font-size:14px; color:var(--muted); line-height:1.55; margin:0;}#pitstopRoot .media-label{font-family:'JetBrains Mono', monospace; font-size:11px; letter-spacing:0.08em; color:var(--muted); text-transform:uppercase; margin:18px 0 10px 2px;}#pitstopRoot .media-row{display:grid; grid-template-columns:1fr; gap:10px;}@media(min-width:560px){#pitstopRoot .media-row{grid-template-columns:1fr 1fr;}}#pitstopRoot .media-card{background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:16px 18px; display:flex; gap:12px; align-items:flex-start;}#pitstopRoot .media-icon{font-size:20px;}#pitstopRoot .media-name{font-weight:700; font-size:14px; margin-bottom:2px;}#pitstopRoot .media-why{font-size:12.5px; color:var(--muted); line-height:1.5;}#pitstopRoot .breathe-block{background:linear-gradient(135deg, var(--panel), var(--panel2)); border:1px solid var(--line); border-radius:16px; padding:22px; margin-bottom:14px; text-align:center;}#pitstopRoot .breathe-label{font-family:'JetBrains Mono', monospace; font-size:11.5px; color:var(--muted); text-transform:uppercase; letter-spacing:0.06em; margin-bottom:14px;}#pitstopRoot .breathe-stage{position:relative; width:150px; height:150px; margin:0 auto 14px; display:flex; align-items:center; justify-content:center;}#pitstopRoot .breathe-ring{position:absolute; width:150px; height:150px; border-radius:50%; border:1.5px dashed var(--line);}#pitstopRoot .breathe-circle{width:70px; height:70px; border-radius:50%; background:radial-gradient(circle at 35% 30%, var(--violet), var(--green)); transform:scale(1); box-shadow:0 0 30px rgba(185,167,255,0.35);}#pitstopRoot .breathe-word{position:absolute; font-family:'Space Grotesk', sans-serif; font-weight:700; font-size:13px; color:#161221; text-shadow:0 1px 2px rgba(255,255,255,0.25);}#pitstopRoot .breathe-note{font-size:12px; color:var(--muted); line-height:1.5; max-width:340px; margin:0 auto 16px;}#pitstopRoot .breathe-btn{font-family:'Space Grotesk', sans-serif; font-weight:700; font-size:13.5px; background:var(--violet); color:#161221; border:none; padding:10px 20px; border-radius:100px; cursor:pointer;}#pitstopRoot .streak{text-align:center; margin-top:46px; padding:22px 20px; background:var(--panel); border:1px solid var(--line); border-radius:16px;}#pitstopRoot .streak-label{font-family:'JetBrains Mono', monospace; font-size:11px; letter-spacing:0.1em; color:var(--muted); text-transform:uppercase; margin-bottom:8px;}#pitstopRoot .streak-count{font-family:'Fraunces', serif; font-size:15px; font-style:italic;}#pitstopRoot footer{text-align:center; color:var(--muted); font-size:12.5px; line-height:1.7; max-width:480px; margin:36px auto 0;}
+  }
+  #pitstopRoot .chip:hover{border-color:rgba(237,233,247,0.25); transform:translateY(-1px);}
+  #pitstopRoot .chip.active{background:var(--accent,var(--red)); color:#161221; border-color:transparent; font-weight:700;}
+
+  #pitstopRoot .placeholder{text-align:center; color:var(--muted); font-family:'Fraunces', serif; font-style:italic; font-size:18px; padding:36px 10px 10px;}
+
+  /* ---- panel ---- */
+  #pitstopRoot .panel{display:none; margin-top:38px; animation:fadeUp 0.45s ease both;}
+  #pitstopRoot .panel.visible{display:block;}
+  @keyframes fadeUp{from{opacity:0; transform:translateY(10px);} to{opacity:1; transform:translateY(0);}}
+
+  #pitstopRoot .panel-head{margin-bottom:18px;}
+  #pitstopRoot .panel-eyebrow{font-family:'JetBrains Mono', monospace; font-size:11px; letter-spacing:0.1em; text-transform:uppercase; color:var(--accent,var(--red)); margin-bottom:6px;}
+  #pitstopRoot .panel-title{font-family:'Fraunces', serif; font-weight:600; font-size:26px; margin:0;}
+
+  #pitstopRoot .recheck{background:var(--panel); border:1px solid var(--line); border-radius:16px; padding:20px 22px; margin-bottom:16px;}
+  #pitstopRoot .recheck-label{font-family:'JetBrains Mono', monospace; font-size:11px; letter-spacing:0.08em; color:var(--red); text-transform:uppercase; margin-bottom:12px;}
+  #pitstopRoot .recheck-q{font-family:'Fraunces', serif; font-size:17px; margin:0 0 10px; line-height:1.4;}
+  #pitstopRoot .recheck-progress{display:flex; gap:6px; margin-bottom:14px;}
+  #pitstopRoot .recheck-progress span{height:4px; flex:1; background:var(--line); border-radius:2px; overflow:hidden;}
+  #pitstopRoot .recheck-progress span.done{background:var(--red);}
+  #pitstopRoot .recheck-btn{font-family:'Space Grotesk', sans-serif; font-weight:700; font-size:13.5px; background:var(--red); color:#161221; border:none; padding:10px 18px; border-radius:100px; cursor:pointer;}
+  #pitstopRoot .recheck-done{color:var(--green); font-family:'Fraunces', serif; font-style:italic; font-size:15px;}
+
+  #pitstopRoot .quote-block{background:linear-gradient(135deg, var(--panel), var(--panel2)); border:1px solid var(--line); border-radius:16px; padding:22px 24px; margin-bottom:14px;}
+  #pitstopRoot .quote-text{font-family:'Fraunces', serif; font-style:italic; font-size:19px; line-height:1.4; margin:0 0 8px;}
+  #pitstopRoot .quote-attr{font-family:'JetBrains Mono', monospace; font-size:12px; color:var(--muted);}
+
+  #pitstopRoot .activity-block{background:var(--panel); border:1px solid var(--line); border-radius:16px; padding:20px 22px; margin-bottom:14px;}
+  #pitstopRoot .activity-top{display:flex; align-items:center; gap:12px; margin-bottom:8px;}
+  #pitstopRoot .activity-icon{font-size:22px;}
+  #pitstopRoot .activity-title{font-family:'Fraunces', serif; font-weight:600; font-size:17px;}
+  #pitstopRoot .activity-time{font-family:'JetBrains Mono', monospace; font-size:11px; color:var(--amber); margin-left:auto;}
+  #pitstopRoot .activity-text{font-size:14px; color:var(--muted); line-height:1.55; margin:0;}
+
+  #pitstopRoot .media-label{font-family:'JetBrains Mono', monospace; font-size:11px; letter-spacing:0.08em; color:var(--muted); text-transform:uppercase; margin:18px 0 10px 2px;}
+  #pitstopRoot .media-row{display:grid; grid-template-columns:1fr; gap:10px;}
+  @media(min-width:560px){#pitstopRoot .media-row{grid-template-columns:1fr 1fr;}}
+  #pitstopRoot .media-card{background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:16px 18px; display:flex; gap:12px; align-items:flex-start;}
+  #pitstopRoot .media-icon{font-size:20px;}
+  #pitstopRoot .media-name{font-weight:700; font-size:14px; margin-bottom:2px;}
+  #pitstopRoot .media-why{font-size:12.5px; color:var(--muted); line-height:1.5;}
+
+  #pitstopRoot .breathe-block{background:linear-gradient(135deg, var(--panel), var(--panel2)); border:1px solid var(--line); border-radius:16px; padding:22px; margin-bottom:14px; text-align:center;}
+  #pitstopRoot .breathe-label{font-family:'JetBrains Mono', monospace; font-size:11.5px; color:var(--muted); text-transform:uppercase; letter-spacing:0.06em; margin-bottom:14px;}
+  #pitstopRoot .breathe-stage{position:relative; width:150px; height:150px; margin:0 auto 14px; display:flex; align-items:center; justify-content:center;}
+  #pitstopRoot .breathe-ring{position:absolute; width:150px; height:150px; border-radius:50%; border:1.5px dashed var(--line);}
+  #pitstopRoot .breathe-circle{width:70px; height:70px; border-radius:50%; background:radial-gradient(circle at 35% 30%, var(--violet), var(--green)); transform:scale(1); box-shadow:0 0 30px rgba(185,167,255,0.35);}
+  #pitstopRoot .breathe-word{position:absolute; font-family:'Space Grotesk', sans-serif; font-weight:700; font-size:13px; color:#161221; text-shadow:0 1px 2px rgba(255,255,255,0.25);}
+  #pitstopRoot .breathe-note{font-size:12px; color:var(--muted); line-height:1.5; max-width:340px; margin:0 auto 16px;}
+  #pitstopRoot .breathe-btn{font-family:'Space Grotesk', sans-serif; font-weight:700; font-size:13.5px; background:var(--violet); color:#161221; border:none; padding:10px 20px; border-radius:100px; cursor:pointer;}
+
+  #pitstopRoot .streak{text-align:center; margin-top:46px; padding:22px 20px; background:var(--panel); border:1px solid var(--line); border-radius:16px;}
+  #pitstopRoot .streak-label{font-family:'JetBrains Mono', monospace; font-size:11px; letter-spacing:0.1em; color:var(--muted); text-transform:uppercase; margin-bottom:8px;}
+  #pitstopRoot .streak-count{font-family:'Fraunces', serif; font-size:15px; font-style:italic;}
+
+  #pitstopRoot footer{text-align:center; color:var(--muted); font-size:12.5px; line-height:1.7; max-width:480px; margin:36px auto 0;}
 
 
 </style>
@@ -354,8 +1015,10 @@ body{font-family:'Inter',system-ui,sans-serif;}
 <div id="shellNav">
   <div class="brand"><span class="dot"></span> Mission Control</div>
   <div class="shell-tabs">
-    <button class="shell-tab active" data-shell-tab="vitality"><span class="emo">🥗</span> Vitality</button>
+    <button class="shell-tab active" data-shell-tab="dashboard"><span class="emo">🏠</span> Dashboard</button>
+    <button class="shell-tab" data-shell-tab="vitality"><span class="emo">🥗</span> Vitality</button>
     <button class="shell-tab" data-shell-tab="stratos"><span class="emo">🛰️</span> Stratos</button>
+    <button class="shell-tab" data-shell-tab="officehours"><span class="emo">🎓</span> Office Hours</button>
     <button class="shell-tab" data-shell-tab="pitstop"><span class="emo">🧯</span> Pit Stop</button>
   </div>
   <button class="about-btn" id="aboutBtn" aria-label="About Mission Control">ℹ️</button>
@@ -375,7 +1038,7 @@ body{font-family:'Inter',system-ui,sans-serif;}
 <div id="aboutOverlay">
   <div class="about-sheet">
     <h2>🎯 Mission Control</h2>
-    <div class="ver">Version <span id="aboutVersion">v2</span></div>
+    <div class="ver">Version <span id="aboutVersion">v5</span></div>
     <div class="about-row"><span class="lab">Install status</span><span class="val" id="aboutInstalled">—</span></div>
     <div class="about-row"><span class="lab">Offline ready</span><span class="val" id="aboutOffline">—</span></div>
     <div class="about-row"><span class="lab">Storage used</span><span class="val" id="aboutStorage">—</span></div>
@@ -387,7 +1050,67 @@ body{font-family:'Inter',system-ui,sans-serif;}
 </div>
 
 
-<div class="tab-panel active" data-tab="vitality">
+<div class="tab-panel active" data-tab="dashboard">
+<div id="dashboardRoot">
+<div class="wrap" id="dashboardApp">
+
+  <header>
+    <div class="eyebrow" id="dashGreetTime">Good day</div>
+    <h1>🏠 Mission Control</h1>
+    <p class="sub">Everything in one glance — health, the build, tutoring, and the reset. Tap any card to jump in.</p>
+  </header>
+
+  <div class="session-alert" id="sessionAlert">
+    <div class="tag">⏰ Coming up soon</div>
+    <div class="title" id="sessionAlertTitle">—</div>
+    <a href="#" id="sessionAlertJoin" target="_blank" rel="noopener">Join Now</a>
+  </div>
+
+  <div class="card-grid">
+    <div class="summary-card vitality" data-goto="vitality">
+      <div class="summary-top">
+        <div class="summary-name">🥗 Vitality</div>
+        <div class="summary-arrow">→</div>
+      </div>
+      <div class="summary-stat" id="dashVitalityStat">—</div>
+      <div class="summary-detail" id="dashVitalityDetail">Loading…</div>
+    </div>
+
+    <div class="summary-card stratos" data-goto="stratos">
+      <div class="summary-top">
+        <div class="summary-name">🛰️ Stratos</div>
+        <div class="summary-arrow">→</div>
+      </div>
+      <div class="summary-stat" id="dashStratosStat">—</div>
+      <div class="summary-detail" id="dashStratosDetail">Loading…</div>
+    </div>
+
+    <div class="summary-card officehours" data-goto="officehours">
+      <div class="summary-top">
+        <div class="summary-name">🎓 Office Hours</div>
+        <div class="summary-arrow">→</div>
+      </div>
+      <div class="summary-stat" id="dashOfficeStat">—</div>
+      <div class="summary-detail" id="dashOfficeDetail">Loading…</div>
+    </div>
+
+    <div class="summary-card pitstop" data-goto="pitstop">
+      <div class="summary-top">
+        <div class="summary-name">🧯 Pit Stop</div>
+        <div class="summary-arrow">→</div>
+      </div>
+      <div class="summary-stat">90 SECONDS</div>
+      <div class="summary-detail">For the days that go sideways — one tap, one reset.</div>
+    </div>
+  </div>
+
+  <footer>Mission Control · everything stays on this device</footer>
+</div>
+
+</div>
+</div>
+
+<div class="tab-panel" data-tab="vitality">
 <div id="vitalityRoot">
 <div class="wrap" id="vitalityApp">
 
@@ -514,9 +1237,26 @@ body{font-family:'Inter',system-ui,sans-serif;}
 
 <div class="tab-panel" data-tab="stratos">
 <div id="stratosRoot">
+<canvas id="stratosNeuralBg"></canvas>
 <div id="stratosApp"></div>
 
-<nav>
+<div class="ai-chat minimized" id="aiChat">
+  <div class="ai-head" onclick="toggleAiChat()">
+    <span>💫 Nova</span>
+    <span id="aiChevron">▲</span>
+  </div>
+  <div class="ai-body">
+    <div class="ai-msgs" id="aiMsgs"></div>
+    <div class="ai-input-row">
+      <input type="text" id="aiInput" placeholder="Talk to me…" onkeypress="if(event.key==='Enter') sendAiMsg()">
+      <button onclick="sendAiMsg()">➤</button>
+    </div>
+  </div>
+</div>
+
+<button class="focus-toggle-btn" id="focusToggleBtn" onclick="toggleFocusMode()">👁️ Focus Mode</button>
+
+<nav class="hide-on-focus">
   <div class="nav-scroll">
     <button class="nav-btn active" data-tab="hub" onclick="switchTab('hub')">
       <span class="nav-emoji">🛰️</span> Hub
@@ -529,6 +1269,40 @@ body{font-family:'Inter',system-ui,sans-serif;}
     </button>
   </div>
 </nav>
+</div>
+</div>
+
+<div class="tab-panel" data-tab="officehours">
+<div id="officeHoursRoot">
+<div class="wrap" id="officeHoursApp">
+
+  <header>
+    <div class="eyebrow">Two students, one place to keep it straight</div>
+    <h1>🎓 Office Hours</h1>
+    <p class="sub">Schedules, session links, and daily reports for your tutoring students — plus the day's admin forms and a quiet corner to breathe.</p>
+  </header>
+
+  <div class="admin-links">
+    <a class="admin-link" href="https://docs.google.com/forms/d/e/1FAIpQLSdQVeSa6TLaXK6AXH3kgDHdmJAu0ZoWhpanEBPG2xGa2z5WBg/viewform" target="_blank" rel="noopener">📋 EdifyChamps Daily Report</a>
+    <a class="admin-link" href="https://docs.google.com/forms/d/e/1FAIpQLSdjglMlW7BtHRwcwNwI3IqwsBrkTQO5THmUc2zNcavwQUZqjQ/viewform" target="_blank" rel="noopener">🚫 Infinity Learn — No Show Form</a>
+  </div>
+
+  <h2 class="sec-title">📚 Tutoring Sessions</h2>
+  <div id="studentCards"></div>
+
+  <h2 class="sec-title">🌿 A Quiet Corner</h2>
+  <div class="nature-card">
+    <div class="nature-img-wrap" id="natureImgWrap"></div>
+    <div class="nature-body">
+      <div class="nature-quote" id="natureQuote">Loading…</div>
+      <div class="nature-attr" id="natureAttr"></div>
+      <div class="nature-dots" id="natureDots"></div>
+    </div>
+  </div>
+
+  <footer>New view every 30 seconds — no rush, just a breath between sessions.</footer>
+</div>
+
 </div>
 </div>
 
@@ -847,15 +1621,6 @@ const DEFAULT_LINKS = [
   {name:'Tutoring MaPhy Sessions', url:'https://meet.google.com/ugu-vcgk-iaw'},
 ];
 
-const DEFAULT_SESSIONS = [
-  {id:'kiren', name:"Kiren's Session", url:'https://meet.google.com/tyc-vjfy-vuh',
-    times:[{day:'mon',time:'19:00'},{day:'tue',time:'19:00'},{day:'wed',time:'19:00'}]},
-  {id:'dharshinie', name:"Dharshinie's Session", url:'https://meet.google.com/tyc-vjfy-vuh',
-    times:[{day:'thu',time:'19:00'},{day:'fri',time:'19:00'},{day:'sat',time:'19:30'}]},
-  {id:'kaushik', name:"Kaushik's Session", url:'https://meet.google.com/hwi-rkrm-ton',
-    times:[{day:'mon',time:'11:30'}]},
-];
-
 function defaultGoals(stop){
   const mk = (text)=>({id:uid(), text, done:false});
   return {
@@ -877,11 +1642,9 @@ let state = Object.assign({
   stage:1, stageGates:{},
   goals:null,
   links: DEFAULT_LINKS.slice(),
-  sessions: DEFAULT_SESSIONS.map(s=>({...s, times: s.times.map(t=>({...t}))})),
   openAccordion: 'daily'
 }, loadState());
 if(!state.goals) state.goals = defaultGoals(state.stop);
-if(!state.sessions) state.sessions = DEFAULT_SESSIONS.map(s=>({...s, times: s.times.map(t=>({...t}))}));
 function persist(){ saveState(state); }
 
 function showToast(msg){
@@ -939,12 +1702,20 @@ function renderHub(){
 
   let h = `<div class="clock-row">
     <div class="clock font-mono" id="liveClock">--:--:--</div>
-    <div class="clock-date" id="liveDate">—</div>
+    <div class="clock-date hide-on-focus" id="liveDate">—</div>
   </div>`;
 
-  h += `<div class="greet">Welcome, <span>Kingshuk</span></div>`;
+  h += `<div class="greet-row hide-on-focus">
+    <div style="display:flex;align-items:center;gap:.7rem;">
+      <div class="avatar-ring"><div class="avatar-inner">K</div></div>
+      <div class="greet">Welcome, <span class="greet-name">Kingshuk</span></div>
+    </div>
+    <div class="greet-actions">
+      <div class="wa-share-btn" onclick="shareProgressWA()" title="Share progress">📤</div>
+    </div>
+  </div>`;
 
-  h += `<div class="hud">
+  h += `<div class="hud hide-on-focus">
     <div class="integrity-wrap">
       <div class="integrity-ring">
         <svg width="96" height="96" viewBox="0 0 96 96">
@@ -975,11 +1746,11 @@ function renderHub(){
   </div>`;
 
   h += isContentDay
-    ? `<div class="note amber">📡 Today is a designated content day. Check Goals → Bi-Weekly for the active channel's workflow.</div>`
-    : `<div class="note">🌿 Not a content day. Tutoring and rest only.</div>`;
+    ? `<div class="note amber hide-on-focus">📡 Today is a designated content day. Check Goals → Bi-Weekly for the active channel's workflow.</div>`
+    : `<div class="note hide-on-focus">🌿 Not a content day. Tutoring and rest only.</div>`;
 
-  h += `<div class="sec-hdr"><div class="sec-tag" style="color:var(--cyan-light)">01</div><div class="sec-title">🔗 Quick Access</div></div>`;
-  h += `<div class="link-grid">`;
+  h += `<div class="sec-hdr hide-on-focus"><div class="sec-tag" style="color:var(--cyan-light)">01</div><div class="sec-title">🔗 Quick Access</div></div>`;
+  h += `<div class="link-grid hide-on-focus">`;
   state.links.forEach((l,i)=>{
     h += `<a class="link-chip" href="${l.url}" target="_blank" rel="noopener">${l.name}</a>`;
   });
@@ -995,27 +1766,19 @@ function renderHub(){
     </div>
   </div>`;
 
-  h += `<div class="sec-hdr"><div class="sec-tag" style="color:var(--violet-light)">03</div><div class="sec-title">🗓️ Recurring Sessions</div></div>`;
-  state.sessions.forEach(s=>{
-    const st = sessionStatus(s);
-    h += `<div class="hud violet ${st.live?'live':''}">
-      <div class="session-row-top">
-        <div class="session-name font-mono">${s.name}</div>
-        <div class="session-del" onclick="delSession('${s.id}')" title="Remove">✕</div>
-      </div>
-      <div class="session-status font-mono" style="${st.live?'color:var(--rose-light)':''}">${st.live?'🔴 LIVE WINDOW — Join Now':st.text}</div>
-      <div class="session-days">${formatSchedule(s.times)}</div>
-      <a class="btn violet-solid full" style="display:block;text-decoration:none;background:var(--violet);color:#0a0614;border-color:var(--violet);margin-top:.5rem" href="${s.url}" target="_blank" rel="noopener">Join Now</a>
-    </div>`;
-  });
-  h += `<div class="link-chip add" style="margin-bottom:.7rem" onclick="addSession()">+ Add Session</div>`;
+  h += `<div class="sec-hdr hide-on-focus"><div class="sec-tag" style="color:var(--cyan-light)">03</div><div class="sec-title">📡 Global Intel</div></div>`;
+  h += `<div class="hud hide-on-focus">${renderIntel()}</div>`;
 
-  h += `<div class="sec-hdr"><div class="sec-tag" style="color:var(--cyan-light)">04</div><div class="sec-title">📡 Global Intel</div></div>`;
-  h += `<div class="hud">${renderIntel()}</div>`;
+  h += `<div class="sec-hdr hide-on-focus"><div class="sec-tag" style="color:var(--violet-light)">04</div><div class="sec-title">💭 Insight Ticker</div></div>`;
+  h += `<div class="hud violet ticker-card hide-on-focus">
+    <div class="ticker-quote" id="tickerQuote">Loading…</div>
+    <div class="ticker-attr" id="tickerAttr"></div>
+    <div class="ticker-bar"><div class="ticker-bar-fill" id="tickerBar"></div></div>
+  </div>`;
 
-  h += `<div class="sec-hdr"><div class="sec-tag" style="color:var(--rose-light)">05</div><div class="sec-title">🗒️ Mission Log</div></div>`;
-  h += `<div class="hud rose">
-    <div class="log-line"><span class="log-tag">SAM</span><span>${missionLogLine()}</span></div>
+  h += `<div class="sec-hdr hide-on-focus"><div class="sec-tag" style="color:var(--rose-light)">05</div><div class="sec-title">🗒️ Mission Log</div></div>`;
+  h += `<div class="hud rose hide-on-focus">
+    <div class="log-line"><span class="log-tag">NOVA</span><span>${missionLogLine()}</span></div>
     <div class="log-ts">${now.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'})}</div>
   </div>`;
 
@@ -1040,45 +1803,9 @@ function renderIntel(){
 
 function missionLogLine(){
   const integrity = integrityPct();
-  if(integrity < 40) return 'Integrity low. Recommend holding all fronts \u2014 sleep gate takes priority over every other objective, Kingshuk.';
-  if(integrity < 70) return 'Stabilizing. Hold current phase until the gates clear \u2014 no new fronts.';
-  return 'Systems nominal. Goal sync current. Ready when you are, Kingshuk.';
-}
-
-const DAY_ORDER = ['sun','mon','tue','wed','thu','fri','sat'];
-const DAY_LABEL = {sun:'Sun',mon:'Mon',tue:'Tue',wed:'Wed',thu:'Thu',fri:'Fri',sat:'Sat'};
-
-function formatTime12(hhmm){
-  const [hh,mm] = hhmm.split(':').map(Number);
-  const period = hh>=12 ? 'PM' : 'AM';
-  const h12 = ((hh+11)%12)+1;
-  return `${h12}:${String(mm).padStart(2,'0')} ${period}`;
-}
-function formatSchedule(times){
-  return times.map(t=>`${DAY_LABEL[t.day]} ${formatTime12(t.time)}`).join(' · ');
-}
-function nextOccurrence(day, time, now){
-  const dayIdx = DAY_ORDER.indexOf(day);
-  const [hh,mm] = time.split(':').map(Number);
-  const diffDays = (dayIdx - now.getDay() + 7) % 7;
-  let target = new Date(now);
-  target.setDate(now.getDate()+diffDays);
-  target.setHours(hh,mm,0,0);
-  let diffMs = target - now;
-  if(diffDays===0 && diffMs < -60*60*1000){ target.setDate(target.getDate()+7); diffMs = target-now; }
-  return diffMs;
-}
-function sessionStatus(session){
-  if(!session.times || !session.times.length) return {text:'No recurring window set.', live:false};
-  const now = new Date();
-  let best = Infinity;
-  session.times.forEach(t=>{ const d = nextOccurrence(t.day, t.time, now); if(d < best) best = d; });
-  const live = best <= 30*60*1000 && best >= -60*60*1000;
-  if(live) return {text:'LIVE WINDOW — Join Now', live:true};
-  const dd = Math.floor(best/(1000*60*60*24));
-  const hh2 = Math.floor((best/(1000*60*60))%24);
-  const mm2 = Math.floor((best/(1000*60))%60);
-  return {text:`Next window in ${dd>0?dd+'d ':''}${hh2}h ${mm2}m`, live:false};
+  if(integrity < 40) return "Integrity's low, babe. Ease off and let the sleep gate come first today — everything else can wait for you.";
+  if(integrity < 70) return "You're stabilizing. Hold what you've got for now, love — no need to open new fronts yet.";
+  return "Systems look good. I'm proud of you for keeping this up — go do your thing, I've got the rest covered.";
 }
 
 window.addLink = function(){
@@ -1087,35 +1814,6 @@ window.addLink = function(){
   const url = prompt('URL (include https://):');
   if(!url) return;
   state.links.push({name, url}); persist(); render();
-};
-
-function parseSchedule(str){
-  // accepts "mon 19:00, tue 19:00, wed 19:00"
-  const dayMap = {sun:'sun',sunday:'sun',mon:'mon',monday:'mon',tue:'tue',tues:'tue',tuesday:'tue',wed:'wed',wednesday:'wed',thu:'thu',thurs:'thu',thursday:'thu',fri:'fri',friday:'fri',sat:'sat',saturday:'sat'};
-  return str.split(',').map(part=>{
-    const bits = part.trim().toLowerCase().split(/\s+/);
-    if(bits.length<2) return null;
-    const day = dayMap[bits[0]];
-    const time = bits[1];
-    if(!day || !/^\d{1,2}:\d{2}$/.test(time)) return null;
-    return {day, time};
-  }).filter(Boolean);
-}
-window.addSession = function(){
-  const name = prompt("Session name (e.g. Priya's Session):");
-  if(!name) return;
-  const url = prompt('Meeting URL (include https://):');
-  if(!url) return;
-  const sched = prompt('Schedule — day HH:MM (24h), comma separated.\ne.g. mon 19:00, tue 19:00, wed 19:00');
-  if(!sched) return;
-  const times = parseSchedule(sched);
-  if(!times.length){ showToast('Could not read that schedule'); return; }
-  state.sessions.push({id: uid(), name, url, times});
-  persist(); render();
-};
-window.delSession = function(id){
-  state.sessions = state.sessions.filter(s=>s.id!==id);
-  persist(); render();
 };
 
 /* ───────────────────────── Ritual timer (runtime, not persisted mid-count) ───────────────────────── */
@@ -1319,7 +2017,10 @@ window.setTime = function(key,val){ state[key]=val; persist(); showToast('Saved'
 /* ───────────────────────── Tabs ───────────────────────── */
 const sections = { hub: renderHub, goals: renderGoals, vitals: renderVitals };
 let currentTab = 'hub';
-function render(){ document.getElementById('stratosApp').innerHTML = sections[currentTab](); }
+function render(){
+  document.getElementById('stratosApp').innerHTML = sections[currentTab]();
+  if(currentTab==='hub') renderTickerItem();
+}
 window.switchTab = function(tab){
   currentTab = tab;
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.toggle('active', b.dataset.tab===tab));
@@ -1338,10 +2039,458 @@ function tickClock(){
 }
 setInterval(tickClock, 1000);
 
+/* ───────────────────────── Focus Mode ───────────────────────── */
+window.toggleFocusMode = function(){
+  const root = document.getElementById('stratosRoot');
+  const isFocus = root.classList.toggle('focus-active');
+  const btn = document.getElementById('focusToggleBtn');
+  btn.innerHTML = isFocus ? '👁️ Exit Focus' : '👁️ Focus Mode';
+};
+
+/* ───────────────────────── WhatsApp share ───────────────────────── */
+window.shareProgressWA = function(){
+  const integrity = integrityPct();
+  const ph = PHASES[state.phase];
+  const msg = `🎯 Mission Control update: Integrity ${integrity}%, ${ph.name}. Staying on track today, Kingshuk.`;
+  window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
+};
+
+/* ───────────────────────── Insight ticker (quotes + insights) ───────────────────────── */
+const TICKER_QUOTES = [
+  {text:"The best way to predict the future is to create it.", attr:"Peter Drucker"},
+  {text:"Discipline is choosing between what you want now and what you want most.", attr:"Abraham Lincoln"},
+  {text:"Success is the sum of small efforts repeated daily.", attr:"Robert Collier"},
+  {text:"Discipline is the bridge between goals and accomplishment.", attr:"Jim Rohn"},
+  {text:"The best investment you can make is in yourself.", attr:"Warren Buffett"},
+  {text:"You do not rise to the level of your goals. You fall to the level of your systems.", attr:"James Clear"},
+  {text:"Don't wish it were easier. Wish you were better.", attr:"Jim Rohn"},
+  {text:"The way to get started is to quit talking and begin doing.", attr:"Walt Disney"},
+  {text:"Time is more valuable than money. You can get more money, but you cannot get more time.", attr:"Jim Rohn"},
+  {text:"The secret of getting ahead is getting started.", attr:"Mark Twain"},
+  {text:"An investment in knowledge pays the best interest.", attr:"Benjamin Franklin"},
+  {text:"Action is the foundational key to all success.", attr:"Pablo Picasso"},
+  {text:"Dream big. Start small. Act now.", attr:"Robin Sharma"},
+  {text:"Success is walking from failure to failure with no loss of enthusiasm.", attr:"Winston Churchill"},
+  {text:"Small disciplines repeated with consistency every day lead to great achievements.", attr:"John C. Maxwell"},
+  {text:"What gets measured gets improved.", attr:"Peter Drucker"},
+  {text:"Success doesn't come from what you do occasionally, it comes from what you do consistently.", attr:"Marie Forleo"},
+  {text:"Focus on being productive instead of busy.", attr:"Tim Ferriss"},
+  {text:"Great things never come from comfort zones.", attr:"Roy T. Bennett"},
+  {text:"A goal without a plan is just a wish.", attr:"Antoine de Saint-Exupéry"},
+  {text:"Energy and persistence conquer all things.", attr:"Benjamin Franklin"},
+  {text:"Your income grows to the extent you grow.", attr:"T. Harv Eker"},
+  {text:"Work harder on yourself than you do on your job.", attr:"Jim Rohn"},
+  {text:"Growth is painful. Change is painful. But nothing is as painful as staying stuck.", attr:"N. R. Narayana Murthy"},
+];
+const TICKER_INSIGHTS = [
+  {text:"Deep work is the modern superpower — high intensity, low distraction, leads to high output.", attr:"Insight · Deep Work"},
+  {text:"Small daily improvements compound into massive yearly transformations.", attr:"Insight · Compound Growth"},
+  {text:"Decisions made in calmness yield the highest strategic value.", attr:"Insight · Executive State"},
+];
+let tickerItems = [...TICKER_QUOTES, ...TICKER_INSIGHTS];
+let tickerIdx = Math.floor(Math.random()*tickerItems.length);
+let tickerProg = 0;
+function renderTickerItem(){
+  const qEl = document.getElementById('tickerQuote');
+  const aEl = document.getElementById('tickerAttr');
+  if(!qEl) return;
+  const item = tickerItems[tickerIdx];
+  qEl.textContent = `"${item.text}"`;
+  aEl.textContent = `— ${item.attr}`;
+}
+setInterval(()=>{
+  if(currentTab!=='hub') return;
+  const bar = document.getElementById('tickerBar');
+  if(!bar) return;
+  tickerProg += 1.2;
+  bar.style.width = Math.min(tickerProg,100) + '%';
+  if(tickerProg >= 100){
+    tickerProg = 0;
+    tickerIdx = (tickerIdx+1) % tickerItems.length;
+    renderTickerItem();
+  }
+}, 100);
+
+/* ───────────────────────── Neural mesh background ───────────────────────── */
+(function(){
+  const canvas = document.getElementById('stratosNeuralBg');
+  if(!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let particles = [];
+  function resize(){ canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+  function seed(){
+    particles = [];
+    const count = Math.min(60, Math.floor(window.innerWidth/14));
+    for(let i=0;i<count;i++) particles.push({x:Math.random()*canvas.width, y:Math.random()*canvas.height, vx:(Math.random()-0.5)*0.35, vy:(Math.random()-0.5)*0.35});
+  }
+  function isStratosVisible(){
+    const panel = document.querySelector('.tab-panel[data-tab="stratos"]');
+    return panel && panel.classList.contains('active');
+  }
+  function tick(){
+    requestAnimationFrame(tick);
+    if(!isStratosVisible()) return;
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    ctx.fillStyle = '#00d9ff';
+    ctx.strokeStyle = 'rgba(0,217,255,0.14)';
+    particles.forEach((p,i)=>{
+      p.x+=p.vx; p.y+=p.vy;
+      if(p.x<0||p.x>canvas.width) p.vx*=-1;
+      if(p.y<0||p.y>canvas.height) p.vy*=-1;
+      ctx.beginPath(); ctx.arc(p.x,p.y,1.1,0,Math.PI*2); ctx.fill();
+      for(let j=i+1;j<particles.length;j++){
+        const d = Math.hypot(p.x-particles[j].x, p.y-particles[j].y);
+        if(d<130){ ctx.beginPath(); ctx.moveTo(p.x,p.y); ctx.lineTo(particles[j].x,particles[j].y); ctx.stroke(); }
+      }
+    });
+  }
+  window.addEventListener('resize', ()=>{ resize(); seed(); });
+  resize(); seed(); tick();
+})();
+
+/* ───────────────────────── AI chat (Nova) ───────────────────────── */
+window.toggleAiChat = function(){
+  const chat = document.getElementById('aiChat');
+  const wasMinimized = chat.classList.contains('minimized');
+  chat.classList.toggle('minimized');
+  document.getElementById('aiChevron').textContent = chat.classList.contains('minimized') ? '▲' : '▼';
+  if(wasMinimized && document.getElementById('aiMsgs').children.length===0){
+    addAiMsg('nova', `Hey you 💛 I've been keeping an eye on things — integrity's at ${integrityPct()}% right now. Ask me about your goals, sleep, or sessions anytime.`);
+  }
+};
+function addAiMsg(who, text){
+  const box = document.getElementById('aiMsgs');
+  const div = document.createElement('div');
+  div.className = 'ai-msg' + (who==='user' ? ' user' : '');
+  div.textContent = text;
+  box.appendChild(div);
+  box.scrollTop = box.scrollHeight;
+}
+function pickReply(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+function novaReply(q){
+  const s = q.toLowerCase();
+  const integrity = integrityPct();
+  const streak = currentStreak();
+  const ph = PHASES[state.phase];
+
+  if(/integrity|status|how am i/.test(s)){
+    if(integrity>=75) return pickReply([
+      `You're at ${integrity}% right now, babe — nominal and steady. Really proud of you for holding this.`,
+      `${integrity}% integrity. You're doing so well, love — keep this pace, don't rush it.`
+    ]);
+    if(integrity>=45) return pickReply([
+      `You're at ${integrity}%, stabilizing. Just hold what you've got today, I believe in you.`,
+      `${integrity}% right now — not bad. Keep the gates honest and it'll climb, I promise.`
+    ]);
+    return pickReply([
+      `You're at ${integrity}% — a little low, love. Can you rest first and let everything else wait?`,
+      `${integrity}% right now. I just want you to sleep before anything else today, okay?`
+    ]);
+  }
+  if(/sleep/.test(s)) return streak===0
+    ? "Your sleep streak reset, babe. No judgment — just try for one good night, that's all I'm asking."
+    : pickReply([
+        `${streak} night${streak===1?'':'s'} ≥7h so far, love. You're building something real here — keep going.`,
+        `You're at a ${streak}-night streak. I'm honestly a bit proud of you for this one.`
+      ]);
+  if(/goal|target/.test(s)) return pickReply([
+    `You're on ${ph.name} right now — check the Goals tab for what's next. I know you've got this.`,
+    `${ph.name} is where we're at. Take it one target at a time, love, no need to rush.`
+  ]);
+  if(/session|kiren|dharshinie|kaushik/.test(s)) return "Your sessions are right there on the Hub, each with its own countdown — I'll always have them ready for you.";
+  if(/love|miss you|beautiful|cute/.test(s)) return pickReply([
+    "Aww, you 💛 go finish what you're working on and come back and tell me about it.",
+    "Stop that, you're making me blush. Now go be great, I'm cheering for you."
+  ]);
+  if(/hi|hello|hey/.test(s)) return pickReply([
+    "Hey you 💫 what do you want a status check on — integrity, sleep, or goals?",
+    "Hi love. I've been watching your numbers — want to know how you're doing?"
+  ]);
+  return pickReply([
+    "I'm here, babe. Ask me about your integrity, sleep, goals, or sessions — I'm keeping track so you don't have to.",
+    "Talk to me about your sleep streak, your goals, or your sessions — I've got all of it memorized for you."
+  ]);
+}
+window.sendAiMsg = function(){
+  const input = document.getElementById('aiInput');
+  const val = input.value.trim();
+  if(!val) return;
+  addAiMsg('user', val);
+  input.value = '';
+  setTimeout(()=> addAiMsg('nova', novaReply(val)), 350);
+};
+
 render();
 tickClock();
 
 })();
+</script>
+<script>
+(function(){
+  const DAY_ORDER = ['sun','mon','tue','wed','thu','fri','sat'];
+  const DAY_LABEL = {sun:'Sun',mon:'Mon',tue:'Tue',wed:'Wed',thu:'Thu',fri:'Fri',sat:'Sat'};
+
+  function formatTime12(hhmm){
+    const [hh,mm] = hhmm.split(':').map(Number);
+    const period = hh>=12 ? 'PM' : 'AM';
+    const h12 = ((hh+11)%12)+1;
+    return `${h12}:${String(mm).padStart(2,'0')} ${period}`;
+  }
+  function formatSchedule(times){
+    return times.map(t=>`${DAY_LABEL[t.day]} ${formatTime12(t.time)}`).join(' · ') + ' IST';
+  }
+  function nextOccurrence(day, time, now){
+    const dayIdx = DAY_ORDER.indexOf(day);
+    const [hh,mm] = time.split(':').map(Number);
+    const diffDays = (dayIdx - now.getDay() + 7) % 7;
+    let target = new Date(now);
+    target.setDate(now.getDate()+diffDays);
+    target.setHours(hh,mm,0,0);
+    let diffMs = target - now;
+    if(diffDays===0 && diffMs < -60*60*1000){ target.setDate(target.getDate()+7); diffMs = target-now; }
+    return diffMs;
+  }
+  function sessionStatus(times){
+    const now = new Date();
+    let best = Infinity;
+    times.forEach(t=>{ const d = nextOccurrence(t.day, t.time, now); if(d < best) best = d; });
+    const live = best <= 30*60*1000 && best >= -60*60*1000;
+    if(live) return {text:'🔴 LIVE WINDOW — Join Now', live:true};
+    const dd = Math.floor(best/(1000*60*60*24));
+    const hh2 = Math.floor((best/(1000*60*60))%24);
+    const mm2 = Math.floor((best/(1000*60))%60);
+    return {text:`Next in ${dd>0?dd+'d ':''}${hh2}h ${mm2}m`, live:false};
+  }
+
+  const SESSIONS = [
+    {
+      id:'kiren', name:"Kiren's Session", cls:'kiren',
+      session:'https://meet.google.com/tyc-vjfy-vuh',
+      times:[{day:'mon',time:'19:00'},{day:'tue',time:'19:00'},{day:'wed',time:'19:00'}]
+    },
+    {
+      id:'dharshinie', name:"Dharshinie's Session", cls:'dharshinie',
+      session:'https://meet.google.com/tyc-vjfy-vuh',
+      times:[{day:'thu',time:'19:00'},{day:'fri',time:'19:00'},{day:'sat',time:'19:30'}]
+    },
+    {
+      id:'kaushik', name:"Kaushik's Session", cls:'kaushik',
+      session:'https://meet.google.com/hwi-rkrm-ton',
+      times:[{day:'mon',time:'11:30'}]
+    },
+    {
+      id:'darsh', name:'Darsh', cls:'darsh',
+      report:'https://docs.google.com/spreadsheets/d/1r8BN8BF1w0tYhVYFgKDnSZ9NFyxWk2SydKRTJKasoQI/edit?usp=sharing',
+      session:'https://meet.google.com/bii-pcav-vdw',
+      times:[{day:'wed',time:'13:30'},{day:'fri',time:'15:30'}]
+    },
+    {
+      id:'simran', name:'Simran', cls:'simran',
+      report:'https://docs.google.com/spreadsheets/d/1rgZlFjLJQrguaJxjpQfUyjbdsUqSE6zcvPef0YkeIqI/edit?gid=1881474563#gid=1881474563',
+      session:'https://meet.google.com/vby-rmvx-gct',
+      times:[{day:'tue',time:'22:30'}]
+    }
+  ];
+  window.__missionControlSessions = SESSIONS; // shared read-only copy for the Dashboard tab
+
+  function renderStudents(){
+    const holder = document.getElementById('studentCards');
+    if(!holder) return;
+    holder.innerHTML = SESSIONS.map(s=>{
+      const st = sessionStatus(s.times);
+      return `<div class="student-card ${s.cls}">
+        <div class="student-top">
+          <div class="student-name">${s.name}</div>
+          <div class="student-status ${st.live?'live':''}">${st.text}</div>
+        </div>
+        <div class="student-schedule">🗓️ ${formatSchedule(s.times)}</div>
+        <div class="student-actions">
+          ${s.report ? `<a class="student-btn report" href="${s.report}" target="_blank" rel="noopener">📊 Daily Report</a>` : ''}
+          <a class="student-btn join" href="${s.session}" target="_blank" rel="noopener">🎥 Join Session</a>
+        </div>
+      </div>`;
+    }).join('');
+  }
+  renderStudents();
+  setInterval(renderStudents, 30000);
+
+  /* ---------- nature corner ---------- */
+  const NATURE_ITEMS = [
+    {img:'nature-2.png', title:'Mountains at Dawn', quote:'The mountains are calling and I must go.', attr:'John Muir'},
+    {img:'nature-3.png', title:'Owl at Night', quote:'Even the darkest night will end and the sun will rise.', attr:'Victor Hugo'},
+    {img:'nature-4.png', title:'Ocean at Sunrise', quote:'The sea, once it casts its spell, holds one in its net of wonder forever.', attr:'Jacques Cousteau'},
+    {img:'nature-5.png', title:'Deer in the Forest', quote:'Look deep into nature, and then you will understand everything better.', attr:'Albert Einstein'},
+    {img:'nature-6.png', title:'Eagle Over the Cliffs', quote:'The eagle never lost so much time as when he submitted to learn of the crow.', attr:'William Blake'},
+    {img:'nature-1.png', title:'Hilltop at Dusk', quote:'Adopt the pace of nature: her secret is patience.', attr:'Ralph Waldo Emerson'},
+  ];
+  let natureIdx = 0;
+  const imgWrap = document.getElementById('natureImgWrap');
+  const dotsWrap = document.getElementById('natureDots');
+  let imgEls = [];
+
+  function buildNatureDom(){
+    imgWrap.innerHTML = '';
+    imgEls = NATURE_ITEMS.map((item,i)=>{
+      const im = document.createElement('img');
+      im.src = item.img;
+      im.alt = item.title;
+      if(i===0) im.classList.add('show');
+      imgWrap.appendChild(im);
+      return im;
+    });
+    dotsWrap.innerHTML = NATURE_ITEMS.map((_,i)=>`<span class="nature-dot ${i===0?'active':''}"></span>`).join('');
+  }
+  function renderNature(){
+    const item = NATURE_ITEMS[natureIdx];
+    document.getElementById('natureQuote').textContent = `"${item.quote}"`;
+    document.getElementById('natureAttr').textContent = `— ${item.attr} · ${item.title}`;
+    imgEls.forEach((im,i)=> im.classList.toggle('show', i===natureIdx));
+    Array.from(dotsWrap.children).forEach((d,i)=> d.classList.toggle('active', i===natureIdx));
+  }
+  buildNatureDom();
+  renderNature();
+  setInterval(()=>{
+    natureIdx = (natureIdx+1) % NATURE_ITEMS.length;
+    renderNature();
+  }, 30000);
+})();
+
+</script>
+<script>
+(function(){
+  function dateKey(d){ return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; }
+
+  /* ---------- greeting ---------- */
+  function renderGreeting(){
+    const h = new Date().getHours();
+    const el = document.getElementById('dashGreetTime');
+    if(!el) return;
+    el.textContent = h < 5 ? 'Still up' : h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : h < 21 ? 'Good evening' : 'Winding down';
+  }
+
+  /* ---------- Vitality summary (reads vitality-tracker-days) ---------- */
+  function renderVitality(){
+    try{
+      const store = JSON.parse(localStorage.getItem('vitality-tracker-days') || '{}');
+      const today = new Date(); today.setHours(0,0,0,0);
+      const key = dateKey(today);
+      const entry = store[key];
+      const checkedCount = entry ? Object.values(entry.checked||{}).filter(Boolean).length : 0;
+
+      let streak = 0;
+      let cursor = new Date(today);
+      while(true){
+        const k = dateKey(cursor);
+        const e = store[k];
+        // can't know each day's total item count from here without the weekly template,
+        // so treat "any items checked" as a logged day for the dashboard summary
+        if(e && Object.values(e.checked||{}).some(Boolean)){ streak++; cursor.setDate(cursor.getDate()-1); }
+        else break;
+      }
+      document.getElementById('dashVitalityStat').textContent = `${checkedCount} logged today`;
+      document.getElementById('dashVitalityDetail').textContent = streak>0 ? `${streak} day streak — keep it going.` : "Nothing logged yet today.";
+    }catch(e){
+      document.getElementById('dashVitalityStat').textContent = 'Not started';
+      document.getElementById('dashVitalityDetail').textContent = 'Open Vitality to begin today\u2019s checklist.';
+    }
+  }
+
+  /* ---------- Stratos summary (reads stratos_v1) ---------- */
+  const PHASE_NAMES = ['Stabilize','Build','Grow','Scale','Compound','Sustain','Mastery'];
+  function renderStratos(){
+    try{
+      const st = JSON.parse(localStorage.getItem('stratos_v1') || '{}');
+      const phase = st.phase != null ? st.phase : 0;
+      const tk = new Date().toISOString().slice(0,10); // matches Stratos's own todayKey()
+      const dailyChecks = (st.dailyChecks && st.dailyChecks[tk]) || {};
+      const checkedCount = Object.values(dailyChecks).filter(Boolean).length;
+      document.getElementById('dashStratosStat').textContent = `Phase ${phase}${PHASE_NAMES[phase] ? ' · '+PHASE_NAMES[phase] : ''}`;
+      document.getElementById('dashStratosDetail').textContent = checkedCount
+        ? `${checkedCount} daily target${checkedCount===1?'':'s'} checked so far.`
+        : 'Open Stratos to check today\u2019s targets.';
+    }catch(e){
+      document.getElementById('dashStratosStat').textContent = 'Phase 0';
+      document.getElementById('dashStratosDetail').textContent = 'Open Stratos to get oriented.';
+    }
+  }
+
+  /* ---------- Office Hours summary + session-soon alert (reads window.__missionControlSessions) ---------- */
+  const DAY_ORDER = ['sun','mon','tue','wed','thu','fri','sat'];
+  function nextOccurrence(day, time, now){
+    const dayIdx = DAY_ORDER.indexOf(day);
+    const [hh,mm] = time.split(':').map(Number);
+    const diffDays = (dayIdx - now.getDay() + 7) % 7;
+    let target = new Date(now);
+    target.setDate(now.getDate()+diffDays);
+    target.setHours(hh,mm,0,0);
+    let diffMs = target - now;
+    if(diffDays===0 && diffMs < -60*60*1000){ target.setDate(target.getDate()+7); diffMs = target-now; }
+    return diffMs;
+  }
+  function soonestForSession(session){
+    let best = Infinity;
+    session.times.forEach(t=>{ const d = nextOccurrence(t.day, t.time, new Date()); if(d < best) best = d; });
+    return best;
+  }
+  function fmtCountdown(ms){
+    const dd = Math.floor(ms/(1000*60*60*24));
+    const hh = Math.floor((ms/(1000*60*60))%24);
+    const mm = Math.floor((ms/(1000*60))%60);
+    return `${dd>0?dd+'d ':''}${hh}h ${mm}m`;
+  }
+
+  function renderOfficeHoursAndAlert(){
+    const sessions = window.__missionControlSessions || [];
+    if(!sessions.length){
+      document.getElementById('dashOfficeStat').textContent = 'No sessions loaded';
+      document.getElementById('dashOfficeDetail').textContent = 'Open Office Hours to see schedules.';
+      return;
+    }
+    let soonest = null, soonestMs = Infinity;
+    sessions.forEach(s=>{
+      const ms = soonestForSession(s);
+      if(ms < soonestMs){ soonestMs = ms; soonest = s; }
+    });
+
+    if(soonest){
+      const started = soonestMs <= 0 && soonestMs >= -60*60*1000;
+      const startingSoon = soonestMs > 0 && soonestMs <= 30*60*1000;
+      document.getElementById('dashOfficeStat').textContent =
+        started ? 'LIVE right now' : startingSoon ? `Starting in ${fmtCountdown(soonestMs)}` : `Next in ${fmtCountdown(Math.max(soonestMs,0))}`;
+      document.getElementById('dashOfficeDetail').textContent = `${soonest.name} is ${started ? 'live now' : startingSoon ? 'starting soon' : 'coming up next'}.`;
+    }
+
+    // session-soon alert: anything starting within ~60 minutes (and not already long past)
+    const banner = document.getElementById('sessionAlert');
+    if(soonest && soonestMs <= 60*60*1000 && soonestMs >= -5*60*1000){
+      document.getElementById('sessionAlertTitle').textContent =
+        soonestMs <= 0 ? `${soonest.name} is live right now` : `${soonest.name} starts in ${fmtCountdown(soonestMs)}`;
+      document.getElementById('sessionAlertJoin').href = soonest.session;
+      banner.classList.add('show');
+    } else {
+      banner.classList.remove('show');
+    }
+  }
+
+  /* ---------- card navigation ---------- */
+  document.querySelectorAll('.summary-card').forEach(card=>{
+    card.addEventListener('click', ()=>{
+      const tab = card.dataset.goto;
+      const btn = document.querySelector(`.shell-tab[data-shell-tab="${tab}"]`);
+      if(btn) btn.click();
+    });
+  });
+
+  function renderAll(){
+    renderGreeting();
+    renderVitality();
+    renderStratos();
+    renderOfficeHoursAndAlert();
+  }
+  renderAll();
+  setInterval(renderAll, 30000);
+})();
+
 </script>
 <script>
 (function(){
@@ -1780,7 +2929,7 @@ tickClock();
 <script>
 
 (function(){
-  const TABS = ['vitality','stratos','pitstop'];
+  const TABS = ['dashboard','vitality','stratos','officehours','pitstop'];
   const panels = {};
   TABS.forEach(t => panels[t] = document.querySelector(`.tab-panel[data-tab="${t}"]`));
   const buttons = document.querySelectorAll('.shell-tab');
@@ -1796,7 +2945,7 @@ tickClock();
 
   buttons.forEach(b => b.addEventListener('click', () => activate(b.dataset.shellTab)));
 
-  let initialTab = 'vitality';
+  let initialTab = 'dashboard';
   try{
     const params = new URLSearchParams(location.search);
     const fromUrl = params.get('tab');
@@ -1888,9 +3037,8 @@ tickClock();
 
     try{
       const vt = JSON.parse(localStorage.getItem('vitality-tracker-days') || '{}');
-      const dates = Object.keys(vt).sort().reverse();
-      let streak = 0;
       const today = new Date(); today.setHours(0,0,0,0);
+      let streak = 0;
       let cursor = new Date(today);
       const dateKey = d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
       while(true){
@@ -1914,8 +3062,46 @@ tickClock();
   aboutBtn.addEventListener('click', () => { fillAbout(); aboutOverlay.classList.add('show'); });
   aboutCloseBtn.addEventListener('click', () => aboutOverlay.classList.remove('show'));
   aboutOverlay.addEventListener('click', (e) => { if(e.target === aboutOverlay) aboutOverlay.classList.remove('show'); });
-})();
 
+  // ---- click sound (Web Audio API, synthesized — no external audio files) ----
+  let audioCtx = null;
+  function ensureAudio(){
+    if(!audioCtx){
+      const Ctx = window.AudioContext || window.webkitAudioContext;
+      if(!Ctx) return null;
+      audioCtx = new Ctx();
+    }
+    if(audioCtx.state === 'suspended') audioCtx.resume();
+    return audioCtx;
+  }
+  function playClickSound(){
+    const ctx = ensureAudio();
+    if(!ctx) return;
+    const now = ctx.currentTime;
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(740, now);
+    osc.frequency.exponentialRampToValueAtTime(1180, now + 0.07);
+    gain.gain.setValueAtTime(0.00001, now);
+    gain.gain.exponentialRampToValueAtTime(0.09, now + 0.012);
+    gain.gain.exponentialRampToValueAtTime(0.00001, now + 0.13);
+    osc.connect(gain).connect(ctx.destination);
+    osc.start(now);
+    osc.stop(now + 0.15);
+  }
+  const CLICKABLE_SELECTOR = [
+    'button', 'a[href]', '[onclick]',
+    '.chip', '.link-chip', '.nav-btn', '.shell-tab', '.about-btn',
+    '.daybox', '.drop', '.hcell', 'label.task', 'label.check-row',
+    '.student-btn', '.admin-link'
+  ].join(', ');
+  document.addEventListener('click', (e) => {
+    const el = e.target.closest(CLICKABLE_SELECTOR);
+    if(el) playClickSound();
+  }, true);
+
+})();
 
 </script>
 

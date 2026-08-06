@@ -2,7 +2,7 @@
   "id": "/mission-control/",
   "name": "Mission Control",
   "short_name": "Mission Control",
-  "description": "Vitality, Stratos, and Pit Stop — health tracking, the build, and the emotional reset, in one command center.",
+  "description": "Dashboard, Vitality, Stratos, Office Hours, and Pit Stop — health tracking, the build, tutoring, and the emotional reset, in one command center.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
@@ -13,7 +13,7 @@
   "lang": "en-IN",
   "dir": "ltr",
   "prefer_related_applications": false,
-  "categories": ["health", "productivity", "lifestyle"],
+  "categories": ["health", "productivity", "education", "lifestyle"],
   "icons": [
     { "src": "icon-72.png", "sizes": "72x72", "type": "image/png", "purpose": "any" },
     { "src": "icon-96.png", "sizes": "96x96", "type": "image/png", "purpose": "any" },
@@ -27,8 +27,10 @@
     { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
   ],
   "shortcuts": [
+    { "name": "Dashboard", "short_name": "Dashboard", "description": "Everything in one glance", "url": "./index.html?tab=dashboard", "icons": [{ "src": "icon-192.png", "sizes": "192x192" }] },
     { "name": "Vitality Tracker", "short_name": "Vitality", "description": "Today's food, movement, and water checklist", "url": "./index.html?tab=vitality", "icons": [{ "src": "icon-192.png", "sizes": "192x192" }] },
-    { "name": "Stratos Hub", "short_name": "Stratos", "description": "Goals, sessions, and sleep vitals", "url": "./index.html?tab=stratos", "icons": [{ "src": "icon-192.png", "sizes": "192x192" }] },
+    { "name": "Stratos Hub", "short_name": "Stratos", "description": "Goals and sleep vitals", "url": "./index.html?tab=stratos", "icons": [{ "src": "icon-192.png", "sizes": "192x192" }] },
+    { "name": "Office Hours", "short_name": "Office Hours", "description": "Tutoring schedules and daily reports", "url": "./index.html?tab=officehours", "icons": [{ "src": "icon-192.png", "sizes": "192x192" }] },
     { "name": "Pit Stop", "short_name": "Pit Stop", "description": "90-second emotional reset", "url": "./index.html?tab=pitstop", "icons": [{ "src": "icon-192.png", "sizes": "192x192" }] }
   ]
 }
