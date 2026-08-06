@@ -581,7 +581,7 @@ body, body *{
 
 /* ---------- focus mode ---------- */
 #stratosRoot .focus-toggle-btn{
-  position:fixed;left:14px;bottom:calc(var(--nav-h) + 16px + var(--safe-bottom));z-index:150;
+  position:fixed;left:max(14px, calc(50vw - 420px));bottom:calc(var(--nav-h) + 16px + var(--safe-bottom));z-index:150;
   background:var(--panel);border:1px solid var(--cyan-line);color:var(--fg);
   font-family:'JetBrains Mono',monospace;font-size:.62rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em;
   padding:.6rem 1rem;min-height:44px;border-radius:100px;cursor:pointer;display:flex;align-items:center;gap:.4rem;
@@ -592,7 +592,7 @@ body, body *{
 
 /* ---------- AI chat widget (Nova) ---------- */
 #stratosRoot .ai-chat{
-  position:fixed;right:14px;bottom:calc(var(--nav-h) + 16px + var(--safe-bottom));z-index:200;
+  position:fixed;right:max(14px, calc(50vw - 550px));bottom:calc(var(--nav-h) + 16px + var(--safe-bottom));z-index:200;
   width:260px;background:var(--panel2);border:1px solid var(--violet-glow);border-radius:16px;
   box-shadow:0 14px 34px rgba(0,0,0,.45);transition:height .25s ease;overflow:hidden;
 }
@@ -1643,6 +1643,7 @@ const DEFAULT_LINKS = [
   {name:'Infinity Learn Sessions', url:'https://teacher.infinitylearn.com/dashboard/liveclass'},
   {name:'Voage Learning Sessions', url:'https://meet.google.com/fnr-hzha-tfc'},
   {name:'Tutoring MaPhy Sessions', url:'https://meet.google.com/ugu-vcgk-iaw'},
+  {name:'Record (Zoom)', url:'https://us05web.zoom.us/j/87538828391?pwd=r4ht2TSIXr8BKEKnmaUlJgFoAPI7XO.1'},
 ];
 
 function defaultGoals(stop){
@@ -1781,7 +1782,14 @@ function renderHub(){
   h += `<div class="link-chip add" onclick="addLink()">+ Bind New</div>`;
   h += `</div>`;
 
-  h += `<div class="sec-hdr"><div class="sec-tag" style="color:var(--amber-light)">02</div><div class="sec-title">⏱️ Focus Ritual</div></div>`;
+  h += `<div class="sec-hdr hide-on-focus"><div class="sec-tag" style="color:var(--violet-light)">02</div><div class="sec-title">🎥 Recording Workflow</div></div>`;
+  h += `<div class="note violet hide-on-focus">
+    <b>Standard (9:16 / vertical):</b> record with the iPad, but pipe audio through Zoom by joining the same meeting on both the iPad and the laptop at once — laptop mic captures the Zoom audio feed.<br>
+    Pull in elements from <b>Canva</b>, then edit the final cut in <b>DaVinci Resolve</b>.<br><br>
+    <b>16:9 (landscape):</b> same pipeline, but record through the <b>laptop</b> while presenting on the iPad. Set the DaVinci Resolve project/timeline to 16:9.
+  </div>`;
+
+  h += `<div class="sec-hdr"><div class="sec-tag" style="color:var(--amber-light)">03</div><div class="sec-title">⏱️ Focus Ritual</div></div>`;
   h += `<div class="hud amber">
     <div class="ritual-time font-mono" id="ritualDisplay">${fmtTime(window._ritual.remaining)}</div>
     <div class="ritual-btns">
@@ -1790,17 +1798,17 @@ function renderHub(){
     </div>
   </div>`;
 
-  h += `<div class="sec-hdr hide-on-focus"><div class="sec-tag" style="color:var(--cyan-light)">03</div><div class="sec-title">📡 Global Intel</div></div>`;
+  h += `<div class="sec-hdr hide-on-focus"><div class="sec-tag" style="color:var(--cyan-light)">04</div><div class="sec-title">📡 Global Intel</div></div>`;
   h += `<div class="hud hide-on-focus">${renderIntel()}</div>`;
 
-  h += `<div class="sec-hdr hide-on-focus"><div class="sec-tag" style="color:var(--violet-light)">04</div><div class="sec-title">💭 Insight Ticker</div></div>`;
+  h += `<div class="sec-hdr hide-on-focus"><div class="sec-tag" style="color:var(--violet-light)">05</div><div class="sec-title">💭 Insight Ticker</div></div>`;
   h += `<div class="hud violet ticker-card hide-on-focus">
     <div class="ticker-quote" id="tickerQuote">Loading…</div>
     <div class="ticker-attr" id="tickerAttr"></div>
     <div class="ticker-bar"><div class="ticker-bar-fill" id="tickerBar"></div></div>
   </div>`;
 
-  h += `<div class="sec-hdr hide-on-focus"><div class="sec-tag" style="color:var(--rose-light)">05</div><div class="sec-title">🗒️ Mission Log</div></div>`;
+  h += `<div class="sec-hdr hide-on-focus"><div class="sec-tag" style="color:var(--rose-light)">06</div><div class="sec-title">🗒️ Mission Log</div></div>`;
   h += `<div class="hud rose hide-on-focus">
     <div class="log-line"><span class="log-tag">NOVA</span><span>${missionLogLine()}</span></div>
     <div class="log-ts">${now.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'})}</div>
