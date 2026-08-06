@@ -213,6 +213,66 @@ body, body *{
   justify-content: flex-start !important;
 }
 
+/* ---------- ambient background: falling meteors + erupting volcano, subtle overlay on every tab ---------- */
+#ambientBg{
+  position:fixed; inset:0; z-index:5; overflow:hidden;
+  pointer-events:none; mix-blend-mode:screen; opacity:0.55;
+}
+#ambientBg .meteor{
+  position:absolute; top:-10%; width:2px; height:90px;
+  background:linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0.9));
+  transform:rotate(215deg); border-radius:2px;
+  animation:meteorFall linear infinite;
+}
+@keyframes meteorFall{
+  0%{ transform:translate(0,0) rotate(215deg); opacity:0; }
+  8%{ opacity:1; }
+  70%{ opacity:1; }
+  100%{ transform:translate(-60vw,80vh) rotate(215deg); opacity:0; }
+}
+#ambientBg .m1{ left:15%; animation-duration:5.5s; animation-delay:0s; }
+#ambientBg .m2{ left:38%; animation-duration:7s; animation-delay:1.8s; height:70px; }
+#ambientBg .m3{ left:60%; animation-duration:4.5s; animation-delay:3.2s; }
+#ambientBg .m4{ left:78%; animation-duration:6.2s; animation-delay:0.9s; height:60px; }
+#ambientBg .m5{ left:25%; animation-duration:8s; animation-delay:5s; height:100px; }
+#ambientBg .m6{ left:90%; animation-duration:5s; animation-delay:2.5s; height:65px; }
+
+#ambientBg .volcano{
+  position:absolute; left:50%; bottom:-4vh; transform:translateX(-50%);
+  width:0; height:0;
+  border-left:16vw solid transparent; border-right:16vw solid transparent;
+  border-bottom:22vh solid rgba(30,10,10,0.9);
+  filter:drop-shadow(0 -6px 22px rgba(255,120,40,0.35));
+}
+#ambientBg .volcano-glow{
+  position:absolute; left:50%; bottom:15.5vh; transform:translateX(-50%);
+  width:5vw; height:5vw; border-radius:50%;
+  background:radial-gradient(circle, rgba(255,190,80,0.95), rgba(255,90,20,0.5) 55%, transparent 75%);
+  animation:volcanoPulse 2.4s ease-in-out infinite;
+}
+@keyframes volcanoPulse{
+  0%,100%{ opacity:0.6; transform:translateX(-50%) scale(0.9); }
+  50%{ opacity:1; transform:translateX(-50%) scale(1.15); }
+}
+#ambientBg .lava{
+  position:absolute; left:50%; bottom:16vh; width:6px; height:6px; border-radius:50%;
+  background:radial-gradient(circle, #ffdca0, #ff7a1e 70%, transparent 100%);
+  animation:lavaBurst 2.8s ease-out infinite;
+}
+@keyframes lavaBurst{
+  0%{ transform:translate(-50%,0) scale(1); opacity:1; }
+  100%{ transform:translate(calc(-50% + var(--dx)), -22vh) scale(0.3); opacity:0; }
+}
+#ambientBg .lava.l1{ --dx:-40px; animation-delay:0s; }
+#ambientBg .lava.l2{ --dx:20px; animation-delay:0.5s; }
+#ambientBg .lava.l3{ --dx:-15px; animation-delay:1s; }
+#ambientBg .lava.l4{ --dx:45px; animation-delay:1.5s; }
+#ambientBg .lava.l5{ --dx:5px; animation-delay:2s; }
+
+@media (prefers-reduced-motion: reduce){
+  #ambientBg .meteor, #ambientBg .volcano-glow, #ambientBg .lava{ animation:none; display:none; }
+}
+
 
 #dashboardRoot{
   --db-bg:#EEF1F5;
@@ -1036,6 +1096,22 @@ body, body *{
 </head>
 <body>
 
+<div id="ambientBg" aria-hidden="true">
+  <div class="meteor m1"></div>
+  <div class="meteor m2"></div>
+  <div class="meteor m3"></div>
+  <div class="meteor m4"></div>
+  <div class="meteor m5"></div>
+  <div class="meteor m6"></div>
+  <div class="volcano"></div>
+  <div class="volcano-glow"></div>
+  <div class="lava l1"></div>
+  <div class="lava l2"></div>
+  <div class="lava l3"></div>
+  <div class="lava l4"></div>
+  <div class="lava l5"></div>
+</div>
+
 <div id="shellNav">
   <div class="brand"><span class="dot"></span> Mission Control</div>
   <div class="shell-tabs">
@@ -1670,7 +1746,11 @@ let state = Object.assign({
   openAccordion: 'daily'
 }, loadState());
 if(!state.goals) state.goals = defaultGoals(state.stop);
+DEFAULT_LINKS.forEach(dl=>{
+  if(!state.links.some(l=>l.url===dl.url)) state.links.push(dl);
+});
 function persist(){ saveState(state); }
+persist();
 
 function showToast(msg){
   let t = document.getElementById('toast');
