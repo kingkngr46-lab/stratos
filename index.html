@@ -89,7 +89,7 @@ input, select, textarea{
 .shell-tab{
   border:none; background:none; cursor:pointer; color:var(--shell-muted);
   font-family:'Inter',sans-serif; font-weight:600; font-size:12.5px;
-  padding:7px 13px; border-radius:100px; display:flex; align-items:center; gap:6px;
+  padding:7px 13px; min-height:44px; border-radius:100px; display:flex; align-items:center; gap:6px;
   transition:background 0.2s ease, color 0.2s ease; white-space:nowrap; flex-shrink:0;
 }
 .shell-tab .emo{font-size:15px;}
@@ -584,7 +584,7 @@ body, body *{
   position:fixed;left:14px;bottom:calc(var(--nav-h) + 16px + var(--safe-bottom));z-index:150;
   background:var(--panel);border:1px solid var(--cyan-line);color:var(--fg);
   font-family:'JetBrains Mono',monospace;font-size:.62rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em;
-  padding:.6rem 1rem;border-radius:100px;cursor:pointer;display:flex;align-items:center;gap:.4rem;
+  padding:.6rem 1rem;min-height:44px;border-radius:100px;cursor:pointer;display:flex;align-items:center;gap:.4rem;
 }
 /* focus-active state rules live in the shell stylesheet (unscoped) since they need a
    same-element compound selector (#stratosRoot.focus-active) that the per-app CSS
@@ -605,7 +605,7 @@ body, body *{
 #stratosRoot .ai-msg.user{align-self:flex-end;background:var(--violet-glow);color:var(--violet-light)}
 #stratosRoot .ai-input-row{display:flex;border-top:1px solid rgba(255,255,255,.05);padding:.5rem}
 #stratosRoot .ai-input-row input{flex:1;background:transparent;border:none;color:var(--fg);font-size:16px;outline:none;font-family:'DM Sans',sans-serif;padding:.3rem}
-#stratosRoot .ai-input-row button{background:none;border:none;color:var(--violet-light);cursor:pointer;padding:0 .4rem;font-size:.9rem}
+#stratosRoot .ai-input-row button{background:none;border:none;color:var(--violet-light);cursor:pointer;padding:0 .4rem;font-size:.9rem;min-width:44px;min-height:44px;display:flex;align-items:center;justify-content:center}
 
 /* ---------- neural mesh background canvas ---------- */
 #stratosRoot #stratosNeuralBg{position:fixed;top:0;left:0;width:100%;height:100%;opacity:.22;pointer-events:none;z-index:0}
@@ -635,7 +635,7 @@ body, body *{
 /* ── Ritual timer ── */
 #stratosRoot .ritual-time{font-family:'JetBrains Mono',monospace;font-size:2.6rem;font-weight:700;text-align:center;color:var(--amber-light);letter-spacing:.03em;text-shadow:0 0 18px rgba(255,176,32,.3);margin:.3rem 0 .8rem}
 #stratosRoot .ritual-btns{display:flex;gap:.5rem}
-#stratosRoot .btn{flex:1;font-family:'JetBrains Mono',monospace;font-size:.72rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;padding:.6rem;border-radius:var(--radius);border:1px solid rgba(0,217,255,.35);color:var(--cyan-light);background:transparent;cursor:pointer;text-align:center}
+#stratosRoot .btn{flex:1;font-family:'JetBrains Mono',monospace;font-size:.72rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;padding:.6rem;min-height:44px;border-radius:var(--radius);border:1px solid rgba(0,217,255,.35);color:var(--cyan-light);background:transparent;cursor:pointer;text-align:center;display:flex;align-items:center;justify-content:center}
 #stratosRoot .btn.primary{background:var(--cyan);color:#00131a;border-color:var(--cyan)}
 #stratosRoot .btn.amber{border-color:rgba(255,176,32,.4);color:var(--amber-light)}
 #stratosRoot .btn.amber.primary{background:var(--amber);color:#1a0f00;border-color:var(--amber)}
