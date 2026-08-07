@@ -1884,7 +1884,7 @@ function renderHub(){
 
   h += `<div class="sec-hdr hide-on-focus"><div class="sec-tag" style="color:var(--cyan-light)">01</div><div class="sec-title">🔗 Quick Access</div></div>`;
   h += `<div class="link-grid hide-on-focus">`;
-  const LINK_GROUPS = ['Tutoring MaPhy', 'Voage Learning'];
+  const LINK_GROUPS = ['Tutoring MaPhy', 'Voage Learning', 'Tutorang'];
   const grouped = {}; LINK_GROUPS.forEach(g => grouped[g] = []);
   const singleLinks = [];
   state.links.forEach(l => {
@@ -1898,7 +1898,8 @@ function renderHub(){
     h += `<div class="link-group" id="${gid}">
       <div class="link-chip group-toggle" onclick="toggleLinkGroup('${gid}')">${g} <span class="care">▾</span></div>
       <div class="link-group-menu">${items.map(l => {
-        const sub = l.name.slice(g.length).trim() || 'Open';
+        let sub = l.name.slice(g.length).trim() || 'Portal';
+        if(sub === 'Sessions') sub = 'Session Link';
         return `<a href="${l.url}" target="_blank" rel="noopener">${sub}</a>`;
       }).join('')}</div>
     </div>`;
