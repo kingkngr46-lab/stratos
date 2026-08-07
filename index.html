@@ -688,9 +688,28 @@ body, body *{
 
 /* ── Quick links ── */
 #stratosRoot .link-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.55rem}
-#stratosRoot .link-chip{position:relative;background:var(--panel2);border:1px solid rgba(0,217,255,.12);border-radius:var(--radius);padding:.7rem .5rem;text-align:center;text-decoration:none;color:var(--fg);font-size:.68rem;font-weight:600;font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.03em;cursor:pointer;transition:.15s}
+#stratosRoot .link-chip{position:relative;background:var(--panel2);border:1px solid rgba(0,217,255,.12);border-radius:var(--radius);padding:.7rem .5rem;min-height:44px;text-align:center;text-decoration:none;color:var(--fg);font-size:.68rem;font-weight:600;font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.03em;cursor:pointer;transition:.15s;display:flex;align-items:center;justify-content:center}
 #stratosRoot .link-chip:hover{border-color:var(--cyan);color:var(--cyan-light)}
 #stratosRoot .link-chip.add{color:var(--muted);border-style:dashed}
+#stratosRoot .link-group{position:relative}
+#stratosRoot .link-chip.group-toggle{width:100%;gap:.3rem}
+#stratosRoot .link-chip.group-toggle .care{font-size:.6rem;transition:transform .2s ease}
+#stratosRoot .link-group.open .link-chip.group-toggle{border-color:var(--cyan);color:var(--cyan-light)}
+#stratosRoot .link-group.open .link-chip.group-toggle .care{transform:rotate(180deg)}
+#stratosRoot .link-group-menu{
+  position:absolute; top:calc(100% + 6px); left:0; right:0; z-index:30;
+  background:var(--panel2); border:1px solid var(--cyan-line); border-radius:10px;
+  padding:6px; display:none; flex-direction:column; gap:4px;
+  box-shadow:0 14px 30px rgba(0,0,0,.5);
+}
+#stratosRoot .link-group.open .link-group-menu{display:flex}
+#stratosRoot .link-group-menu a{
+  font-family:'JetBrains Mono',monospace; font-size:.65rem; letter-spacing:.03em; text-transform:uppercase;
+  padding:.6rem .7rem; min-height:40px; border-radius:6px; text-decoration:none;
+  color:var(--fg); background:rgba(255,255,255,.03); display:flex; align-items:center;
+  transition:background .15s;
+}
+#stratosRoot .link-group-menu a:hover{background:rgba(0,217,255,.1); color:var(--cyan-light)}
 
 /* ── Ritual timer ── */
 #stratosRoot .ritual-time{font-family:'JetBrains Mono',monospace;font-size:2.6rem;font-weight:700;text-align:center;color:var(--amber-light);letter-spacing:.03em;text-shadow:0 0 18px rgba(255,176,32,.3);margin:.3rem 0 .8rem}
@@ -1865,7 +1884,26 @@ function renderHub(){
 
   h += `<div class="sec-hdr hide-on-focus"><div class="sec-tag" style="color:var(--cyan-light)">01</div><div class="sec-title">🔗 Quick Access</div></div>`;
   h += `<div class="link-grid hide-on-focus">`;
-  state.links.forEach((l,i)=>{
+  const LINK_GROUPS = ['Tutoring MaPhy', 'Voage Learning'];
+  const grouped = {}; LINK_GROUPS.forEach(g => grouped[g] = []);
+  const singleLinks = [];
+  state.links.forEach(l => {
+    const g = LINK_GROUPS.find(g => l.name === g || l.name.startsWith(g + ' '));
+    if(g) grouped[g].push(l); else singleLinks.push(l);
+  });
+  LINK_GROUPS.forEach(g => {
+    const items = grouped[g];
+    if(!items.length) return;
+    const gid = 'linkgrp-' + g.replace(/\s+/g,'-').toLowerCase();
+    h += `<div class="link-group" id="${gid}">
+      <div class="link-chip group-toggle" onclick="toggleLinkGroup('${gid}')">${g} <span class="care">▾</span></div>
+      <div class="link-group-menu">${items.map(l => {
+        const sub = l.name.slice(g.length).trim() || 'Open';
+        return `<a href="${l.url}" target="_blank" rel="noopener">${sub}</a>`;
+      }).join('')}</div>
+    </div>`;
+  });
+  singleLinks.forEach(l => {
     h += `<a class="link-chip" href="${l.url}" target="_blank" rel="noopener">${l.name}</a>`;
   });
   h += `<div class="link-chip add" onclick="addLink()">+ Bind New</div>`;
@@ -1936,6 +1974,15 @@ window.addLink = function(){
   if(!url) return;
   state.links.push({name, url}); persist(); render();
 };
+
+window.toggleLinkGroup = function(id){
+  document.querySelectorAll('.link-group.open').forEach(el => { if(el.id !== id) el.classList.remove('open'); });
+  const el = document.getElementById(id);
+  if(el) el.classList.toggle('open');
+};
+document.addEventListener('click', (e) => {
+  if(!e.target.closest('.link-group')) document.querySelectorAll('.link-group.open').forEach(el => el.classList.remove('open'));
+});
 
 /* ───────────────────────── Ritual timer (runtime, not persisted mid-count) ───────────────────────── */
 window._ritual = { remaining: 25*60, running:false, interval:null };
