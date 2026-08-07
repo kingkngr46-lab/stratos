@@ -3093,7 +3093,7 @@ tickClock();
   dismissBtn.addEventListener('click', () => banner.classList.remove('show'));
   window.addEventListener('appinstalled', () => banner.classList.remove('show'));
 
-  // ---- service worker + update detection ----
+  // ---- service worker + update detection (auto-applies, no manual tap needed) ----
   let swRegistration = null;
   const updateBanner = document.getElementById('updateBanner');
   const updateBtn = document.getElementById('updateBtn');
@@ -3108,9 +3108,16 @@ tickClock();
           installing.addEventListener('statechange', () => {
             if(installing.state === 'installed' && navigator.serviceWorker.controller){
               updateBanner.classList.add('show');
+              installing.postMessage('SKIP_WAITING');
             }
           });
         });
+        // check for a newer sw.js right away, and again whenever the app is reopened/foregrounded
+        reg.update().catch(()=>{});
+        document.addEventListener('visibilitychange', () => {
+          if(document.visibilityState === 'visible') reg.update().catch(()=>{});
+        });
+        window.addEventListener('focus', () => reg.update().catch(()=>{}));
       }).catch(()=>{});
     });
     let refreshing = false;
