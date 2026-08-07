@@ -1719,7 +1719,7 @@ const DEFAULT_LINKS = [
   {name:'Infinity Learn Sessions', url:'https://teacher.infinitylearn.com/dashboard/liveclass'},
   {name:'Voage Learning Sessions', url:'https://meet.google.com/fnr-hzha-tfc'},
   {name:'Tutoring MaPhy Sessions', url:'https://meet.google.com/ugu-vcgk-iaw'},
-  {name:'Record (Zoom)', url:'https://us05web.zoom.us/j/87538828391?pwd=r4ht2TSIXr8BKEKnmaUlJgFoAPI7XO.1'},
+  {name:'Record (Zoom)', url:'https://us05web.zoom.us/j/83696930437?pwd=koQkdcKLNoBFdgeSaOKi6WTlDtPsN0.1'},
 ];
 
 function defaultGoals(stop){
@@ -1747,7 +1747,9 @@ let state = Object.assign({
 }, loadState());
 if(!state.goals) state.goals = defaultGoals(state.stop);
 DEFAULT_LINKS.forEach(dl=>{
-  if(!state.links.some(l=>l.url===dl.url)) state.links.push(dl);
+  const existing = state.links.find(l=>l.name===dl.name);
+  if(existing) existing.url = dl.url;
+  else state.links.push(dl);
 });
 function persist(){ saveState(state); }
 persist();
