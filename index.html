@@ -828,6 +828,8 @@ body, body *{
   --oh-navy:#2E4A66;
   --oh-plum:#5B3B66;
   --oh-clay:#9C5231;
+  --oh-teal:#1F6E68;
+  --oh-mustard:#8A6D1C;
   --oh-line:rgba(43,33,26,0.13);
   --oh-shadow:0 10px 28px rgba(43,33,26,0.10);
 }
@@ -877,6 +879,8 @@ body, body *{
 #officeHoursRoot .student-card.kiren{--accent:var(--oh-navy);}
 #officeHoursRoot .student-card.dharshinie{--accent:var(--oh-plum);}
 #officeHoursRoot .student-card.kaushik{--accent:var(--oh-clay);}
+#officeHoursRoot .student-card.sachip{--accent:var(--oh-teal);}
+#officeHoursRoot .student-card.srisetty{--accent:var(--oh-mustard);}
 #officeHoursRoot .student-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;gap:10px;}
 #officeHoursRoot .student-name{font-family:'Fraunces',serif;font-weight:600;font-size:20px;}
 #officeHoursRoot .student-status{
@@ -2459,6 +2463,16 @@ tickClock();
       report:'https://docs.google.com/spreadsheets/d/1rgZlFjLJQrguaJxjpQfUyjbdsUqSE6zcvPef0YkeIqI/edit?gid=1881474563#gid=1881474563',
       session:'https://meet.google.com/vby-rmvx-gct',
       times:[{day:'tue',time:'22:30'}]
+    },
+    {
+      id:'sachip', name:"Sachi P's Session - WinQuest", cls:'sachip',
+      session:'https://meet.google.com/sfd-xodx-dcb',
+      times:[{day:'sat',time:'05:00'}]
+    },
+    {
+      id:'srisetty', name:"Sri Setty Medam's Session - WinQuest", cls:'srisetty',
+      session:'https://meet.google.com/bge-vpqf-jwo',
+      times:[{day:'mon',time:'20:30'},{day:'thu',time:'20:30'},{day:'fri',time:'20:30'}]
     }
   ];
   window.__missionControlSessions = SESSIONS; // shared read-only copy for the Dashboard tab
