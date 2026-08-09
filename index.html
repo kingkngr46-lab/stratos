@@ -4,6 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0">
 <title>Mission Control</title>
+<script>
+(function(){
+  try{
+    var t = localStorage.getItem('mc-theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', t);
+  }catch(e){ document.documentElement.setAttribute('data-theme', 'dark'); }
+})();
+</script>
 <meta name="description" content="Dashboard, Vitality, Stratos, Office Hours, and Pit Stop — health, the build, tutoring, and the reset, in one command center.">
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#0d0f14">
@@ -164,7 +172,36 @@ input, select, textarea{
 }
 
 .tab-panel{display:none;}
-.tab-panel.active{display:block;}
+.tab-panel.active{display:block; animation:tabFadeIn .32s cubic-bezier(.22,.61,.36,1);}
+@keyframes tabFadeIn{ from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:translateY(0);} }
+.shell-tab{transition:background 0.25s ease, color 0.25s ease, transform 0.15s ease;}
+.shell-tab:active{transform:scale(0.94);}
+@media (prefers-reduced-motion: reduce){
+  .tab-panel.active{animation:none;}
+  .shell-tab{transition:none;}
+}
+
+/* ---------- signature "frame" callout: used across every tab, additive only ---------- */
+.frame{
+  position:relative; border-radius:16px; padding:14px 18px; margin:0 0 20px;
+  background:linear-gradient(135deg, rgba(255,255,255,0.07), rgba(255,255,255,0.02));
+  border:1px solid rgba(255,255,255,0.14);
+  backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);
+  box-shadow:0 10px 26px rgba(0,0,0,0.25);
+  font-size:13.5px; line-height:1.6; color:inherit; text-align:center;
+  transition:transform .25s ease, box-shadow .25s ease;
+}
+.frame:hover{ transform:translateY(-2px); box-shadow:0 14px 32px rgba(0,0,0,0.32); }
+.frame::before{
+  content:''; position:absolute; top:0; left:50%; transform:translateX(-50%);
+  width:44px; height:3px; border-radius:2px;
+  background:linear-gradient(90deg,#00d9ff,#9b7bf0,#ffb020);
+}
+.frame .frame-tag{
+  font-family:'IBM Plex Mono',monospace; font-size:10px; text-transform:uppercase;
+  letter-spacing:.1em; opacity:.6; margin-bottom:6px; display:block;
+}
+@media (prefers-reduced-motion: reduce){ .frame{transition:none;} }
 
 
 /* ---------- Stratos focus-mode state rules (unscoped: #stratosRoot is globally unique) ---------- */
@@ -275,6 +312,20 @@ body, body *{
 
 
 #dashboardRoot{
+  --db-bg:#12151b;
+  --db-surface:#1b1f28;
+  --db-ink:#EDEFF4;
+  --db-ink-soft:#9AA1AE;
+  --db-line:rgba(255,255,255,0.09);
+  --db-shadow:0 10px 28px rgba(0,0,0,0.35);
+  --db-vitality:#7FAE78;
+  --db-stratos:#3FC2E0;
+  --db-office:#D6A24F;
+  --db-pitstop:#E27FA8;
+  --db-alert:#E0654A;
+  --db-alert-soft:rgba(196,67,46,0.16);
+}
+html[data-theme="light"] #dashboardRoot{
   --db-bg:#EEF1F5;
   --db-surface:#FFFFFF;
   --db-ink:#20242C;
@@ -352,6 +403,27 @@ body, body *{
 
 
   #vitalityRoot{
+    --bg: #12160f;
+    --surface: #1b2116;
+    --surface-soft: #21281b;
+    --ink: #E9EDE2;
+    --ink-soft: #A2AC98;
+    --garnet: #E58C9C;
+    --garnet-soft: rgba(122,46,58,0.28);
+    --gold: #E8BE72;
+    --gold-soft: rgba(185,130,47,0.24);
+    --sage: #8FC787;
+    --sage-soft: rgba(79,107,74,0.28);
+    --line: rgba(255,255,255,0.09);
+    --shadow: 0 10px 30px rgba(0,0,0,0.35);
+    --chip-lean-txt: #C8EAC2;
+    --chip-ease-txt: #F6D4D9;
+    --jump-txt: #F3D9A4;
+    --notes-bg: #1b2116;
+    --notes-ink: #EDEAD9;
+    --notes-li: #C9C6B6;
+  }
+  html[data-theme="light"] #vitalityRoot{
     --bg: #EEF1E6;
     --surface: #FFFFFF;
     --surface-soft: #F6F5EE;
@@ -365,6 +437,12 @@ body, body *{
     --sage-soft: #E4EBDF;
     --line: rgba(35,42,32,0.12);
     --shadow: 0 10px 30px rgba(35,42,32,0.08);
+    --chip-lean-txt: #35462F;
+    --chip-ease-txt: #5E2028;
+    --jump-txt: #8A611F;
+    --notes-bg: #232A20;
+    --notes-ink: #F4F1E8;
+    --notes-li: #D9D6C9;
   }
   #vitalityRoot, #vitalityRoot *{ box-sizing: border-box; }
   #vitalityRoot{
@@ -442,7 +520,7 @@ body, body *{
   #vitalityRoot .date-sub{ font-family:'IBM Plex Mono', monospace; font-size: 11.5px; color: var(--ink-soft); text-transform:uppercase; letter-spacing:0.05em; }
   #vitalityRoot .today-jump{
     font-family:'IBM Plex Mono', monospace; font-size: 11px; text-transform:uppercase; letter-spacing:0.05em;
-    background: var(--gold-soft); color:#8A611F; border:none; border-radius:999px; padding:6px 12px; cursor:pointer;
+    background: var(--gold-soft); color:var(--jump-txt); border:none; border-radius:999px; padding:6px 12px; cursor:pointer;
     white-space:nowrap; flex-shrink:0;
   }
   @media (max-width: 460px){
@@ -521,13 +599,13 @@ body, body *{
   #vitalityRoot .chip-cols.lean-in h4{ color: var(--sage); }
   #vitalityRoot .chip-cols .ease-off h4{ color: var(--garnet); }
   #vitalityRoot .chips{ display:flex; flex-wrap:wrap; gap:8px; }
-  #vitalityRoot .chip{ font-size: 12.5px; padding: 6px 12px; border-radius: 999px; background: var(--sage-soft); color: #35462F; }
-  #vitalityRoot .ease-off-chips .chip{ background: var(--garnet-soft); color: #5E2028; }
+  #vitalityRoot .chip{ font-size: 12.5px; padding: 6px 12px; border-radius: 999px; background: var(--sage-soft); color: var(--chip-lean-txt); }
+  #vitalityRoot .ease-off-chips .chip{ background: var(--garnet-soft); color: var(--chip-ease-txt); }
 
-  #vitalityRoot .notes{ background: var(--ink); color: #F4F1E8; border-radius: 18px; padding: 24px; }
-  #vitalityRoot .notes h2{ font-family:'Fraunces', serif; font-weight:600; font-size: 19px; margin: 0 0 12px; color: #F4F1E8; }
+  #vitalityRoot .notes{ background: var(--notes-bg); color: var(--notes-ink); border-radius: 18px; padding: 24px; border: 1px solid var(--line); }
+  #vitalityRoot .notes h2{ font-family:'Fraunces', serif; font-weight:600; font-size: 19px; margin: 0 0 12px; color: var(--notes-ink); }
   #vitalityRoot .notes ul{ margin:0; padding-left: 18px; }
-  #vitalityRoot .notes li{ font-size: 13px; line-height:1.7; margin-bottom:8px; color: #D9D6C9; }
+  #vitalityRoot .notes li{ font-size: 13px; line-height:1.7; margin-bottom:8px; color: var(--notes-li); }
   #vitalityRoot .notes li:last-child{ margin-bottom:0; }
   #vitalityRoot .notes .flag{ color: var(--gold); font-weight:600; }
 
@@ -814,6 +892,26 @@ body, body *{
 
 
 #officeHoursRoot{
+  --oh-bg:#171310;
+  --oh-surface:#211b16;
+  --oh-surface-soft:#271f19;
+  --oh-ink:#F2EAE0;
+  --oh-ink-soft:#B3A392;
+  --oh-forest:#5FAE9B;
+  --oh-forest-soft:rgba(47,93,80,0.28);
+  --oh-maroon:#E08099;
+  --oh-maroon-soft:rgba(122,50,68,0.28);
+  --oh-brass:#D6A24F;
+  --oh-brass-soft:rgba(169,118,47,0.24);
+  --oh-navy:#7FA8D6;
+  --oh-plum:#B092C4;
+  --oh-clay:#D6935F;
+  --oh-teal:#5FC2B8;
+  --oh-mustard:#D6B24F;
+  --oh-line:rgba(255,255,255,0.09);
+  --oh-shadow:0 10px 28px rgba(0,0,0,0.35);
+}
+html[data-theme="light"] #officeHoursRoot{
   --oh-bg:#F3ECDD;
   --oh-surface:#FFFFFF;
   --oh-surface-soft:#FBF7EE;
@@ -1151,6 +1249,7 @@ body, body *{
     <button class="shell-tab" data-shell-tab="officehours"><span class="emo">🎓</span> Office Hours</button>
     <button class="shell-tab" data-shell-tab="pitstop"><span class="emo">🧯</span> Pit Stop</button>
   </div>
+  <button class="about-btn" id="themeToggleBtn" aria-label="Switch light/dark theme">🌙</button>
   <button class="about-btn" id="aboutBtn" aria-label="About Mission Control">ℹ️</button>
 </div>
 <div id="updateBanner">
@@ -1189,6 +1288,8 @@ body, body *{
     <h1>🏠 Mission Control</h1>
     <p class="sub">Everything in one glance — health, the build, tutoring, and the reset. Tap any card to jump in.</p>
   </header>
+
+  <div class="frame"><span class="frame-tag">Command Center</span>Five systems, one glance. Health, the build, tutoring, and the reset — synced, quiet, always exactly where you left them.</div>
 
   <div class="session-alert" id="sessionAlert">
     <div class="tag">⏰ Coming up soon</div>
@@ -1249,6 +1350,8 @@ body, body *{
     <h1>🥗 Vitality Tracker</h1>
     <p class="sub">Same food, movement, and rituals as before — but now you tick them off each day, and the ring, streak, and history show whether it's actually holding.</p>
   </header>
+
+  <div class="frame"><span class="frame-tag">Today's Practice</span>Small honest checkmarks beat big broken streaks. Show up today, log it, and let tomorrow take care of itself.</div>
 
   <div class="today-panel">
     <div class="ring-wrap">
@@ -1412,6 +1515,8 @@ body, body *{
     <p class="sub">Schedules, session links, and daily reports for your tutoring students — plus the day's admin forms and a quiet corner to breathe.</p>
   </header>
 
+  <div class="frame"><span class="frame-tag">Today's Roster</span>Every session here is someone counting on you to show up. Sessions, reports, and forms — all one tap away.</div>
+
   <div class="admin-links">
     <a class="admin-link" href="https://docs.google.com/forms/d/e/1FAIpQLSdQVeSa6TLaXK6AXH3kgDHdmJAu0ZoWhpanEBPG2xGa2z5WBg/viewform" target="_blank" rel="noopener">📋 EdifyChamps Daily Report</a>
     <a class="admin-link" href="https://docs.google.com/forms/d/e/1FAIpQLSdjglMlW7BtHRwcwNwI3IqwsBrkTQO5THmUc2zNcavwQUZqjQ/viewform" target="_blank" rel="noopener">🚫 Infinity Learn — No Show Form</a>
@@ -1443,6 +1548,8 @@ body, body *{
   <div class="eyebrow">FOR THE DAYS THAT GO SIDEWAYS</div>
   <h1>Pit Stop<br><span>90 seconds, then back in it</span></h1>
   <p class="subtitle">You don't have time to fall apart — you have time for a pit stop. Say what's going on. Get one quote, one song, one thing to watch, one thing to do. That's it.</p>
+
+  <div class="frame"><span class="frame-tag">Quick Reset</span>Ninety seconds is enough. Breathe, reset, and get back to yourself — no explanation needed to anyone, especially you.</div>
 
   <div class="gauge-stage">
     <div class="gauge">
@@ -1894,6 +2001,8 @@ function renderHub(){
   h += isContentDay
     ? `<div class="note amber hide-on-focus">📡 Today is a designated content day. Check Goals → Bi-Weekly for the active channel's workflow.</div>`
     : `<div class="note hide-on-focus">🌿 Not a content day. Tutoring and rest only.</div>`;
+
+  h += `<div class="frame hide-on-focus"><span class="frame-tag">Mission Brief</span>Momentum compounds quietly. Every gate you hold honestly moves the next phase closer — no rushing required.</div>`;
 
   h += `<div class="sec-hdr hide-on-focus"><div class="sec-tag" style="color:var(--cyan-light)">01</div><div class="sec-title">🔗 Quick Access</div></div>`;
   h += `<div class="link-grid hide-on-focus">`;
@@ -3261,6 +3370,21 @@ tickClock();
     } else {
       window.location.reload();
     }
+  });
+
+  // ---- Theme toggle (dark by default, light optional) ----
+  const themeToggleBtn = document.getElementById('themeToggleBtn');
+  function applyThemeIcon(){
+    const t = document.documentElement.getAttribute('data-theme') || 'dark';
+    themeToggleBtn.textContent = t === 'light' ? '☀️' : '🌙';
+  }
+  applyThemeIcon();
+  themeToggleBtn.addEventListener('click', () => {
+    const current = document.documentElement.getAttribute('data-theme') || 'dark';
+    const next = current === 'light' ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', next);
+    try{ localStorage.setItem('mc-theme', next); }catch(e){}
+    applyThemeIcon();
   });
 
   // ---- About panel ----
