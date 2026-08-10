@@ -973,16 +973,19 @@ html[data-theme="light"] #officeHoursRoot{
 #officeHoursRoot .cal-wrap{
   width:100%;aspect-ratio:16/9;background:var(--oh-surface);border-radius:16px;box-shadow:var(--oh-shadow);
   border:1px solid var(--oh-line);overflow:hidden;margin-bottom:20px;display:flex;flex-direction:column;
+  align-items:stretch !important;
 }
+#officeHoursRoot .cal-header-row, #officeHoursRoot .cal-body{ align-items:stretch !important; justify-content:normal !important; }
+#officeHoursRoot .cal-time-col, #officeHoursRoot .cal-day-body{ align-items:stretch !important; justify-content:normal !important; }
 #officeHoursRoot .cal-header-row{display:grid;grid-template-columns:8% repeat(7,1fr);flex-shrink:0;}
 #officeHoursRoot .cal-corner{background:var(--oh-surface);border-bottom:1px solid var(--oh-line);}
 #officeHoursRoot .cal-daycol-hdr{
-  text-align:center;padding:3% 1px;font-family:'IBM Plex Mono',monospace;font-size:clamp(7px,2vw,11px);font-weight:700;
+  text-align:center;padding:5px 1px;font-family:'IBM Plex Mono',monospace;font-size:clamp(7px,2vw,11px);font-weight:700;
   text-transform:uppercase;letter-spacing:0.03em;color:var(--oh-ink-soft);border-bottom:1px solid var(--oh-line);
   border-left:1px solid var(--oh-line);background:var(--oh-surface);
 }
 #officeHoursRoot .cal-daycol-hdr.today{color:var(--oh-brass);}
-#officeHoursRoot .cal-body{flex:1;min-height:0;display:grid;grid-template-columns:8% repeat(7,1fr);position:relative;}
+#officeHoursRoot .cal-body{flex:1;min-height:0;display:grid;grid-template-columns:8% repeat(7,1fr);grid-template-rows:minmax(0,1fr);position:relative;}
 #officeHoursRoot .cal-time-col{position:relative;}
 #officeHoursRoot .cal-time-lbl{
   position:absolute;right:3px;font-family:'IBM Plex Mono',monospace;font-size:clamp(6px,1.6vw,9px);color:var(--oh-ink-soft);
@@ -991,7 +994,7 @@ html[data-theme="light"] #officeHoursRoot{
 #officeHoursRoot .cal-day-body{position:relative;border-left:1px solid var(--oh-line);}
 #officeHoursRoot .cal-hr-line{position:absolute;left:0;right:0;border-top:1px solid var(--oh-line);}
 #officeHoursRoot .cal-event{
-  position:absolute;left:1.5%;right:1.5%;border-radius:6px;padding:2% 4%;overflow:hidden;
+  position:absolute;left:1.5%;right:1.5%;border-radius:6px;padding:2px 4px;overflow:hidden;
   color:#fff;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,0.3);
   transition:transform .12s ease, box-shadow .12s ease, z-index 0s; z-index:1;
 }
@@ -2701,8 +2704,9 @@ tickClock();
           const rowIdx = CAL_HOURS.indexOf(hh);
           if(rowIdx === -1) return;
           const top = ((rowIdx + mm/60) / CAL_ROWS) * 100;
+          const height = Math.min((1/CAL_ROWS)*100, 100 - top);
           const st = sessionStatus([t]);
-          events += `<div class="cal-event ${st.live?'live':''}" style="top:${top}%;height:${(1/CAL_ROWS)*100}%;background:${s.color}" onclick="openSessionPopover(event,'${s.id}')">
+          events += `<div class="cal-event ${st.live?'live':''}" style="top:${top}%;height:${height}%;background:${s.color}" onclick="openSessionPopover(event,'${s.id}')">
             <div class="cal-event-name">${s.name}</div>
             <div class="cal-event-time">${formatTime12(t.time)}</div>
           </div>`;
