@@ -1042,9 +1042,9 @@ html[data-theme="light"] #officeHoursRoot{
 #officeHoursRoot .nature-body{padding:20px 22px 22px;}
 #officeHoursRoot .nature-quote{font-family:'Fraunces',serif;font-style:italic;font-size:16px;line-height:1.5;color:var(--oh-ink);min-height:2.6em;}
 #officeHoursRoot .nature-attr{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--oh-ink-soft);margin-top:8px;text-transform:uppercase;letter-spacing:0.04em;}
-#officeHoursRoot .nature-dots{display:flex;gap:6px;margin-top:14px;}
-#officeHoursRoot .nature-dot{width:6px;height:6px;border-radius:50%;background:var(--oh-line);}
-#officeHoursRoot .nature-dot.active{background:var(--oh-brass);}
+#officeHoursRoot .nature-progress{margin-top:14px;height:3px;border-radius:2px;background:var(--oh-line);overflow:hidden;}
+#officeHoursRoot .nature-progress-fill{height:100%;background:var(--oh-brass);border-radius:2px;transition:width .4s ease;}
+#officeHoursRoot .nature-counter{margin-top:8px;font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:var(--oh-ink-soft);text-transform:uppercase;letter-spacing:0.05em;}
 
 #officeHoursRoot footer{text-align:center;margin-top:20px;font-size:12px;color:var(--oh-ink-soft);font-family:'IBM Plex Mono',monospace;}
 
@@ -1557,7 +1557,8 @@ html[data-theme="light"] #officeHoursRoot{
     <div class="nature-body">
       <div class="nature-quote" id="natureQuote">Loading…</div>
       <div class="nature-attr" id="natureAttr"></div>
-      <div class="nature-dots" id="natureDots"></div>
+      <div class="nature-progress"><div class="nature-progress-fill" id="natureProgressFill"></div></div>
+      <div class="nature-counter" id="natureCounter"></div>
     </div>
   </div>
 
@@ -2767,29 +2768,76 @@ tickClock();
     {img:'nature-6.png', title:'Eagle Over the Cliffs', quote:'The eagle never lost so much time as when he submitted to learn of the crow.', attr:'William Blake'},
     {img:'nature-1.png', title:'Hilltop at Dusk', quote:'Adopt the pace of nature: her secret is patience.', attr:'Ralph Waldo Emerson'},
   ];
+
+  // 94 more, built from a curated quote pool paired with lock-seeded (stable) stock nature photos —
+  // hotlinked rather than stored, so they need a network connection and won't work fully offline.
+  const NATURE_QUOTE_POOL = [
+    {title:'Stillness', quote:"In the midst of movement and chaos, keep stillness inside of you.", attr:'Deepak Chopra'},
+    {title:'Slow Mornings', quote:'Almost everything will work again if you unplug it for a few minutes, including you.', attr:'Anne Lamott'},
+    {title:'Quiet Trails', quote:'Wilderness is not a luxury but a necessity of the human spirit.', attr:'Edward Abbey'},
+    {title:'Open Sky', quote:"Keep close to Nature's heart, and break clear away, once in a while.", attr:'John Muir'},
+    {title:'Deep Roots', quote:'Nature does not hurry, yet everything is accomplished.', attr:'Lao Tzu'},
+    {title:'Gentle Rain', quote:'Some old-fashioned things like fresh air and sunshine are hard to beat.', attr:'Laura Ingalls Wilder'},
+    {title:'Calm Waters', quote:'In every walk with nature one receives far more than he seeks.', attr:'John Muir'},
+    {title:'Evening Light', quote:'The clearest way into the Universe is through a forest wilderness.', attr:'John Muir'},
+    {title:'Wide Horizons', quote:'Study nature, love nature, stay close to nature. It will never fail you.', attr:'Frank Lloyd Wright'},
+    {title:'Silent Woods', quote:'Nature is not a place to visit. It is home.', attr:'Gary Snyder'},
+    {title:'First Light', quote:'The earth has music for those who listen.', attr:'George Santayana'},
+    {title:'Steady Breath', quote:'Come forth into the light of things, let nature be your teacher.', attr:'William Wordsworth'},
+    {title:'Long Walks', quote:'Walking is the best possible exercise. Habituate yourself to walk very far.', attr:'Thomas Jefferson'},
+    {title:'Green Canopy', quote:'Trees are poems that the earth writes upon the sky.', attr:'Kahlil Gibran'},
+    {title:'Wildflowers', quote:'Where flowers bloom, so does hope.', attr:'Lady Bird Johnson'},
+    {title:'Falling Leaves', quote:'Autumn is a second spring when every leaf is a flower.', attr:'Albert Camus'},
+    {title:'Winter Hush', quote:'In seed time learn, in harvest teach, in winter enjoy.', attr:'William Blake'},
+    {title:'Summer Glow', quote:'Live in the sunshine, swim the sea, drink the wild air.', attr:'Ralph Waldo Emerson'},
+    {title:"River's Edge", quote:'You cannot step into the same river twice.', attr:'Heraclitus'},
+    {title:'Mountain Air', quote:'Climb the mountains and get their good tidings.', attr:'John Muir'},
+    {title:'Starlit Sky', quote:'Look up at the stars and not down at your feet.', attr:'Stephen Hawking'},
+    {title:'Quiet Dawn', quote:'Each morning we are born again. What we do today matters most.', attr:'Buddha'},
+    {title:'Soft Breeze', quote:'The wind shows us how close to the edge we are.', attr:'Joan Didion'},
+    {title:'Patient Growth', quote:'A tree that is unbending is easily broken.', attr:'Lao Tzu'},
+    {title:'Open Field', quote:'The sky is not the limit, your mind is.', attr:'common saying'}
+  ];
+  const NATURE_KEYWORDS = ['nature','forest','mountain','ocean','sunrise','flowers','river','desert','sky','trees','lake','waterfall'];
+  for(let i=0; i<94; i++){
+    const q = NATURE_QUOTE_POOL[i % NATURE_QUOTE_POOL.length];
+    const kw = NATURE_KEYWORDS[i % NATURE_KEYWORDS.length];
+    NATURE_ITEMS.push({
+      img: `https://loremflickr.com/900/600/${kw}?lock=${i+1}`,
+      title: q.title, quote: q.quote, attr: q.attr
+    });
+  }
+
   let natureIdx = 0;
   const imgWrap = document.getElementById('natureImgWrap');
-  const dotsWrap = document.getElementById('natureDots');
-  let imgEls = [];
+  const progressFill = document.getElementById('natureProgressFill');
+  const counterEl = document.getElementById('natureCounter');
+  let imgA, imgB, activeIsA = true;
 
   function buildNatureDom(){
     imgWrap.innerHTML = '';
-    imgEls = NATURE_ITEMS.map((item,i)=>{
-      const im = document.createElement('img');
-      im.src = item.img;
-      im.alt = item.title;
-      if(i===0) im.classList.add('show');
-      imgWrap.appendChild(im);
-      return im;
-    });
-    dotsWrap.innerHTML = NATURE_ITEMS.map((_,i)=>`<span class="nature-dot ${i===0?'active':''}"></span>`).join('');
+    imgA = document.createElement('img');
+    imgB = document.createElement('img');
+    imgWrap.appendChild(imgA);
+    imgWrap.appendChild(imgB);
+    imgA.src = NATURE_ITEMS[0].img;
+    imgA.alt = NATURE_ITEMS[0].title;
+    imgA.classList.add('show');
   }
   function renderNature(){
     const item = NATURE_ITEMS[natureIdx];
     document.getElementById('natureQuote').textContent = `"${item.quote}"`;
     document.getElementById('natureAttr').textContent = `— ${item.attr} · ${item.title}`;
-    imgEls.forEach((im,i)=> im.classList.toggle('show', i===natureIdx));
-    Array.from(dotsWrap.children).forEach((d,i)=> d.classList.toggle('active', i===natureIdx));
+    progressFill.style.width = `${((natureIdx+1)/NATURE_ITEMS.length)*100}%`;
+    counterEl.textContent = `${natureIdx+1} / ${NATURE_ITEMS.length}`;
+
+    const incoming = activeIsA ? imgB : imgA;
+    const outgoing = activeIsA ? imgA : imgB;
+    incoming.src = item.img;
+    incoming.alt = item.title;
+    incoming.classList.add('show');
+    outgoing.classList.remove('show');
+    activeIsA = !activeIsA;
   }
   buildNatureDom();
   renderNature();
