@@ -986,6 +986,62 @@ html[data-theme="light"] #officeHoursRoot{
 #officeHoursRoot .student-card.clay{--accent:var(--oh-clay);}
 #officeHoursRoot .student-card.teal{--accent:var(--oh-teal);}
 #officeHoursRoot .student-card.mustard{--accent:var(--oh-mustard);}
+
+/* ---------- session view toggle ---------- */
+#officeHoursRoot .view-toggle{display:flex;gap:8px;margin-bottom:16px;}
+#officeHoursRoot .view-toggle-btn{
+  font-family:'IBM Plex Mono',monospace;font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;
+  padding:9px 16px;min-height:40px;border-radius:100px;border:1px solid var(--oh-line);
+  background:var(--oh-surface-soft);color:var(--oh-ink-soft);cursor:pointer;transition:all .15s;
+}
+#officeHoursRoot .view-toggle-btn.active{background:var(--oh-brass);color:#fff;border-color:var(--oh-brass);}
+
+/* ---------- calendar (Google-Calendar-style week grid) ---------- */
+#officeHoursRoot .cal-wrap{
+  background:var(--oh-surface);border-radius:16px;box-shadow:var(--oh-shadow);border:1px solid var(--oh-line);
+  overflow-x:auto;margin-bottom:20px;
+}
+#officeHoursRoot .cal-grid{
+  display:grid;grid-template-columns:52px repeat(7, minmax(96px,1fr));
+  min-width:748px;
+}
+#officeHoursRoot .cal-corner{background:var(--oh-surface);border-bottom:1px solid var(--oh-line);}
+#officeHoursRoot .cal-daycol-hdr{
+  text-align:center;padding:10px 4px;font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:700;
+  text-transform:uppercase;letter-spacing:0.05em;color:var(--oh-ink-soft);border-bottom:1px solid var(--oh-line);
+  border-left:1px solid var(--oh-line);background:var(--oh-surface);
+}
+#officeHoursRoot .cal-daycol-hdr.today{color:var(--oh-brass);}
+#officeHoursRoot .cal-time-col{position:relative;}
+#officeHoursRoot .cal-time-lbl{
+  position:absolute;right:6px;font-family:'IBM Plex Mono',monospace;font-size:9.5px;color:var(--oh-ink-soft);
+  text-align:right;top:-6px;white-space:nowrap;
+}
+#officeHoursRoot .cal-day-body{
+  position:relative;border-left:1px solid var(--oh-line);
+  background-image:repeating-linear-gradient(to bottom, var(--oh-line) 0, var(--oh-line) 1px, transparent 1px, transparent 44px);
+}
+#officeHoursRoot .cal-event{
+  position:absolute;left:2px;right:2px;border-radius:8px;padding:4px 6px;overflow:hidden;
+  background:var(--accent, var(--oh-forest));color:#fff;cursor:pointer;box-shadow:0 3px 8px rgba(0,0,0,0.25);
+  transition:transform .12s ease, box-shadow .12s ease; z-index:1;
+}
+#officeHoursRoot .cal-event:hover{transform:scale(1.03);box-shadow:0 5px 14px rgba(0,0,0,0.35);z-index:4;}
+#officeHoursRoot .cal-event .cal-event-name{font-size:10.5px;font-weight:700;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+#officeHoursRoot .cal-event .cal-event-time{font-family:'IBM Plex Mono',monospace;font-size:9px;opacity:0.9;}
+#officeHoursRoot .cal-event.live{outline:2px solid #fff;outline-offset:-2px;animation:calLivePulse 1.6s ease-in-out infinite;}
+@keyframes calLivePulse{0%,100%{box-shadow:0 3px 8px rgba(0,0,0,0.25);}50%{box-shadow:0 3px 16px rgba(255,255,255,0.5);}}
+
+#officeHoursRoot .cal-popover-backdrop{position:fixed;inset:0;z-index:500;display:none;}
+#officeHoursRoot .cal-popover-backdrop.show{display:block;}
+#officeHoursRoot .cal-popover{
+  position:fixed;z-index:501;background:var(--oh-surface);border:1px solid var(--oh-line);border-radius:14px;
+  box-shadow:0 16px 36px rgba(0,0,0,0.4);padding:16px;width:min(280px, calc(100vw - 32px));
+}
+#officeHoursRoot .cal-popover .student-name{font-size:16px;margin-bottom:6px;}
+#officeHoursRoot .cal-popover .student-schedule{margin-bottom:12px;}
+#officeHoursRoot .cal-popover .student-status{display:inline-block;margin-bottom:12px;}
+
 #officeHoursRoot .student-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;gap:10px;}
 #officeHoursRoot .student-name{font-family:'Fraunces',serif;font-weight:600;font-size:20px;}
 #officeHoursRoot .student-status{
@@ -1523,7 +1579,12 @@ html[data-theme="light"] #officeHoursRoot{
   </div>
 
   <h2 class="sec-title">📚 Tutoring Sessions</h2>
-  <div id="studentCards"></div>
+  <div class="view-toggle">
+    <button class="view-toggle-btn active" id="calViewBtn" onclick="setSessionView('calendar')">🗓️ Calendar</button>
+    <button class="view-toggle-btn" id="listViewBtn" onclick="setSessionView('list')">📋 List</button>
+  </div>
+  <div id="sessionCalendar"></div>
+  <div id="studentCards" style="display:none"></div>
 
   <h2 class="sec-title">🌿 A Quiet Corner</h2>
   <div class="nature-card">
@@ -2665,6 +2726,95 @@ tickClock();
   renderStudents();
   setInterval(renderStudents, 30000);
 
+  /* ---------- calendar view (Google-Calendar-style week grid) ---------- */
+  const CAL_START_HOUR = 5, CAL_END_HOUR = 23, CAL_ROW_H = 44;
+  const CAL_ROWS = CAL_END_HOUR - CAL_START_HOUR;
+
+  function renderCalendar(){
+    const holder = document.getElementById('sessionCalendar');
+    if(!holder) return;
+    const today = DAY_ORDER[new Date().getDay()];
+
+    let hdr = `<div class="cal-corner"></div>`;
+    DAY_ORDER.forEach(d => { hdr += `<div class="cal-daycol-hdr ${d===today?'today':''}">${DAY_LABEL[d]}</div>`; });
+
+    let timeCol = `<div class="cal-time-col" style="height:${CAL_ROWS*CAL_ROW_H}px">`;
+    for(let h=CAL_START_HOUR; h<CAL_END_HOUR; h++){
+      timeCol += `<div class="cal-time-lbl" style="top:${(h-CAL_START_HOUR)*CAL_ROW_H}px">${formatTime12(String(h).padStart(2,'0')+':00')}</div>`;
+    }
+    timeCol += `</div>`;
+
+    let dayCols = '';
+    DAY_ORDER.forEach(d => {
+      let events = '';
+      SESSIONS.forEach(s => {
+        s.times.forEach(t => {
+          if(t.day !== d) return;
+          const [hh,mm] = t.time.split(':').map(Number);
+          if(hh < CAL_START_HOUR || hh >= CAL_END_HOUR) return;
+          const top = (hh - CAL_START_HOUR)*CAL_ROW_H + (mm/60)*CAL_ROW_H;
+          const st = sessionStatus([t]);
+          events += `<div class="cal-event ${s.cls} ${st.live?'live':''}" style="top:${top}px;height:${CAL_ROW_H-2}px" onclick="openSessionPopover(event,'${s.id}')">
+            <div class="cal-event-name">${s.name}</div>
+            <div class="cal-event-time">${formatTime12(t.time)}</div>
+          </div>`;
+        });
+      });
+      dayCols += `<div class="cal-day-body" style="height:${CAL_ROWS*CAL_ROW_H}px">${events}</div>`;
+    });
+
+    holder.innerHTML = `<div class="cal-wrap"><div class="cal-grid">${hdr}${timeCol}${dayCols}</div></div>
+      <div class="cal-popover-backdrop" id="calPopoverBackdrop" onclick="closeSessionPopover()"></div>
+      <div class="cal-popover" id="calPopover" style="display:none"></div>`;
+  }
+  renderCalendar();
+  setInterval(renderCalendar, 30000);
+
+  window.openSessionPopover = function(evt, id){
+    const s = SESSIONS.find(x => x.id === id);
+    if(!s) return;
+    const st = sessionStatus(s.times);
+    const pop = document.getElementById('calPopover');
+    const backdrop = document.getElementById('calPopoverBackdrop');
+    pop.innerHTML = `
+      <div class="student-name">${s.name}</div>
+      <div class="student-status ${st.live?'live':''}">${st.text}</div>
+      <div class="student-schedule">🗓️ ${formatSchedule(s.times)}</div>
+      <div class="student-actions">
+        ${s.report ? `<a class="student-btn report" href="${s.report}" target="_blank" rel="noopener">📊 Daily Report</a>` : ''}
+        <a class="student-btn join" href="${s.session}" target="_blank" rel="noopener">🎥 Join Session</a>
+      </div>`;
+    const rect = evt.currentTarget.getBoundingClientRect();
+    const popW = 280;
+    let left = rect.left;
+    if(left + popW > window.innerWidth - 16) left = window.innerWidth - popW - 16;
+    if(left < 16) left = 16;
+    let top = rect.bottom + 8;
+    if(top + 220 > window.innerHeight) top = Math.max(16, rect.top - 220);
+    pop.style.left = left + 'px';
+    pop.style.top = top + 'px';
+    pop.style.display = 'block';
+    backdrop.classList.add('show');
+    evt.stopPropagation();
+  };
+  window.closeSessionPopover = function(){
+    document.getElementById('calPopover').style.display = 'none';
+    document.getElementById('calPopoverBackdrop').classList.remove('show');
+  };
+
+  window.setSessionView = function(view){
+    document.getElementById('sessionCalendar').style.display = view === 'calendar' ? '' : 'none';
+    document.getElementById('studentCards').style.display = view === 'list' ? '' : 'none';
+    document.getElementById('calViewBtn').classList.toggle('active', view === 'calendar');
+    document.getElementById('listViewBtn').classList.toggle('active', view === 'list');
+    if(view !== 'calendar') closeSessionPopover();
+    try{ localStorage.setItem('oh-session-view', view); }catch(e){}
+  };
+  try{
+    const savedView = localStorage.getItem('oh-session-view');
+    if(savedView === 'list') setSessionView('list');
+  }catch(e){}
+
   /* ---------- nature corner ---------- */
   const NATURE_ITEMS = [
     {img:'nature-2.png', title:'Mountains at Dawn', quote:'The mountains are calling and I must go.', attr:'John Muir'},
@@ -2862,7 +3012,9 @@ tickClock();
       ],
       activities:[
         {icon:"✋", title:"Don't reply for 10 minutes", time:"10 min", text:"Whatever you want to say back, it'll still be true in 10 minutes. Put the phone down, walk away from the chat, and let the sting drop before you respond — or decide not to."},
-        {icon:"🗣️", title:"Say it out loud to no one", time:"1 min", text:"Say the angry reply out loud, alone, exactly as you'd want to type it. Getting it out of your body once, unsent, usually drains most of the urge to actually send it."}
+        {icon:"🗣️", title:"Say it out loud to no one", time:"1 min", text:"Say the angry reply out loud, alone, exactly as you'd want to type it. Getting it out of your body once, unsent, usually drains most of the urge to actually send it."},
+        {icon:"🛡️", title:"Separate the words from the person", time:"1 min", text:"An insult says more about their day than your worth. Ask yourself if this is even someone whose opinion you'd trust on a good day."},
+        {icon:"📴", title:"Mute the thread for an hour", time:"1 min", text:"You don't have to engage right now. Mute or set it aside for an hour — nothing gets worse from an hour of silence, and you get a clearer head."}
       ],
       songs:[{icon:"🎧", name:"\"Stronger\" — Kelly Clarkson", why:"A blunt, upbeat reminder that this doesn't get to define you."},
              {icon:"🎬", name:"\"The Devil Wears Prada\"", why:"Watch someone get talked down to and win anyway — oddly satisfying, under 2 hours."}]
@@ -2876,7 +3028,9 @@ tickClock();
       ],
       activities:[
         {icon:"🚶", title:"Take a lap outside", time:"5 min", text:"Leave the building or the room. Walk one loop, no phone. You're not solving anything on this walk — you're just changing the scene your brain is stuck in."},
-        {icon:"🧊", title:"Cold water on your wrists", time:"1 min", text:"Run cold water over both wrists for 30 seconds. It's a quick, physical circuit-breaker that gives your attention somewhere else to go besides the replay loop."}
+        {icon:"🧊", title:"Cold water on your wrists", time:"1 min", text:"Run cold water over both wrists for 30 seconds. It's a quick, physical circuit-breaker that gives your attention somewhere else to go besides the replay loop."},
+        {icon:"📝", title:"Name three things that didn't go wrong", time:"2 min", text:"A bad day feels total, but it rarely was. List three small things that actually went fine — it resets the frame without denying the rough parts."},
+        {icon:"🍵", title:"Make something warm to drink", time:"3 min", text:"A small, deliberate ritual — tea, coffee, anything warm — gives your hands something to do while the day's edge wears off."}
       ],
       songs:[{icon:"🎧", name:"\"Don't Stop Me Now\" — Queen", why:"Impossible to stay flat while it's playing — a genuine mood interrupt."},
              {icon:"🎬", name:"\"Paddington 2\"", why:"Ridiculously kind and funny. One of the most purely comforting films made."}]
@@ -2888,7 +3042,9 @@ tickClock();
       breathing:true,
       activities:[
         {icon:"💥", title:"Burn it off first", time:"90 sec", text:"15 fast push-ups, a hard set of stairs, or hit a cushion a few times. This isn't about the message you want to send — it's about the adrenaline making you want to send it."},
-        {icon:"🫁", title:"Slow the breath, then decide", time:"60 sec", text:"Anger runs on a fast, shallow breath. Use the pacer below to bring it down first — it's hard to stay redlined once your exhale is longer than your inhale."}
+        {icon:"🫁", title:"Slow the breath, then decide", time:"60 sec", text:"Anger runs on a fast, shallow breath. Use the pacer below to bring it down first — it's hard to stay redlined once your exhale is longer than your inhale."},
+        {icon:"✍️", title:"Draft it, don't send it", time:"2 min", text:"Write exactly what you want to say in a notes app, not the chat. Read it back in five minutes — you'll usually cut half of it."},
+        {icon:"🚪", title:"Leave the room for two minutes", time:"2 min", text:"Physically remove yourself from whatever triggered it. Distance alone lowers the temperature faster than trying to reason your way calm in place."}
       ],
       songs:[{icon:"🎧", name:"\"Weightless\" — Marconi Union", why:"Built with sound therapists specifically to slow a racing nervous system."},
              {icon:"🎬", name:"Skip the screen for now", why:"Anger narrows focus — save the movie for after the reset, you'll actually enjoy it."}]
@@ -2902,7 +3058,9 @@ tickClock();
       ],
       activities:[
         {icon:"🫁", title:"Ride the wave, don't feed it", time:"2 min", text:"Embarrassment spikes hard and fast, then fades faster than it feels like it will — if you don't keep replaying it. Do one unrelated task for two minutes and give the spike somewhere else to go."},
-        {icon:"📞", title:"Say it to someone, once", time:"2 min", text:"Tell one person what happened, plainly, no self-punishment. Saying it out loud once tends to shrink it faster than replaying it silently ten times."}
+        {icon:"📞", title:"Say it to someone, once", time:"2 min", text:"Tell one person what happened, plainly, no self-punishment. Saying it out loud once tends to shrink it faster than replaying it silently ten times."},
+        {icon:"😅", title:"Find the funny angle", time:"1 min", text:"Almost every embarrassing moment has a genuinely funny angle once the sting fades. Try to find it now instead of waiting for next week to laugh."},
+        {icon:"🧠", title:"Remember the spotlight effect", time:"1 min", text:"People remember their own mistakes far more than yours. What feels unforgettable to you is already fading from everyone else's mind."}
       ],
       songs:[{icon:"🎧", name:"\"Shake It Off\" — Taylor Swift", why:"Deliberately, almost comically, about not holding onto this exact feeling."},
              {icon:"🎬", name:"\"Ferris Bueller's Day Off\"", why:"Light, fast, and a reminder that most days aren't this serious."}]
@@ -2916,7 +3074,9 @@ tickClock();
       ],
       activities:[
         {icon:"📝", title:"Separate the fact from the story", time:"2 min", text:"Write the actual fact ('they said no') on one line. Under it, write the story your brain is adding ('so I'm not good enough'). Those are two different things — only the first one is true."},
-        {icon:"🚶", title:"Move first, process later", time:"5 min", text:"Don't sit with a screen right after a no. Take a short walk or do something physical first — the sting is easier to think clearly about once the initial jolt passes."}
+        {icon:"🚶", title:"Move first, process later", time:"5 min", text:"Don't sit with a screen right after a no. Take a short walk or do something physical first — the sting is easier to think clearly about once the initial jolt passes."},
+        {icon:"🎯", title:"List what this frees you up for", time:"2 min", text:"A no closes one path but opens the time and energy you'd have spent on it. Write down one thing this rejection actually makes room for."},
+        {icon:"📨", title:"Ask for feedback, once", time:"3 min", text:"If it's appropriate, ask one specific question about why. Real feedback turns a sting into something useful — you don't have to guess anymore."}
       ],
       songs:[{icon:"🎧", name:"\"Roar\" — Katy Perry", why:"A little defiant, good for putting the rejection down rather than carrying it."},
              {icon:"🎬", name:"\"Rocky\"", why:"About getting back up specifically after a no, not despite one."}]
@@ -2927,7 +3087,9 @@ tickClock();
       recheck:true,
       activities:[
         {icon:"⏸️", title:"Take the pause before the next message", time:"10 min", text:"Whatever you send in the next 10 minutes will be the angriest version of what you mean. Step away from the chat physically — different room, if you can — before you reply."},
-        {icon:"🧩", title:"Name what you actually want", time:"3 min", text:"Write down what you actually want out of this — to be heard, an apology, a change — separate from wanting to win the argument. It's easier to say the real thing once you know what it is."}
+        {icon:"🧩", title:"Name what you actually want", time:"3 min", text:"Write down what you actually want out of this — to be heard, an apology, a change — separate from wanting to win the argument. It's easier to say the real thing once you know what it is."},
+        {icon:"🔄", title:"Ask what they might be feeling", time:"2 min", text:"Before your next reply, guess at what's underneath their side of this — fear, tiredness, feeling unheard. It softens what you say next, even if you're still right."},
+        {icon:"🤲", title:"Pick one thing to concede", time:"2 min", text:"Find one small point in the argument you can genuinely give ground on. It rarely costs you the real issue, and it usually de-escalates the whole thing."}
       ],
       songs:[{icon:"🎧", name:"\"Weightless\" — Marconi Union", why:"Slows a racing pulse before you say something you can't unsay."},
              {icon:"🎬", name:"Skip the screen for now", why:"This one needs a clear head more than a distraction."}]
@@ -2941,7 +3103,9 @@ tickClock();
       ],
       activities:[
         {icon:"☀️", title:"Get to a window or outside", time:"3 min", text:"Bright light exposure helps reset the circadian signaling tied to energy and mood. Two minutes facing a bright window counts — you don't need a whole walk."},
-        {icon:"🧴", title:"Handle one small physical task", time:"3 min", text:"Wash your face, make your bed, or make a cup of tea — one small completed task, nothing more. Low mood often lifts a notch after the body does something small and finished."}
+        {icon:"🧴", title:"Handle one small physical task", time:"3 min", text:"Wash your face, make your bed, or make a cup of tea — one small completed task, nothing more. Low mood often lifts a notch after the body does something small and finished."},
+        {icon:"🎵", title:"Play one song you love, fully", time:"3 min", text:"Not background noise — sit and actually listen to one full song you genuinely like. A small dose of something good can nudge a flat mood without much effort."},
+        {icon:"📓", title:"Write down one thing to look forward to", time:"2 min", text:"Even something small — a meal, a show, a message from someone. Low mood narrows your view of what's ahead; this widens it back out a little."}
       ],
       songs:[{icon:"🎧", name:"\"Here Comes the Sun\" — The Beatles", why:"Simple, warm, and reliably lifts a flat mood."},
              {icon:"🎬", name:"\"The Pursuit of Happyness\"", why:"A rough-day story that ends somewhere worth watching for."}]
@@ -2956,7 +3120,9 @@ tickClock();
       ],
       activities:[
         {icon:"📝", title:"Brain-dump, then pick one", time:"3 min", text:"Write down everything pulling at you, unsorted. Then circle the single next physical action. Close everything else — it'll still be there. You're only doing the circled one."},
-        {icon:"🫁", title:"Slow the breath before the list", time:"60 sec", text:"Overwhelm speeds up your breathing before your thoughts even catch up. Use the pacer below for one round first — the brain-dump goes faster once the body's not racing too."}
+        {icon:"🫁", title:"Slow the breath before the list", time:"60 sec", text:"Overwhelm speeds up your breathing before your thoughts even catch up. Use the pacer below for one round first — the brain-dump goes faster once the body's not racing too."},
+        {icon:"🧱", title:"Close every tab but one", time:"1 min", text:"Physically close every open tab, app, and browser window except the one thing you're doing right now. Fewer visible options means fewer things pulling at your attention."},
+        {icon:"⏳", title:"Set a 10-minute timer, one task only", time:"10 min", text:"Pick the smallest piece of the pile and give it exactly 10 minutes, nothing else. A contained task feels finishable in a way the whole pile never does."}
       ],
       songs:[{icon:"🎧", name:"\"Clair de Lune\" — Debussy", why:"No lyrics competing for attention — just enough to slow your breathing down."},
              {icon:"🎬", name:"Save the screen for tonight", why:"Right now needs 3 minutes of sorting, not 2 hours of distraction."}]
@@ -2971,7 +3137,9 @@ tickClock();
       ],
       activities:[
         {icon:"🛑", title:"Take the next 10 minutes off, fully", time:"10 min", text:"No email, no scrolling either — that's not rest, that's just a different tab. Sit, stretch, or lie down and stare at nothing. Boredom is the point."},
-        {icon:"🛌", title:"Lie down for 10, no phone", time:"10 min", text:"Lie flat, phone in another room, eyes closed. You don't need to sleep — just let your nervous system drop out of 'on' mode for a few minutes."}
+        {icon:"🛌", title:"Lie down for 10, no phone", time:"10 min", text:"Lie flat, phone in another room, eyes closed. You don't need to sleep — just let your nervous system drop out of 'on' mode for a few minutes."},
+        {icon:"🚫", title:"Cancel one non-essential thing today", time:"2 min", text:"Look at what's left on today's list and cancel or postpone one thing that isn't truly essential. Burnout needs less input, not a better system."},
+        {icon:"🌳", title:"Step outside for fresh air", time:"5 min", text:"No agenda, no walk required — just stand outside and breathe for a few minutes. A change of air alone can loosen a tight, tired mind."}
       ],
       songs:[{icon:"🎧", name:"\"Weightless\" — Marconi Union", why:"Same track, different use — this one's for winding a redlined body back down."},
              {icon:"🎬", name:"Anything you've already seen 10 times", why:"No new plot to track means your brain gets an actual break."}]
@@ -2986,7 +3154,9 @@ tickClock();
       ],
       activities:[
         {icon:"🧭", title:"Name the next concrete step", time:"2 min", text:"Uncertainty feels bigger when it's shapeless. Write down the one next concrete action you can actually take today, and set aside the parts you genuinely can't control yet."},
-        {icon:"👁️", title:"5-4-3-2-1 grounding", time:"2 min", text:"Name 5 things you can see, 4 you can touch, 3 you can hear, 2 you can smell, 1 you can taste. It pulls your attention out of the 'what if' loop and back into the room you're actually in."}
+        {icon:"👁️", title:"5-4-3-2-1 grounding", time:"2 min", text:"Name 5 things you can see, 4 you can touch, 3 you can hear, 2 you can smell, 1 you can taste. It pulls your attention out of the 'what if' loop and back into the room you're actually in."},
+        {icon:"📋", title:"Write down the worst case, then the likely case", time:"3 min", text:"Anxiety inflates the worst case into the likely one. Write both down separately — seeing them side by side usually shrinks the gap between what you fear and what's probable."},
+        {icon:"🕰️", title:"Ask what you can do about it right now", time:"1 min", text:"If there's a real action available now, take it. If there isn't, that itself is useful information — there's nothing to do but wait, so let yourself actually wait."}
       ],
       songs:[{icon:"🎧", name:"\"Saturn\" — Sleeping At Last", why:"Slow, spacious, and good for a mind that's racing ahead of itself."},
              {icon:"🎬", name:"\"Cast Away\"", why:"A long sit with uncertainty that resolves into something steadier."}]
@@ -3000,7 +3170,9 @@ tickClock();
       ],
       activities:[
         {icon:"🧊", title:"Cold on the face or wrists", time:"30 sec", text:"Cold water or an ice cube on your face, or run cold water over your wrists. It triggers a physical reflex that helps bring a spiking heart rate back down fast."},
-        {icon:"🫁", title:"Exhale longer than you inhale", time:"90 sec", text:"Use the pacer below. A longer exhale than inhale is one of the fastest physical signals you can send your nervous system that it's safe to stand down."}
+        {icon:"🫁", title:"Exhale longer than you inhale", time:"90 sec", text:"Use the pacer below. A longer exhale than inhale is one of the fastest physical signals you can send your nervous system that it's safe to stand down."},
+        {icon:"✋", title:"Press your feet into the floor", time:"30 sec", text:"Push both feet flat into the ground and notice the pressure. It's a fast, physical anchor that pulls your nervous system back into the present moment."},
+        {icon:"🔢", title:"Count backward from 100 by 7s", time:"60 sec", text:"A specific, effortful mental task gives a racing mind somewhere to go besides the panic itself. It doesn't have to be perfect — just occupying."}
       ],
       songs:[{icon:"🎧", name:"\"Weightless\" — Marconi Union", why:"Measurably slows heart rate in published listening studies."},
              {icon:"🎬", name:"Skip the screen for now", why:"Give the breathing a minute before you add anything else to look at."}]
@@ -3014,7 +3186,9 @@ tickClock();
       ],
       activities:[
         {icon:"📞", title:"Reach out first", time:"2 min", text:"Loneliness lies and says no one wants to hear from you. Message one person you haven't talked to in a while — low stakes, no agenda needed, just a hello."},
-        {icon:"🚪", title:"Go somewhere with people in it", time:"10 min", text:"A café, a park bench, a shop — anywhere with other humans nearby, even without talking to them. Being around people, even silently, softens the isolation faster than staying alone with it."}
+        {icon:"🚪", title:"Go somewhere with people in it", time:"10 min", text:"A café, a park bench, a shop — anywhere with other humans nearby, even without talking to them. Being around people, even silently, softens the isolation faster than staying alone with it."},
+        {icon:"🐾", title:"Do something kind for someone else", time:"5 min", text:"Send a compliment, help with something small, check in on someone. Connection doesn't have to start with being on the receiving end."},
+        {icon:"📖", title:"Join something with a regular rhythm", time:"3 min", text:"Look up one recurring group, class, or meetup near you — even just browsing options makes loneliness feel a little less permanent."}
       ],
       songs:[{icon:"🎧", name:"\"Fix You\" — Coldplay", why:"Doesn't rush the feeling, just sits with you in it for a while."},
              {icon:"🎬", name:"\"Good Will Hunting\"", why:"About letting people in, told gently and well."}]
@@ -3027,7 +3201,9 @@ tickClock();
       ],
       activities:[
         {icon:"📩", title:"Repair it or release it", time:"3 min", text:"If there's a real repair to make — a call, an apology, a fix — decide the one small step you'll take today. If there isn't a repair to make, guilt without a repair is just weight. Name out loud which one this is."},
-        {icon:"✍️", title:"Write the apology, decide after", time:"3 min", text:"Draft what you'd actually say, even if you're not sure you'll send it yet. Getting the words out of your head and onto a page often makes the guilt easier to sit with either way."}
+        {icon:"✍️", title:"Write the apology, decide after", time:"3 min", text:"Draft what you'd actually say, even if you're not sure you'll send it yet. Getting the words out of your head and onto a page often makes the guilt easier to sit with either way."},
+        {icon:"⚖️", title:"Separate intent from impact", time:"2 min", text:"What you meant and what landed can both be true at once. Naming both clearly, out loud or on paper, usually makes the guilt easier to actually act on."},
+        {icon:"🌱", title:"Decide what you'll do differently", time:"2 min", text:"Guilt without a change is just weight. Name one concrete thing you'll do differently next time — that's the part that actually moves you forward."}
       ],
       songs:[{icon:"🎧", name:"\"Let It Be\" — The Beatles", why:"A gentle push toward putting something down instead of carrying it."},
              {icon:"🎬", name:"\"About Time\"", why:"A warm, funny look at forgiving yourself for the things you'd redo."}]
@@ -3040,7 +3216,9 @@ tickClock();
       ],
       activities:[
         {icon:"📵", title:"Close the tab", time:"1 min", text:"Whatever you're comparing yourself to — close it. Comparison reliably distorts your sense of your own progress. Instead, name one thing that's actually going well for you right now."},
-        {icon:"📓", title:"List your own last win", time:"2 min", text:"Write down one thing you did in the last month that you're actually proud of, unrelated to whoever you're comparing yourself to. Your timeline isn't theirs."}
+        {icon:"📓", title:"List your own last win", time:"2 min", text:"Write down one thing you did in the last month that you're actually proud of, unrelated to whoever you're comparing yourself to. Your timeline isn't theirs."},
+        {icon:"🎓", title:"Ask what it's actually telling you", time:"2 min", text:"Jealousy often points at something you genuinely want. Name what that is specifically — it's more useful as a compass than as a source of shame."},
+        {icon:"💌", title:"Say something genuine to them", time:"1 min", text:"Send a real, specific compliment to the person you're comparing yourself to. It's surprisingly effective at draining the comparison of its power."}
       ],
       songs:[{icon:"🎧", name:"\"Roar\" — Katy Perry", why:"Loud, a little defiant, good for redirecting the energy inward."},
              {icon:"🎬", name:"\"Rocky\"", why:"A story about racing your own progress, not anyone else's."}]
@@ -3053,7 +3231,9 @@ tickClock();
       ],
       activities:[
         {icon:"📋", title:"One honest sentence, one next step", time:"3 min", text:"Write one honest sentence about what happened, no self-punishment language. Then one sentence on what you'll do differently next time. That's the whole exercise — don't reread it ten times."},
-        {icon:"🤝", title:"Talk to yourself like a friend", time:"1 min", text:"Say what you'd actually say to a friend who did this exact thing. You'd almost certainly be kinder to them than you're being to yourself right now — borrow that tone."}
+        {icon:"🤝", title:"Talk to yourself like a friend", time:"1 min", text:"Say what you'd actually say to a friend who did this exact thing. You'd almost certainly be kinder to them than you're being to yourself right now — borrow that tone."},
+        {icon:"📈", title:"Compare to a year ago, not to perfect", time:"2 min", text:"You're judging yourself against an ideal that never existed. Compare where you are now to a year ago instead — that's the honest measure of progress."},
+        {icon:"🎯", title:"Pick one thing to try differently tomorrow", time:"2 min", text:"Disappointment without a next attempt just sits there. Name one specific thing you'll do differently tomorrow, then let today go."}
       ],
       songs:[{icon:"🎧", name:"\"Better Days\" — OneRepublic", why:"Forward-looking without pretending the setback didn't happen."},
              {icon:"🎬", name:"\"The Karate Kid\"", why:"A slow rebuild after falling short, worth the two hours."}]
@@ -3066,7 +3246,9 @@ tickClock();
       ],
       activities:[
         {icon:"🧮", title:"Write the actual number down", time:"3 min", text:"Money stress feels worse vague than specific. Write down the actual number — what's owed, what's coming in — even if it's uncomfortable. A real number is more manageable than a shapeless dread."},
-        {icon:"📵", title:"Step away from the banking app", time:"2 min", text:"Checking the balance five more times won't change it. Close the app, do something else with your hands for two minutes, then come back to the number with a steadier head."}
+        {icon:"📵", title:"Step away from the banking app", time:"2 min", text:"Checking the balance five more times won't change it. Close the app, do something else with your hands for two minutes, then come back to the number with a steadier head."},
+        {icon:"📅", title:"Pick one small action for today only", time:"3 min", text:"You don't have to fix the whole situation right now — just the one thing that's actually due today. Everything else can wait for its own day."},
+        {icon:"🗣️", title:"Say the number out loud to someone", time:"2 min", text:"Money stress grows in silence. Telling one trusted person the actual number, plainly, tends to make it feel more solvable and less shameful."}
       ],
       songs:[{icon:"🎧", name:"\"Stronger\" — Kelly Clarkson", why:"Something to move to while the immediate spiral cools off."},
              {icon:"🎬", name:"Skip the screen for now", why:"This one needs a clear head and maybe a notebook, not a distraction."}]
