@@ -1029,6 +1029,53 @@ html[data-theme="light"] #officeHoursRoot{
 #officeHoursRoot .student-btn.report{background:var(--oh-surface-soft);color:var(--oh-ink);border:1px solid var(--oh-line);}
 #officeHoursRoot .student-btn.join{background:var(--accent, var(--oh-forest));color:#fff;}
 
+/* ---------- today's session status controls (in popover) ---------- */
+#officeHoursRoot .session-status-controls{margin-top:2px;margin-bottom:14px;padding-top:12px;border-top:1px dashed var(--oh-line);}
+#officeHoursRoot .status-label{font-family:'IBM Plex Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.05em;color:var(--oh-ink-soft);margin-bottom:8px;}
+#officeHoursRoot .status-btns{display:flex;gap:8px;}
+#officeHoursRoot .status-btn{
+  flex:1;min-height:38px;padding:8px 6px;border-radius:10px;border:1px solid var(--oh-line);
+  background:var(--oh-surface-soft);color:var(--oh-ink-soft);font-size:12px;font-weight:700;cursor:pointer;transition:all .15s;
+}
+#officeHoursRoot .status-btn.active[data-status="cancelled"]{background:#8a3a3a;color:#fff;border-color:#8a3a3a;}
+#officeHoursRoot .status-btn.active[data-status="rescheduled"]{background:var(--oh-brass);color:#fff;border-color:var(--oh-brass);}
+
+/* ---------- today's stats bar ---------- */
+#officeHoursRoot .today-stats{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px;
+}
+#officeHoursRoot .today-stat{
+  background:var(--oh-surface);border:1px solid var(--oh-line);border-radius:12px;padding:10px 6px;text-align:center;box-shadow:var(--oh-shadow);
+}
+#officeHoursRoot .today-stat .num{font-family:'Fraunces',serif;font-weight:600;font-size:20px;}
+#officeHoursRoot .today-stat .lab{font-family:'IBM Plex Mono',monospace;font-size:8.5px;text-transform:uppercase;letter-spacing:0.04em;color:var(--oh-ink-soft);margin-top:2px;}
+#officeHoursRoot .today-stat.executed .num{color:var(--oh-forest);}
+#officeHoursRoot .today-stat.cancelled .num{color:#c96a6a;}
+#officeHoursRoot .today-stat.rescheduled .num{color:var(--oh-brass);}
+#officeHoursRoot .cal-event.day-cancelled{opacity:0.4;text-decoration:line-through;}
+#officeHoursRoot .cal-event.day-rescheduled{outline:2px dashed var(--oh-brass);outline-offset:-2px;}
+
+/* ---------- roster board ---------- */
+#officeHoursRoot .roster-summary{
+  background:var(--oh-surface);border:1px solid var(--oh-line);border-radius:16px;box-shadow:var(--oh-shadow);
+  padding:18px 20px;margin-bottom:16px;text-align:center;
+}
+#officeHoursRoot .roster-summary .num{font-family:'Fraunces',serif;font-weight:600;font-size:30px;}
+#officeHoursRoot .roster-summary .lab{font-family:'IBM Plex Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:0.05em;color:var(--oh-ink-soft);margin-top:2px;}
+#officeHoursRoot .roster-group{
+  background:var(--oh-surface);border:1px solid var(--oh-line);border-radius:14px;box-shadow:var(--oh-shadow);
+  padding:14px 16px;margin-bottom:12px;
+}
+#officeHoursRoot .roster-group-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+#officeHoursRoot .roster-group-name{font-family:'Fraunces',serif;font-weight:600;font-size:15.5px;}
+#officeHoursRoot .roster-group-count{font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:var(--oh-ink-soft);background:var(--oh-surface-soft);padding:3px 9px;border-radius:100px;}
+#officeHoursRoot .roster-chips{display:flex;flex-wrap:wrap;gap:6px;}
+#officeHoursRoot .roster-chip{
+  font-size:12px;padding:5px 11px;border-radius:100px;background:var(--oh-surface-soft);color:var(--oh-ink);
+  border-left:3px solid var(--accent, var(--oh-brass));
+}
+#officeHoursRoot .roster-chip.batch{font-style:italic;color:var(--oh-ink-soft);}
+
 /* ---------- nature corner ---------- */
 #officeHoursRoot .nature-card{
   background:var(--oh-surface);border-radius:22px;overflow:hidden;box-shadow:var(--oh-shadow);
@@ -1245,6 +1292,62 @@ html[data-theme="light"] #officeHoursRoot{
 
   #pitstopRoot footer{text-align:center; color:var(--muted); font-size:12.5px; line-height:1.7; max-width:480px; margin:36px auto 0;}
 
+/* ---------- Business tab ---------- */
+#businessRoot{
+  --biz-bg:#12151b; --biz-surface:#1b1f28; --biz-surface-soft:#232833;
+  --biz-ink:#EDEFF4; --biz-ink-soft:#9AA1AE; --biz-line:rgba(255,255,255,0.09);
+  --biz-shadow:0 10px 28px rgba(0,0,0,0.35);
+}
+html[data-theme="light"] #businessRoot{
+  --biz-bg:#EEF1F5; --biz-surface:#FFFFFF; --biz-surface-soft:#F4F6F9;
+  --biz-ink:#20242C; --biz-ink-soft:#666E7A; --biz-line:rgba(32,36,44,0.10);
+  --biz-shadow:0 10px 28px rgba(32,36,44,0.08);
+}
+#businessRoot, #businessRoot *{box-sizing:border-box;}
+#businessRoot{margin:0;padding:0;}
+#businessRoot{
+  background:var(--biz-bg); color:var(--biz-ink); font-family:'Inter',sans-serif;
+  -webkit-font-smoothing:antialiased; padding:28px 18px calc(70px + env(safe-area-inset-bottom, 0px));
+}
+#businessRoot .wrap{max-width:600px;margin:0 auto;}
+#businessRoot header{text-align:center;margin-bottom:20px;}
+#businessRoot .eyebrow{font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:0.12em;text-transform:uppercase;color:var(--biz-ink-soft);margin-bottom:8px;}
+#businessRoot h1{font-family:'Fraunces',serif;font-style:italic;font-weight:600;font-size:clamp(26px,5vw,38px);margin:0 0 6px;}
+#businessRoot header p.sub{color:var(--biz-ink-soft);font-size:14px;max-width:440px;margin:0 auto;line-height:1.55;}
+
+#businessRoot .biz-card{
+  background:var(--biz-surface);border-radius:18px;padding:20px;box-shadow:var(--biz-shadow);
+  border:1px solid var(--biz-line);border-left:5px solid var(--accent);margin-bottom:18px;
+}
+#businessRoot .biz-card-hdr{display:flex;align-items:center;gap:14px;margin-bottom:14px;}
+#businessRoot .biz-logo{width:52px;height:52px;object-fit:contain;border-radius:10px;background:var(--biz-surface-soft);padding:4px;flex-shrink:0;}
+#businessRoot .biz-name{font-family:'Fraunces',serif;font-weight:600;font-size:18px;}
+#businessRoot .biz-progress-lbl{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--biz-ink-soft);text-transform:uppercase;letter-spacing:0.04em;margin-top:2px;}
+#businessRoot .biz-progress-track{height:4px;border-radius:2px;background:var(--biz-line);overflow:hidden;margin-bottom:16px;}
+#businessRoot .biz-progress-fill{height:100%;background:var(--accent);border-radius:2px;transition:width .4s ease;}
+#businessRoot .biz-tasks{display:flex;flex-direction:column;gap:2px;margin-bottom:12px;}
+#businessRoot .biz-task{
+  display:flex;align-items:center;gap:10px;padding:10px 4px;border-top:1px dashed var(--biz-line);cursor:pointer;
+}
+#businessRoot .biz-task:first-child{border-top:none;}
+#businessRoot .biz-task input{width:18px;height:18px;min-width:18px;accent-color:var(--accent);}
+#businessRoot .biz-task-txt{flex:1;font-size:14px;line-height:1.5;}
+#businessRoot .biz-task.done .biz-task-txt{color:var(--biz-ink-soft);text-decoration:line-through;}
+#businessRoot .biz-task-del{color:var(--biz-ink-soft);font-size:13px;padding:6px;min-width:28px;min-height:28px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;}
+#businessRoot .biz-task-del:hover{color:var(--accent);}
+#businessRoot .biz-add-btn{
+  width:100%;min-height:44px;background:var(--biz-surface-soft);border:1px dashed var(--biz-line);border-radius:10px;
+  color:var(--biz-ink-soft);font-size:13px;font-weight:600;cursor:pointer;
+}
+#businessRoot .biz-add-btn:hover{color:var(--accent);border-color:var(--accent);}
+
+@media (min-aspect-ratio: 9/16), (max-height: 480px){
+  #businessRoot{padding:16px 16px 56px;}
+  #businessRoot header{margin-bottom:14px;}
+  #businessRoot h1{font-size:clamp(22px,5vw,28px);}
+  #businessRoot .biz-card{padding:16px;}
+}
+
 
 </style>
 </head>
@@ -1274,6 +1377,7 @@ html[data-theme="light"] #officeHoursRoot{
     <button class="shell-tab" data-shell-tab="stratos"><span class="emo">🛰️</span> Stratos</button>
     <button class="shell-tab" data-shell-tab="officehours"><span class="emo">🎓</span> Office Hours</button>
     <button class="shell-tab" data-shell-tab="pitstop"><span class="emo">🧯</span> Pit Stop</button>
+    <button class="shell-tab" data-shell-tab="business"><span class="emo">💼</span> Business</button>
   </div>
   <button class="about-btn" id="themeToggleBtn" aria-label="Switch light/dark theme">🌙</button>
   <button class="about-btn" id="aboutBtn" aria-label="About Mission Control">ℹ️</button>
@@ -1549,7 +1653,13 @@ html[data-theme="light"] #officeHoursRoot{
   </div>
 
   <h2 class="sec-title">📚 Tutoring Sessions</h2>
+  <div id="todayStats"></div>
   <div id="sessionCalendar"></div>
+  <div class="cal-popover-backdrop" id="calPopoverBackdrop" onclick="closeSessionPopover()"></div>
+  <div class="cal-popover" id="calPopover" style="display:none"></div>
+
+  <h2 class="sec-title">👥 Your Roster</h2>
+  <div id="rosterBoard"></div>
 
   <h2 class="sec-title">🌿 A Quiet Corner</h2>
   <div class="nature-card">
@@ -1614,6 +1724,116 @@ html[data-theme="light"] #officeHoursRoot{
 </div>
 </div>
 </div>
+
+<div class="tab-panel" data-tab="business">
+<div id="businessRoot">
+<div class="wrap" id="businessApp">
+
+  <header>
+    <div class="eyebrow">Your companies, one step at a time</div>
+    <h1>💼 Business</h1>
+    <p class="sub">Savoring Money and We The Mind — track what actually needs doing for each, one checkbox at a time.</p>
+  </header>
+
+  <div class="frame"><span class="frame-tag">Build Log</span>A business is just a list of small things done in order. Check one off, then the next.</div>
+
+  <div id="bizCompanies"></div>
+
+</div>
+</div>
+</div>
+
+<script>
+(function(){
+  const BIZ_COMPANIES = [
+    { id:'savoringmoney', name:'Savoring Money', logo:'savoring-money-logo.png', accent:'#C79A3E' },
+    { id:'wethemind', name:'We The Mind', logo:'we-the-mind-logo.png', accent:'#E23B3B' }
+  ];
+
+  function bizLoad(companyId){
+    try{ return JSON.parse(localStorage.getItem('biz-tasks-'+companyId)) || []; }catch(e){ return []; }
+  }
+  function bizSave(companyId, tasks){
+    try{ localStorage.setItem('biz-tasks-'+companyId, JSON.stringify(tasks)); }catch(e){}
+  }
+  function bizUid(){ return Math.random().toString(36).slice(2,9); }
+
+  function bizDefaultTasks(companyId){
+    if(companyId === 'savoringmoney'){
+      return [
+        'Script next long-form video',
+        'Record and edit the scripted video',
+        'Publish to the channel',
+        'Cut 1-2 shorts from the upload',
+        'Post to LinkedIn'
+      ];
+    }
+    return [
+      'Plan next course module',
+      'Build lesson content',
+      'Review with a test student',
+      'Publish module',
+      'Promote the update'
+    ];
+  }
+
+  function renderBizCompany(company){
+    let tasks = bizLoad(company.id);
+    if(tasks.length === 0){
+      tasks = bizDefaultTasks(company.id).map(text => ({ id: bizUid(), text, done:false }));
+      bizSave(company.id, tasks);
+    }
+    const done = tasks.filter(t => t.done).length;
+    const pct = tasks.length ? Math.round((done/tasks.length)*100) : 0;
+    return `<div class="biz-card" style="--accent:${company.accent}">
+      <div class="biz-card-hdr">
+        <img class="biz-logo" src="${company.logo}" alt="${company.name} logo">
+        <div class="biz-card-title">
+          <div class="biz-name">${company.name}</div>
+          <div class="biz-progress-lbl">${done} / ${tasks.length} done</div>
+        </div>
+      </div>
+      <div class="biz-progress-track"><div class="biz-progress-fill" style="width:${pct}%"></div></div>
+      <div class="biz-tasks" id="bizTasks-${company.id}">
+        ${tasks.map(t => `<label class="biz-task ${t.done?'done':''}">
+          <input type="checkbox" ${t.done?'checked':''} onchange="bizToggleTask('${company.id}','${t.id}')">
+          <span class="biz-task-txt">${t.text}</span>
+          <span class="biz-task-del" onclick="bizDeleteTask('${company.id}','${t.id}')" title="Remove">✕</span>
+        </label>`).join('')}
+      </div>
+      <button class="biz-add-btn" onclick="bizAddTask('${company.id}')">+ Add step</button>
+    </div>`;
+  }
+
+  function renderBizAll(){
+    const holder = document.getElementById('bizCompanies');
+    if(!holder) return;
+    holder.innerHTML = BIZ_COMPANIES.map(renderBizCompany).join('');
+  }
+  renderBizAll();
+
+  window.bizToggleTask = function(companyId, taskId){
+    const tasks = bizLoad(companyId);
+    const t = tasks.find(x => x.id === taskId);
+    if(t) t.done = !t.done;
+    bizSave(companyId, tasks);
+    renderBizAll();
+  };
+  window.bizDeleteTask = function(companyId, taskId){
+    const tasks = bizLoad(companyId).filter(x => x.id !== taskId);
+    bizSave(companyId, tasks);
+    renderBizAll();
+  };
+  window.bizAddTask = function(companyId){
+    const text = prompt('Next step:');
+    if(!text) return;
+    const tasks = bizLoad(companyId);
+    tasks.push({ id: bizUid(), text, done:false });
+    bizSave(companyId, tasks);
+    renderBizAll();
+  };
+})();
+</script>
 
 <script>
 
@@ -2579,97 +2799,126 @@ tickClock();
 
   const SESSIONS = [
     {
-      id:'kiren', name:"Kiren's Session", cls:'kiren',
+      id:'kiren', name:"Kiren's Session", cls:'kiren', student:'Kiren', platform:'Independent Tutoring',
       session:'https://meet.google.com/tyc-vjfy-vuh',
       times:[{day:'mon',time:'19:00'},{day:'tue',time:'19:00'},{day:'wed',time:'19:00'}]
     },
     {
-      id:'dharshinie', name:"Dharshinie's Session", cls:'dharshinie',
+      id:'dharshinie', name:"Dharshinie's Session", cls:'dharshinie', student:'Dharshinie', platform:'Independent Tutoring',
       session:'https://meet.google.com/tyc-vjfy-vuh',
       times:[{day:'thu',time:'19:00'},{day:'fri',time:'19:00'},{day:'sat',time:'19:30'}]
     },
     {
-      id:'kaushik', name:"Kaushik's Session", cls:'kaushik',
+      id:'kaushik', name:"Kaushik's Session", cls:'kaushik', student:'Kaushik', platform:'Independent Tutoring',
       session:'https://meet.google.com/hwi-rkrm-ton',
       times:[{day:'mon',time:'11:30'}]
     },
     {
-      id:'darsh', name:'Darsh', cls:'darsh',
+      id:'darsh', name:'Darsh', cls:'darsh', student:'Darsh', platform:'Independent Tutoring',
       report:'https://docs.google.com/spreadsheets/d/1r8BN8BF1w0tYhVYFgKDnSZ9NFyxWk2SydKRTJKasoQI/edit?usp=sharing',
       session:'https://meet.google.com/bii-pcav-vdw',
       times:[{day:'wed',time:'13:30'},{day:'fri',time:'15:30'}]
     },
     {
-      id:'simran', name:'Simran', cls:'simran',
+      id:'simran', name:'Simran', cls:'simran', student:'Simran', platform:'Independent Tutoring',
       report:'https://docs.google.com/spreadsheets/d/1rgZlFjLJQrguaJxjpQfUyjbdsUqSE6zcvPef0YkeIqI/edit?gid=1881474563#gid=1881474563',
       session:'https://meet.google.com/vby-rmvx-gct',
       times:[{day:'tue',time:'22:30'}]
     },
     {
-      id:'sachip', name:"Sachi P's Session - WinQuest", cls:'sachip',
+      id:'sachip', name:"Sachi P's Session - WinQuest", cls:'sachip', student:'Sachi P', platform:'WinQuest',
       session:'https://meet.google.com/sfd-xodx-dcb',
       times:[{day:'sat',time:'05:00'}]
     },
     {
-      id:'srisetty', name:"Sri Setty Medam's Session - WinQuest", cls:'srisetty',
+      id:'srisetty', name:"Sri Setty Medam's Session - WinQuest", cls:'srisetty', student:'Sri Setty Medam', platform:'WinQuest',
       session:'https://meet.google.com/bge-vpqf-jwo',
       times:[{day:'mon',time:'20:30'},{day:'thu',time:'20:30'},{day:'fri',time:'20:30'}]
     },
     {
-      id:'eswar', name:"Eswar's Session at EdifyChamps", cls:'forest',
+      id:'eswar', name:"Eswar's Session at EdifyChamps", cls:'forest', student:'Eswar', platform:'EdifyChamps',
       session:'https://meet.google.com/cfq-qbng-qqr',
       times:[{day:'sat',time:'18:30'},{day:'sun',time:'18:30'}]
     },
     {
-      id:'himakar', name:"Himakar's Session at EdifyChamps", cls:'maroon',
+      id:'himakar', name:"Himakar's Session at EdifyChamps", cls:'maroon', student:'Himakar', platform:'EdifyChamps',
       session:'https://meet.google.com/cfq-qbng-qqr',
       times:[{day:'sat',time:'19:30'},{day:'sun',time:'19:30'}]
     },
     {
-      id:'emmanuel', name:"Emmanuel's Session at Bright Mind Tutors", cls:'navy',
+      id:'emmanuel', name:"Emmanuel's Session at Bright Mind Tutors", cls:'navy', student:'Emmanuel', platform:'Bright Mind Tutors',
       session:'https://meet.google.com/ghd-abfq-tis',
       times:[{day:'mon',time:'15:30'}]
     },
     {
-      id:'arham', name:"Arham's Session at Bright Mind Tutors", cls:'plum',
+      id:'arham', name:"Arham's Session at Bright Mind Tutors", cls:'plum', student:'Arham', platform:'Bright Mind Tutors',
       session:'https://meet.google.com/rxe-uqua-qac',
       times:[{day:'wed',time:'21:30'},{day:'sat',time:'21:30'}]
     },
     {
-      id:'mehar', name:"Mehar's Session at Bright Mind Tutors", cls:'clay',
+      id:'mehar', name:"Mehar's Session at Bright Mind Tutors", cls:'clay', student:'Mehar', platform:'Bright Mind Tutors',
       session:'https://meet.google.com/qix-oxot-mux',
       times:[{day:'tue',time:'14:00'},{day:'sun',time:'13:00'}]
     },
     {
-      id:'nikhil', name:'Nikhil | AP Calculus at Tutoring MaPhy', cls:'teal',
+      id:'nikhil', name:'Nikhil | AP Calculus at Tutoring MaPhy', cls:'teal', student:'Nikhil', platform:'Tutoring MaPhy',
       session:'https://meet.google.com/ugu-vcgk-iaw',
       times:[{day:'tue',time:'08:30'},{day:'thu',time:'08:30'}]
     },
     {
-      id:'sanvi', name:'Sanvi | AP Calculus at Tutoring MaPhy', cls:'mustard',
+      id:'sanvi', name:'Sanvi | AP Calculus at Tutoring MaPhy', cls:'mustard', student:'Sanvi', platform:'Tutoring MaPhy',
       session:'https://meet.google.com/ugu-vcgk-iaw',
       times:[{day:'tue',time:'07:30'},{day:'sat',time:'08:30'}]
     },
     {
-      id:'cbse107', name:'CBSE-10-7 Batch at Infinity Learn', cls:'forest',
+      id:'cbse107', name:'CBSE-10-7 Batch at Infinity Learn', cls:'forest', student:'CBSE-10-7 Batch', platform:'Infinity Learn', isBatch:true,
       session:'https://teacher.infinitylearn.com/dashboard/liveclass',
       times:[{day:'sun',time:'18:00'},{day:'wed',time:'18:00'},{day:'fri',time:'18:00'}]
     },
     {
-      id:'tg101', name:'TG-10-1 Batch at Infinity Learn', cls:'maroon',
+      id:'tg101', name:'TG-10-1 Batch at Infinity Learn', cls:'maroon', student:'TG-10-1 Batch', platform:'Infinity Learn', isBatch:true,
       session:'https://teacher.infinitylearn.com/dashboard/liveclass',
       times:[{day:'sun',time:'19:00'},{day:'wed',time:'19:00'},{day:'fri',time:'19:00'}]
     },
     {
-      id:'cbse1074', name:'CBSE-10-74 Batch at Infinity Learn', cls:'navy',
+      id:'cbse1074', name:'CBSE-10-74 Batch at Infinity Learn', cls:'navy', student:'CBSE-10-74 Batch', platform:'Infinity Learn', isBatch:true,
       session:'https://teacher.infinitylearn.com/dashboard/liveclass',
       times:[{day:'sun',time:'20:00'},{day:'wed',time:'20:00'},{day:'fri',time:'20:00'}]
+    },
+    {
+      id:'saagar', name:"Saagar's Session at Tutorang", cls:'plum', student:'Saagar', platform:'Tutorang',
+      session:'https://meet.google.com/gry-waog-iji',
+      times:[{day:'mon',time:'08:00'},{day:'fri',time:'08:00'}]
+    },
+    {
+      id:'adrin', name:"Adrin's Session at TCT", cls:'clay', student:'Adrin', platform:'TCT',
+      session:'https://meet.google.com/wob-zjxy-ipz',
+      times:[{day:'mon',time:'18:00'},{day:'tue',time:'18:00'}]
+    },
+    {
+      id:'muhil', name:"Muhil's Session at TCT", cls:'teal', student:'Muhil', platform:'TCT',
+      session:'https://meet.google.com/xxu-cnqy-qbz',
+      times:[{day:'tue',time:'17:00'},{day:'fri',time:'20:30'}]
     }
   ];
   window.__missionControlSessions = SESSIONS; // shared read-only copy for the Dashboard tab
 
   // give every session its own distinct color, evenly spaced around the color wheel
   SESSIONS.forEach((s,i) => { s.color = `hsl(${Math.round(i*360/SESSIONS.length)},62%,46%)`; });
+
+  /* ---------- daily cancelled/rescheduled status, keyed by calendar date ---------- */
+  const DAILY_STATUS_KEY = 'oh-daily-status';
+  function todayISO(){ return new Date().toISOString().slice(0,10); }
+  function loadDailyStatus(){ try{ return JSON.parse(localStorage.getItem(DAILY_STATUS_KEY)) || {}; }catch(e){ return {}; } }
+  function saveDailyStatus(obj){ try{ localStorage.setItem(DAILY_STATUS_KEY, JSON.stringify(obj)); }catch(e){} }
+  function getSessionStatusToday(id){ const data = loadDailyStatus(); return (data[todayISO()] || {})[id] || null; }
+  function setSessionStatusToday(id, status){
+    const data = loadDailyStatus();
+    const day = todayISO();
+    if(!data[day]) data[day] = {};
+    if(status) data[day][id] = status; else delete data[day][id];
+    saveDailyStatus(data);
+  }
 
   /* ---------- calendar view: Google-Calendar-style week grid, fixed 16:9, no scrolling ---------- */
   // only the hours that actually have a session get a row — keeps everything on-screen at once
@@ -2718,7 +2967,9 @@ tickClock();
           const widthPct = 100 / n;
           const leftPct = slot * widthPct;
           const st = sessionStatus([e.t]);
-          events += `<div class="cal-event ${st.live?'live':''}" style="top:${top}%;height:${height}%;left:calc(${leftPct}% + 1px);width:calc(${widthPct}% - 2px);background:${e.s.color}" onclick="openSessionPopover(event,'${e.s.id}')">
+          const dayStatus = (d === today) ? getSessionStatusToday(e.s.id) : null;
+          const statusCls = dayStatus === 'cancelled' ? 'day-cancelled' : dayStatus === 'rescheduled' ? 'day-rescheduled' : '';
+          events += `<div class="cal-event ${st.live?'live':''} ${statusCls}" style="top:${top}%;height:${height}%;left:calc(${leftPct}% + 1px);width:calc(${widthPct}% - 2px);background:${e.s.color}" onclick="openSessionPopover(event,'${e.s.id}','${d}')">
             <div class="cal-event-name">${e.s.name}</div>
             <div class="cal-event-time">${formatTime12(e.t.time)}</div>
           </div>`;
@@ -2730,20 +2981,29 @@ tickClock();
     holder.innerHTML = `<div class="cal-wrap">
         <div class="cal-header-row">${hdr}</div>
         <div class="cal-body">${timeCol}${dayCols}</div>
-      </div>
-      <div class="cal-popover-backdrop" id="calPopoverBackdrop" onclick="closeSessionPopover()"></div>
-      <div class="cal-popover" id="calPopover" style="display:none"></div>`;
+      </div>`;
   }
   renderCalendar();
-  setInterval(renderCalendar, 30000);
+  setInterval(()=>{ renderCalendar(); renderTodayStats(); }, 30000);
 
-  window.openSessionPopover = function(evt, id){
+  window.openSessionPopover = function(evt, id, day){
     const s = SESSIONS.find(x => x.id === id);
     if(!s) return;
     const st = sessionStatus(s.times);
     const pop = document.getElementById('calPopover');
     const backdrop = document.getElementById('calPopoverBackdrop');
     pop.style.setProperty('--accent', s.color);
+    const today = DAY_ORDER[new Date().getDay()];
+    const isToday = day === today;
+    const current = isToday ? getSessionStatusToday(s.id) : null;
+    const statusControls = isToday ? `
+      <div class="session-status-controls" id="statusControls" data-session="${s.id}">
+        <div class="status-label">Mark today's session</div>
+        <div class="status-btns">
+          <button class="status-btn ${current==='cancelled'?'active':''}" data-status="cancelled" onclick="toggleSessionStatus('${s.id}','cancelled')">✕ Cancelled</button>
+          <button class="status-btn ${current==='rescheduled'?'active':''}" data-status="rescheduled" onclick="toggleSessionStatus('${s.id}','rescheduled')">↻ Rescheduled</button>
+        </div>
+      </div>` : '';
     pop.innerHTML = `
       <div class="student-name">${s.name}</div>
       <div class="student-status ${st.live?'live':''}">${st.text}</div>
@@ -2751,7 +3011,8 @@ tickClock();
       <div class="student-actions">
         ${s.report ? `<a class="student-btn report" href="${s.report}" target="_blank" rel="noopener">📊 Daily Report</a>` : ''}
         <a class="student-btn join" href="${s.session}" target="_blank" rel="noopener">🎥 Join Session</a>
-      </div>`;
+      </div>
+      ${statusControls}`;
     const rect = evt.currentTarget.getBoundingClientRect();
     const popW = 280;
     let left = rect.left;
@@ -2769,6 +3030,66 @@ tickClock();
     document.getElementById('calPopover').style.display = 'none';
     document.getElementById('calPopoverBackdrop').classList.remove('show');
   };
+
+  window.toggleSessionStatus = function(id, status){
+    const current = getSessionStatusToday(id);
+    setSessionStatusToday(id, current === status ? null : status);
+    const controls = document.getElementById('statusControls');
+    if(controls){
+      const now = getSessionStatusToday(id);
+      controls.querySelectorAll('.status-btn').forEach(b => b.classList.toggle('active', b.dataset.status === now));
+    }
+    renderTodayStats();
+    renderCalendar();
+  };
+
+  /* ---------- today's session bifurcation: allotted vs executed vs cancelled vs rescheduled ---------- */
+  function renderTodayStats(){
+    const holder = document.getElementById('todayStats');
+    if(!holder) return;
+    const today = DAY_ORDER[new Date().getDay()];
+    const todaySessions = [];
+    SESSIONS.forEach(s => { s.times.forEach(t => { if(t.day === today) todaySessions.push(s); }); });
+    const allotted = todaySessions.length;
+    let cancelled = 0, rescheduled = 0;
+    todaySessions.forEach(s => {
+      const st = getSessionStatusToday(s.id);
+      if(st === 'cancelled') cancelled++;
+      else if(st === 'rescheduled') rescheduled++;
+    });
+    const executed = allotted - cancelled - rescheduled;
+    holder.innerHTML = `<div class="today-stats">
+      <div class="today-stat"><div class="num">${allotted}</div><div class="lab">Allotted Today</div></div>
+      <div class="today-stat executed"><div class="num">${executed}</div><div class="lab">Executed</div></div>
+      <div class="today-stat cancelled"><div class="num">${cancelled}</div><div class="lab">Cancelled</div></div>
+      <div class="today-stat rescheduled"><div class="num">${rescheduled}</div><div class="lab">Rescheduled</div></div>
+    </div>`;
+  }
+  renderTodayStats();
+
+  /* ---------- student roster, grouped by platform ---------- */
+  function renderRoster(){
+    const holder = document.getElementById('rosterBoard');
+    if(!holder) return;
+    const platforms = {};
+    SESSIONS.forEach(s => { (platforms[s.platform] = platforms[s.platform] || []).push(s); });
+    const platformNames = Object.keys(platforms).sort();
+    let html = `<div class="roster-summary"><div class="num">${SESSIONS.length}</div><div class="lab">Active Sessions Across ${platformNames.length} Platforms</div></div>`;
+    platformNames.forEach(p => {
+      const list = platforms[p];
+      html += `<div class="roster-group">
+        <div class="roster-group-hdr">
+          <div class="roster-group-name">${p}</div>
+          <div class="roster-group-count">${list.length}</div>
+        </div>
+        <div class="roster-chips">
+          ${list.map(s => `<span class="roster-chip ${s.isBatch?'batch':''}" style="--accent:${s.color}">${s.student}${s.isBatch ? ' (batch)' : ''}</span>`).join('')}
+        </div>
+      </div>`;
+    });
+    holder.innerHTML = html;
+  }
+  renderRoster();
 
   /* ---------- nature corner ---------- */
   const NATURE_ITEMS = [
@@ -3462,7 +3783,7 @@ tickClock();
 <script>
 
 (function(){
-  const TABS = ['dashboard','vitality','stratos','officehours','pitstop'];
+  const TABS = ['dashboard','vitality','stratos','officehours','pitstop','business'];
   const panels = {};
   TABS.forEach(t => panels[t] = document.querySelector(`.tab-panel[data-tab="${t}"]`));
   const buttons = document.querySelectorAll('.shell-tab');

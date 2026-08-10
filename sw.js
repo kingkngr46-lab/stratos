@@ -1,4 +1,4 @@
-const VERSION = 'v29';
+const VERSION = 'v31';
 const CACHE = `mission-control-${VERSION}`;
 const ASSETS = [
   './',
@@ -18,6 +18,8 @@ const ASSETS = [
   './nature-4.png',
   './nature-5.png',
   './nature-6.png',
+  './savoring-money-logo.png',
+  './we-the-mind-logo.png',
 ];
 
 self.addEventListener('install', e=>{
