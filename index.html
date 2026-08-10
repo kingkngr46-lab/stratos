@@ -2780,7 +2780,7 @@ tickClock();
     {img:'nature-1.png', title:'Hilltop at Dusk', quote:'Adopt the pace of nature: her secret is patience.', attr:'Ralph Waldo Emerson'},
   ];
 
-  // 94 more, built from a curated quote pool paired with lock-seeded (stable) stock nature photos —
+  // 994 more (1000 total), built from a curated quote pool paired with lock-seeded (stable) stock nature photos —
   // hotlinked rather than stored, so they need a network connection and won't work fully offline.
   const NATURE_QUOTE_POOL = [
     {title:'Stillness', quote:"In the midst of movement and chaos, keep stillness inside of you.", attr:'Deepak Chopra'},
@@ -2810,7 +2810,7 @@ tickClock();
     {title:'Open Field', quote:'The sky is not the limit, your mind is.', attr:'common saying'}
   ];
   const NATURE_KEYWORDS = ['nature','forest','mountain','ocean','sunrise','flowers','river','desert','sky','trees','lake','waterfall'];
-  for(let i=0; i<94; i++){
+  for(let i=0; i<994; i++){
     const q = NATURE_QUOTE_POOL[i % NATURE_QUOTE_POOL.length];
     const kw = NATURE_KEYWORDS[i % NATURE_KEYWORDS.length];
     NATURE_ITEMS.push({
