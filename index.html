@@ -994,7 +994,7 @@ html[data-theme="light"] #officeHoursRoot{
 #officeHoursRoot .cal-day-body{position:relative;border-left:1px solid var(--oh-line);}
 #officeHoursRoot .cal-hr-line{position:absolute;left:0;right:0;border-top:1px solid var(--oh-line);}
 #officeHoursRoot .cal-event{
-  position:absolute;left:1.5%;right:1.5%;border-radius:6px;padding:2px 4px;overflow:hidden;
+  position:absolute;border-radius:6px;padding:2px 4px;overflow:hidden;
   color:#fff;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,0.3);
   transition:transform .12s ease, box-shadow .12s ease, z-index 0s; z-index:1;
 }
@@ -1558,11 +1558,8 @@ html[data-theme="light"] #officeHoursRoot{
       <div class="nature-quote" id="natureQuote">Loading…</div>
       <div class="nature-attr" id="natureAttr"></div>
       <div class="nature-progress"><div class="nature-progress-fill" id="natureProgressFill"></div></div>
-      <div class="nature-counter" id="natureCounter"></div>
     </div>
   </div>
-
-  <footer>New view every 30 seconds — no rush, just a breath between sessions.</footer>
 </div>
 
 </div>
@@ -2697,19 +2694,33 @@ tickClock();
     DAY_ORDER.forEach(d => {
       let lines = '';
       for(let i=1;i<CAL_ROWS;i++){ lines += `<div class="cal-hr-line" style="top:${(i/CAL_ROWS)*100}%"></div>`; }
-      let events = '';
+      // collect this day's events first, then group by hour row so simultaneous
+      // sessions sit side-by-side instead of stacking exactly on top of each other
+      const dayEvents = [];
       SESSIONS.forEach(s => {
         s.times.forEach(t => {
           if(t.day !== d) return;
           const [hh,mm] = t.time.split(':').map(Number);
           const rowIdx = CAL_HOURS.indexOf(hh);
           if(rowIdx === -1) return;
-          const top = ((rowIdx + mm/60) / CAL_ROWS) * 100;
+          dayEvents.push({s, t, hh, mm, rowIdx});
+        });
+      });
+      const rowGroups = {};
+      dayEvents.forEach(e => { (rowGroups[e.rowIdx] = rowGroups[e.rowIdx] || []).push(e); });
+
+      let events = '';
+      Object.values(rowGroups).forEach(group => {
+        const n = group.length;
+        group.forEach((e, slot) => {
+          const top = ((e.rowIdx + e.mm/60) / CAL_ROWS) * 100;
           const height = Math.min((1/CAL_ROWS)*100, 100 - top);
-          const st = sessionStatus([t]);
-          events += `<div class="cal-event ${st.live?'live':''}" style="top:${top}%;height:${height}%;background:${s.color}" onclick="openSessionPopover(event,'${s.id}')">
-            <div class="cal-event-name">${s.name}</div>
-            <div class="cal-event-time">${formatTime12(t.time)}</div>
+          const widthPct = 100 / n;
+          const leftPct = slot * widthPct;
+          const st = sessionStatus([e.t]);
+          events += `<div class="cal-event ${st.live?'live':''}" style="top:${top}%;height:${height}%;left:calc(${leftPct}% + 1px);width:calc(${widthPct}% - 2px);background:${e.s.color}" onclick="openSessionPopover(event,'${e.s.id}')">
+            <div class="cal-event-name">${e.s.name}</div>
+            <div class="cal-event-time">${formatTime12(e.t.time)}</div>
           </div>`;
         });
       });
@@ -2811,7 +2822,6 @@ tickClock();
   let natureIdx = 0;
   const imgWrap = document.getElementById('natureImgWrap');
   const progressFill = document.getElementById('natureProgressFill');
-  const counterEl = document.getElementById('natureCounter');
   let imgA, imgB, activeIsA = true;
 
   function buildNatureDom(){
@@ -2829,7 +2839,6 @@ tickClock();
     document.getElementById('natureQuote').textContent = `"${item.quote}"`;
     document.getElementById('natureAttr').textContent = `— ${item.attr} · ${item.title}`;
     progressFill.style.width = `${((natureIdx+1)/NATURE_ITEMS.length)*100}%`;
-    counterEl.textContent = `${natureIdx+1} / ${NATURE_ITEMS.length}`;
 
     const incoming = activeIsA ? imgB : imgA;
     const outgoing = activeIsA ? imgA : imgB;
