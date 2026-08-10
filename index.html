@@ -964,85 +964,53 @@ html[data-theme="light"] #officeHoursRoot{
   box-shadow:var(--oh-shadow);
 }
 
-/* ---------- student cards ---------- */
+/* ---------- session calendar heading ---------- */
 #officeHoursRoot h2.sec-title{
   font-family:'Fraunces',serif;font-weight:600;font-size:19px;margin:0 0 14px;display:flex;align-items:center;gap:8px;
 }
-#officeHoursRoot .student-card{
-  background:var(--oh-surface);border-radius:20px;padding:24px;box-shadow:var(--oh-shadow);
-  border:1px solid var(--oh-line);margin-bottom:18px;border-left:5px solid var(--accent, var(--oh-forest));
-}
-#officeHoursRoot .student-card.darsh{--accent:var(--oh-forest);}
-#officeHoursRoot .student-card.simran{--accent:var(--oh-maroon);}
-#officeHoursRoot .student-card.kiren{--accent:var(--oh-navy);}
-#officeHoursRoot .student-card.dharshinie{--accent:var(--oh-plum);}
-#officeHoursRoot .student-card.kaushik{--accent:var(--oh-clay);}
-#officeHoursRoot .student-card.sachip{--accent:var(--oh-teal);}
-#officeHoursRoot .student-card.srisetty{--accent:var(--oh-mustard);}
-#officeHoursRoot .student-card.forest{--accent:var(--oh-forest);}
-#officeHoursRoot .student-card.maroon{--accent:var(--oh-maroon);}
-#officeHoursRoot .student-card.navy{--accent:var(--oh-navy);}
-#officeHoursRoot .student-card.plum{--accent:var(--oh-plum);}
-#officeHoursRoot .student-card.clay{--accent:var(--oh-clay);}
-#officeHoursRoot .student-card.teal{--accent:var(--oh-teal);}
-#officeHoursRoot .student-card.mustard{--accent:var(--oh-mustard);}
 
-/* ---------- session view toggle ---------- */
-#officeHoursRoot .view-toggle{display:flex;gap:8px;margin-bottom:16px;}
-#officeHoursRoot .view-toggle-btn{
-  font-family:'IBM Plex Mono',monospace;font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;
-  padding:9px 16px;min-height:40px;border-radius:100px;border:1px solid var(--oh-line);
-  background:var(--oh-surface-soft);color:var(--oh-ink-soft);cursor:pointer;transition:all .15s;
-}
-#officeHoursRoot .view-toggle-btn.active{background:var(--oh-brass);color:#fff;border-color:var(--oh-brass);}
-
-/* ---------- calendar (Google-Calendar-style week grid) ---------- */
+/* ---------- calendar (Google-Calendar-style week grid, fixed 16:9, no scroll) ---------- */
 #officeHoursRoot .cal-wrap{
-  background:var(--oh-surface);border-radius:16px;box-shadow:var(--oh-shadow);border:1px solid var(--oh-line);
-  overflow-x:auto;margin-bottom:20px;
+  width:100%;aspect-ratio:16/9;background:var(--oh-surface);border-radius:16px;box-shadow:var(--oh-shadow);
+  border:1px solid var(--oh-line);overflow:hidden;margin-bottom:20px;display:flex;flex-direction:column;
 }
-#officeHoursRoot .cal-grid{
-  display:grid;grid-template-columns:52px repeat(7, minmax(96px,1fr));
-  min-width:748px;
-}
+#officeHoursRoot .cal-header-row{display:grid;grid-template-columns:8% repeat(7,1fr);flex-shrink:0;}
 #officeHoursRoot .cal-corner{background:var(--oh-surface);border-bottom:1px solid var(--oh-line);}
 #officeHoursRoot .cal-daycol-hdr{
-  text-align:center;padding:10px 4px;font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:700;
-  text-transform:uppercase;letter-spacing:0.05em;color:var(--oh-ink-soft);border-bottom:1px solid var(--oh-line);
+  text-align:center;padding:3% 1px;font-family:'IBM Plex Mono',monospace;font-size:clamp(7px,2vw,11px);font-weight:700;
+  text-transform:uppercase;letter-spacing:0.03em;color:var(--oh-ink-soft);border-bottom:1px solid var(--oh-line);
   border-left:1px solid var(--oh-line);background:var(--oh-surface);
 }
 #officeHoursRoot .cal-daycol-hdr.today{color:var(--oh-brass);}
+#officeHoursRoot .cal-body{flex:1;min-height:0;display:grid;grid-template-columns:8% repeat(7,1fr);position:relative;}
 #officeHoursRoot .cal-time-col{position:relative;}
 #officeHoursRoot .cal-time-lbl{
-  position:absolute;right:6px;font-family:'IBM Plex Mono',monospace;font-size:9.5px;color:var(--oh-ink-soft);
-  text-align:right;top:-6px;white-space:nowrap;
+  position:absolute;right:3px;font-family:'IBM Plex Mono',monospace;font-size:clamp(6px,1.6vw,9px);color:var(--oh-ink-soft);
+  text-align:right;white-space:nowrap;transform:translateY(-50%);
 }
-#officeHoursRoot .cal-day-body{
-  position:relative;border-left:1px solid var(--oh-line);
-  background-image:repeating-linear-gradient(to bottom, var(--oh-line) 0, var(--oh-line) 1px, transparent 1px, transparent 44px);
-}
+#officeHoursRoot .cal-day-body{position:relative;border-left:1px solid var(--oh-line);}
+#officeHoursRoot .cal-hr-line{position:absolute;left:0;right:0;border-top:1px solid var(--oh-line);}
 #officeHoursRoot .cal-event{
-  position:absolute;left:2px;right:2px;border-radius:8px;padding:4px 6px;overflow:hidden;
-  background:var(--accent, var(--oh-forest));color:#fff;cursor:pointer;box-shadow:0 3px 8px rgba(0,0,0,0.25);
-  transition:transform .12s ease, box-shadow .12s ease; z-index:1;
+  position:absolute;left:1.5%;right:1.5%;border-radius:6px;padding:2% 4%;overflow:hidden;
+  color:#fff;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,0.3);
+  transition:transform .12s ease, box-shadow .12s ease, z-index 0s; z-index:1;
 }
-#officeHoursRoot .cal-event:hover{transform:scale(1.03);box-shadow:0 5px 14px rgba(0,0,0,0.35);z-index:4;}
-#officeHoursRoot .cal-event .cal-event-name{font-size:10.5px;font-weight:700;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-#officeHoursRoot .cal-event .cal-event-time{font-family:'IBM Plex Mono',monospace;font-size:9px;opacity:0.9;}
+#officeHoursRoot .cal-event:hover{transform:scale(1.04);box-shadow:0 5px 14px rgba(0,0,0,0.4);z-index:4;}
+#officeHoursRoot .cal-event .cal-event-name{font-size:clamp(6.5px,1.8vw,10.5px);font-weight:700;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+#officeHoursRoot .cal-event .cal-event-time{font-family:'IBM Plex Mono',monospace;font-size:clamp(6px,1.4vw,9px);opacity:0.92;white-space:nowrap;overflow:hidden;}
 #officeHoursRoot .cal-event.live{outline:2px solid #fff;outline-offset:-2px;animation:calLivePulse 1.6s ease-in-out infinite;}
-@keyframes calLivePulse{0%,100%{box-shadow:0 3px 8px rgba(0,0,0,0.25);}50%{box-shadow:0 3px 16px rgba(255,255,255,0.5);}}
+@keyframes calLivePulse{0%,100%{box-shadow:0 2px 6px rgba(0,0,0,0.3);}50%{box-shadow:0 2px 14px rgba(255,255,255,0.55);}}
 
 #officeHoursRoot .cal-popover-backdrop{position:fixed;inset:0;z-index:500;display:none;}
 #officeHoursRoot .cal-popover-backdrop.show{display:block;}
 #officeHoursRoot .cal-popover{
   position:fixed;z-index:501;background:var(--oh-surface);border:1px solid var(--oh-line);border-radius:14px;
-  box-shadow:0 16px 36px rgba(0,0,0,0.4);padding:16px;width:min(280px, calc(100vw - 32px));
+  box-shadow:0 16px 36px rgba(0,0,0,0.4);padding:16px;width:min(280px, calc(100vw - 32px));border-top:4px solid var(--accent, var(--oh-brass));
 }
 #officeHoursRoot .cal-popover .student-name{font-size:16px;margin-bottom:6px;}
 #officeHoursRoot .cal-popover .student-schedule{margin-bottom:12px;}
 #officeHoursRoot .cal-popover .student-status{display:inline-block;margin-bottom:12px;}
 
-#officeHoursRoot .student-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;gap:10px;}
 #officeHoursRoot .student-name{font-family:'Fraunces',serif;font-weight:600;font-size:20px;}
 #officeHoursRoot .student-status{
   font-family:'IBM Plex Mono',monospace;font-size:11px;padding:5px 10px;border-radius:100px;
@@ -1082,7 +1050,6 @@ html[data-theme="light"] #officeHoursRoot{
   #officeHoursRoot header{margin-bottom:18px;}
   #officeHoursRoot h1{font-size:clamp(22px,5vw,30px);margin-bottom:6px;}
   #officeHoursRoot header p.sub{font-size:13px;}
-  #officeHoursRoot .student-card{padding:18px;}
 }
 
 
@@ -1579,12 +1546,7 @@ html[data-theme="light"] #officeHoursRoot{
   </div>
 
   <h2 class="sec-title">📚 Tutoring Sessions</h2>
-  <div class="view-toggle">
-    <button class="view-toggle-btn active" id="calViewBtn" onclick="setSessionView('calendar')">🗓️ Calendar</button>
-    <button class="view-toggle-btn" id="listViewBtn" onclick="setSessionView('list')">📋 List</button>
-  </div>
   <div id="sessionCalendar"></div>
-  <div id="studentCards" style="display:none"></div>
 
   <h2 class="sec-title">🌿 A Quiet Corner</h2>
   <div class="nature-card">
@@ -2705,30 +2667,13 @@ tickClock();
   ];
   window.__missionControlSessions = SESSIONS; // shared read-only copy for the Dashboard tab
 
-  function renderStudents(){
-    const holder = document.getElementById('studentCards');
-    if(!holder) return;
-    holder.innerHTML = SESSIONS.map(s=>{
-      const st = sessionStatus(s.times);
-      return `<div class="student-card ${s.cls}">
-        <div class="student-top">
-          <div class="student-name">${s.name}</div>
-          <div class="student-status ${st.live?'live':''}">${st.text}</div>
-        </div>
-        <div class="student-schedule">🗓️ ${formatSchedule(s.times)}</div>
-        <div class="student-actions">
-          ${s.report ? `<a class="student-btn report" href="${s.report}" target="_blank" rel="noopener">📊 Daily Report</a>` : ''}
-          <a class="student-btn join" href="${s.session}" target="_blank" rel="noopener">🎥 Join Session</a>
-        </div>
-      </div>`;
-    }).join('');
-  }
-  renderStudents();
-  setInterval(renderStudents, 30000);
+  // give every session its own distinct color, evenly spaced around the color wheel
+  SESSIONS.forEach((s,i) => { s.color = `hsl(${Math.round(i*360/SESSIONS.length)},62%,46%)`; });
 
-  /* ---------- calendar view (Google-Calendar-style week grid) ---------- */
-  const CAL_START_HOUR = 5, CAL_END_HOUR = 23, CAL_ROW_H = 44;
-  const CAL_ROWS = CAL_END_HOUR - CAL_START_HOUR;
+  /* ---------- calendar view: Google-Calendar-style week grid, fixed 16:9, no scrolling ---------- */
+  // only the hours that actually have a session get a row — keeps everything on-screen at once
+  const CAL_HOURS = [...new Set(SESSIONS.flatMap(s => s.times.map(t => parseInt(t.time,10))))].sort((a,b) => a-b);
+  const CAL_ROWS = CAL_HOURS.length;
 
   function renderCalendar(){
     const holder = document.getElementById('sessionCalendar');
@@ -2738,32 +2683,38 @@ tickClock();
     let hdr = `<div class="cal-corner"></div>`;
     DAY_ORDER.forEach(d => { hdr += `<div class="cal-daycol-hdr ${d===today?'today':''}">${DAY_LABEL[d]}</div>`; });
 
-    let timeCol = `<div class="cal-time-col" style="height:${CAL_ROWS*CAL_ROW_H}px">`;
-    for(let h=CAL_START_HOUR; h<CAL_END_HOUR; h++){
-      timeCol += `<div class="cal-time-lbl" style="top:${(h-CAL_START_HOUR)*CAL_ROW_H}px">${formatTime12(String(h).padStart(2,'0')+':00')}</div>`;
-    }
+    let timeCol = `<div class="cal-time-col">`;
+    CAL_HOURS.forEach((h,i) => {
+      timeCol += `<div class="cal-time-lbl" style="top:${(i/CAL_ROWS)*100}%">${formatTime12(String(h).padStart(2,'0')+':00')}</div>`;
+    });
     timeCol += `</div>`;
 
     let dayCols = '';
     DAY_ORDER.forEach(d => {
+      let lines = '';
+      for(let i=1;i<CAL_ROWS;i++){ lines += `<div class="cal-hr-line" style="top:${(i/CAL_ROWS)*100}%"></div>`; }
       let events = '';
       SESSIONS.forEach(s => {
         s.times.forEach(t => {
           if(t.day !== d) return;
           const [hh,mm] = t.time.split(':').map(Number);
-          if(hh < CAL_START_HOUR || hh >= CAL_END_HOUR) return;
-          const top = (hh - CAL_START_HOUR)*CAL_ROW_H + (mm/60)*CAL_ROW_H;
+          const rowIdx = CAL_HOURS.indexOf(hh);
+          if(rowIdx === -1) return;
+          const top = ((rowIdx + mm/60) / CAL_ROWS) * 100;
           const st = sessionStatus([t]);
-          events += `<div class="cal-event ${s.cls} ${st.live?'live':''}" style="top:${top}px;height:${CAL_ROW_H-2}px" onclick="openSessionPopover(event,'${s.id}')">
+          events += `<div class="cal-event ${st.live?'live':''}" style="top:${top}%;height:${(1/CAL_ROWS)*100}%;background:${s.color}" onclick="openSessionPopover(event,'${s.id}')">
             <div class="cal-event-name">${s.name}</div>
             <div class="cal-event-time">${formatTime12(t.time)}</div>
           </div>`;
         });
       });
-      dayCols += `<div class="cal-day-body" style="height:${CAL_ROWS*CAL_ROW_H}px">${events}</div>`;
+      dayCols += `<div class="cal-day-body">${lines}${events}</div>`;
     });
 
-    holder.innerHTML = `<div class="cal-wrap"><div class="cal-grid">${hdr}${timeCol}${dayCols}</div></div>
+    holder.innerHTML = `<div class="cal-wrap">
+        <div class="cal-header-row">${hdr}</div>
+        <div class="cal-body">${timeCol}${dayCols}</div>
+      </div>
       <div class="cal-popover-backdrop" id="calPopoverBackdrop" onclick="closeSessionPopover()"></div>
       <div class="cal-popover" id="calPopover" style="display:none"></div>`;
   }
@@ -2776,6 +2727,7 @@ tickClock();
     const st = sessionStatus(s.times);
     const pop = document.getElementById('calPopover');
     const backdrop = document.getElementById('calPopoverBackdrop');
+    pop.style.setProperty('--accent', s.color);
     pop.innerHTML = `
       <div class="student-name">${s.name}</div>
       <div class="student-status ${st.live?'live':''}">${st.text}</div>
@@ -2801,19 +2753,6 @@ tickClock();
     document.getElementById('calPopover').style.display = 'none';
     document.getElementById('calPopoverBackdrop').classList.remove('show');
   };
-
-  window.setSessionView = function(view){
-    document.getElementById('sessionCalendar').style.display = view === 'calendar' ? '' : 'none';
-    document.getElementById('studentCards').style.display = view === 'list' ? '' : 'none';
-    document.getElementById('calViewBtn').classList.toggle('active', view === 'calendar');
-    document.getElementById('listViewBtn').classList.toggle('active', view === 'list');
-    if(view !== 'calendar') closeSessionPopover();
-    try{ localStorage.setItem('oh-session-view', view); }catch(e){}
-  };
-  try{
-    const savedView = localStorage.getItem('oh-session-view');
-    if(savedView === 'list') setSessionView('list');
-  }catch(e){}
 
   /* ---------- nature corner ---------- */
   const NATURE_ITEMS = [
