@@ -564,7 +564,7 @@ html[data-theme="light"] #dashboardRoot{
     border: 1px solid var(--line); margin-bottom: 22px;
   }
   #vitalityRoot .heatmap-section h2{ font-family:'Fraunces', serif; font-weight:600; font-size: 17px; margin: 0 0 14px; }
-  #vitalityRoot .heatmap{ display:grid; grid-template-columns: repeat(14, 1fr); gap: 6px; }
+  #vitalityRoot .heatmap{ display:grid; grid-template-columns: repeat(14, 1fr); gap: 6px; max-width:480px; margin:0 auto; }
   #vitalityRoot .hcell{
     aspect-ratio: 1; border-radius: 6px; background: var(--surface-soft); border: 1px solid var(--line);
     cursor:pointer; position:relative; transition: transform 0.15s ease;
@@ -573,10 +573,15 @@ html[data-theme="light"] #dashboardRoot{
   #vitalityRoot .hcell.sel{ outline: 2px solid var(--ink); outline-offset:2px; }
   #vitalityRoot .heatmap-legend{ display:flex; align-items:center; gap:8px; margin-top:12px; font-size:11px; color:var(--ink-soft); font-family:'IBM Plex Mono', monospace; }
   #vitalityRoot .legend-swatch{ width:12px; height:12px; border-radius:3px; }
+  @media (max-width: 460px){
+    #vitalityRoot .heatmap-section{ padding:16px 12px; }
+    #vitalityRoot .heatmap{ gap:4px; }
+  }
 
   /* ---------- CHECKLIST ---------- */
   #vitalityRoot .day-grid{ display:grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-bottom: 22px; }
-  @media (max-width: 780px){ #vitalityRoot .day-grid{ grid-template-columns: 1fr; } }
+  @media (max-width: 1023px){ #vitalityRoot .day-grid{ grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 600px){ #vitalityRoot .day-grid{ grid-template-columns: 1fr; } }
   #vitalityRoot .block{ background: var(--surface); border-radius: 18px; padding: 22px; box-shadow: var(--shadow); border: 1px solid var(--line); }
   #vitalityRoot .block .block-head{ display:flex; align-items:center; gap:10px; margin-bottom: 14px; }
   #vitalityRoot .block .dot{ width:9px; height:9px; border-radius:50%; }
