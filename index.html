@@ -244,9 +244,17 @@ body, body *{
   align-items: center !important;
   gap: 6px;
 }
-/* exceptions: horizontally-scrolling nav strips need their content left-anchored,
+/* exception: this horizontally-scrolling nav strip needs its content left-anchored,
    otherwise centering an overflowing flex row breaks scroll-to-start on some browsers */
-.shell-tabs, .nav-scroll{
+.nav-scroll{
+  justify-content: flex-start !important;
+}
+.shell-tabs{
+  justify-content: center !important;
+}
+/* when the tab row is too wide to fit (mobile), centering makes the start of the
+   row unreachable — no way to scroll to negative offset — so fall back to left-anchored */
+.shell-tabs.overflowing{
   justify-content: flex-start !important;
 }
 
@@ -357,6 +365,18 @@ html[data-theme="light"] #dashboardRoot{
 #dashboardRoot .eyebrow{font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:0.12em;text-transform:uppercase;color:var(--db-ink-soft);margin-bottom:8px;}
 #dashboardRoot h1{font-family:'Fraunces',serif;font-style:italic;font-weight:600;font-size:clamp(26px,5vw,38px);margin:0 0 6px;}
 #dashboardRoot header p.sub{color:var(--db-ink-soft);font-size:14px;max-width:440px;margin:0 auto;line-height:1.55;}
+
+/* ---------- motivational quote (rotates every 30s) ---------- */
+#dashboardRoot .motivate-card{
+  background:linear-gradient(135deg, rgba(0,144,176,0.10), rgba(79,107,74,0.08)), var(--db-surface);
+  border:1px solid var(--db-line); border-radius:18px; padding:20px 22px; margin-bottom:20px;
+  box-shadow:var(--db-shadow); text-align:center;
+}
+#dashboardRoot .motivate-quote{
+  font-family:'Fraunces',serif; font-style:italic; font-size:15.5px; line-height:1.6; color:var(--db-ink);
+  min-height:2.6em; transition:opacity .4s ease;
+}
+#dashboardRoot .motivate-quote.fade{opacity:0;}
 
 /* ---------- session-soon alert ---------- */
 #dashboardRoot .session-alert{
@@ -1037,12 +1057,11 @@ html[data-theme="light"] #officeHoursRoot{
   flex:1;min-height:38px;padding:8px 6px;border-radius:10px;border:1px solid var(--oh-line);
   background:var(--oh-surface-soft);color:var(--oh-ink-soft);font-size:12px;font-weight:700;cursor:pointer;transition:all .15s;
 }
-#officeHoursRoot .status-btn.active[data-status="cancelled"]{background:#8a3a3a;color:#fff;border-color:#8a3a3a;}
 #officeHoursRoot .status-btn.active[data-status="rescheduled"]{background:var(--oh-brass);color:#fff;border-color:var(--oh-brass);}
 
 /* ---------- today's stats bar ---------- */
 #officeHoursRoot .today-stats{
-  display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px;
+  display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px;
 }
 #officeHoursRoot .today-stat{
   background:var(--oh-surface);border:1px solid var(--oh-line);border-radius:12px;padding:10px 6px;text-align:center;box-shadow:var(--oh-shadow);
@@ -1050,9 +1069,7 @@ html[data-theme="light"] #officeHoursRoot{
 #officeHoursRoot .today-stat .num{font-family:'Fraunces',serif;font-weight:600;font-size:20px;}
 #officeHoursRoot .today-stat .lab{font-family:'IBM Plex Mono',monospace;font-size:8.5px;text-transform:uppercase;letter-spacing:0.04em;color:var(--oh-ink-soft);margin-top:2px;}
 #officeHoursRoot .today-stat.executed .num{color:var(--oh-forest);}
-#officeHoursRoot .today-stat.cancelled .num{color:#c96a6a;}
 #officeHoursRoot .today-stat.rescheduled .num{color:var(--oh-brass);}
-#officeHoursRoot .cal-event.day-cancelled{opacity:0.4;text-decoration:line-through;}
 #officeHoursRoot .cal-event.day-rescheduled{outline:2px dashed var(--oh-brass);outline-offset:-2px;}
 
 /* ---------- roster board ---------- */
@@ -1420,6 +1437,10 @@ html[data-theme="light"] #businessRoot{
   </header>
 
   <div class="frame"><span class="frame-tag">Command Center</span>Five systems, one glance. Health, the build, tutoring, and the reset — synced, quiet, always exactly where you left them.</div>
+
+  <div class="motivate-card" id="motivateCard">
+    <div class="motivate-quote" id="motivateQuote">Loading…</div>
+  </div>
 
   <div class="session-alert" id="sessionAlert">
     <div class="tag">⏰ Coming up soon</div>
@@ -2792,10 +2813,13 @@ tickClock();
     times.forEach(t=>{ const d = nextOccurrence(t.day, t.time, now); if(d < best) best = d; });
     const live = best <= 30*60*1000 && best >= -60*60*1000;
     if(live) return {text:'🔴 LIVE WINDOW — Join Now', live:true};
-    const dd = Math.floor(best/(1000*60*60*24));
-    const hh2 = Math.floor((best/(1000*60*60))%24);
-    const mm2 = Math.floor((best/(1000*60))%60);
-    return {text:`Next in ${dd>0?dd+'d ':''}${hh2}h ${mm2}m`, live:false};
+    const totalSec = Math.max(0, Math.floor(best/1000));
+    const dd = Math.floor(totalSec/86400);
+    const pad = n => String(n).padStart(2,'0');
+    const hh2 = pad(Math.floor((totalSec%86400)/3600));
+    const mm2 = pad(Math.floor((totalSec%3600)/60));
+    const ss2 = pad(totalSec%60);
+    return {text:`${dd>0?dd+'d ':''}${hh2}:${mm2}:${ss2}`, live:false};
   }
 
   const SESSIONS = [
@@ -3039,7 +3063,7 @@ tickClock();
           const leftPct = slot * widthPct;
           const st = sessionStatus([e.t]);
           const dayStatus = (d === today) ? getSessionStatusToday(e.s.id) : null;
-          const statusCls = dayStatus === 'cancelled' ? 'day-cancelled' : dayStatus === 'rescheduled' ? 'day-rescheduled' : '';
+          const statusCls = dayStatus === 'rescheduled' ? 'day-rescheduled' : '';
           events += `<div class="cal-event ${st.live?'live':''} ${statusCls}" style="top:${top}%;height:${height}%;left:calc(${leftPct}% + 1px);width:calc(${widthPct}% - 2px);background:${e.s.color}" onclick="openSessionPopover(event,'${e.s.id}','${d}')">
             <div class="cal-event-name">${e.s.name}</div>
             <div class="cal-event-time">${formatTime12(e.t.time)}</div>
@@ -3057,6 +3081,18 @@ tickClock();
   renderCalendar();
   setInterval(()=>{ renderCalendar(); renderTodayStats(); }, 30000);
 
+  let popoverSessionId = null;
+  let popoverTickInterval = null;
+
+  function tickPopoverCountdown(){
+    if(!popoverSessionId) return;
+    const s = SESSIONS.find(x => x.id === popoverSessionId);
+    if(!s) return;
+    const st = sessionStatus(s.times);
+    const el = document.querySelector('#calPopover .student-status');
+    if(el){ el.textContent = st.text; el.classList.toggle('live', st.live); }
+  }
+
   window.openSessionPopover = function(evt, id, day){
     const s = SESSIONS.find(x => x.id === id);
     if(!s) return;
@@ -3071,7 +3107,6 @@ tickClock();
       <div class="session-status-controls" id="statusControls" data-session="${s.id}">
         <div class="status-label">Mark today's session</div>
         <div class="status-btns">
-          <button class="status-btn ${current==='cancelled'?'active':''}" data-status="cancelled" onclick="toggleSessionStatus('${s.id}','cancelled')">✕ Cancelled</button>
           <button class="status-btn ${current==='rescheduled'?'active':''}" data-status="rescheduled" onclick="toggleSessionStatus('${s.id}','rescheduled')">↻ Rescheduled</button>
         </div>
       </div>` : '';
@@ -3095,11 +3130,16 @@ tickClock();
     pop.style.top = top + 'px';
     pop.style.display = 'block';
     backdrop.classList.add('show');
+    popoverSessionId = id;
+    if(popoverTickInterval) clearInterval(popoverTickInterval);
+    popoverTickInterval = setInterval(tickPopoverCountdown, 1000);
     evt.stopPropagation();
   };
   window.closeSessionPopover = function(){
     document.getElementById('calPopover').style.display = 'none';
     document.getElementById('calPopoverBackdrop').classList.remove('show');
+    popoverSessionId = null;
+    if(popoverTickInterval){ clearInterval(popoverTickInterval); popoverTickInterval = null; }
   };
 
   window.toggleSessionStatus = function(id, status){
@@ -3122,17 +3162,15 @@ tickClock();
     const todaySessions = [];
     SESSIONS.forEach(s => { s.times.forEach(t => { if(t.day === today) todaySessions.push(s); }); });
     const allotted = todaySessions.length;
-    let cancelled = 0, rescheduled = 0;
+    let rescheduled = 0;
     todaySessions.forEach(s => {
       const st = getSessionStatusToday(s.id);
-      if(st === 'cancelled') cancelled++;
-      else if(st === 'rescheduled') rescheduled++;
+      if(st === 'rescheduled') rescheduled++;
     });
-    const executed = allotted - cancelled - rescheduled;
+    const executed = allotted - rescheduled;
     holder.innerHTML = `<div class="today-stats">
       <div class="today-stat"><div class="num">${allotted}</div><div class="lab">Allotted Today</div></div>
       <div class="today-stat executed"><div class="num">${executed}</div><div class="lab">Executed</div></div>
-      <div class="today-stat cancelled"><div class="num">${cancelled}</div><div class="lab">Cancelled</div></div>
       <div class="today-stat rescheduled"><div class="num">${rescheduled}</div><div class="lab">Rescheduled</div></div>
     </div>`;
   }
@@ -3172,7 +3210,7 @@ tickClock();
     {img:'nature-1.png', title:'Hilltop at Dusk', quote:'Adopt the pace of nature: her secret is patience.', attr:'Ralph Waldo Emerson'},
   ];
 
-  // 994 more (1000 total), built from a curated quote pool paired with lock-seeded (stable) stock nature photos —
+  // 9994 more (10,000 total), built from a curated quote pool paired with lock-seeded (stable) stock nature photos —
   // hotlinked rather than stored, so they need a network connection and won't work fully offline.
   const NATURE_QUOTE_POOL = [
     {title:'Stillness', quote:"In the midst of movement and chaos, keep stillness inside of you.", attr:'Deepak Chopra'},
@@ -3202,7 +3240,7 @@ tickClock();
     {title:'Open Field', quote:'The sky is not the limit, your mind is.', attr:'common saying'}
   ];
   const NATURE_KEYWORDS = ['nature','forest','mountain','ocean','sunrise','flowers','river','desert','sky','trees','lake','waterfall'];
-  for(let i=0; i<994; i++){
+  for(let i=0; i<9994; i++){
     const q = NATURE_QUOTE_POOL[i % NATURE_QUOTE_POOL.length];
     const kw = NATURE_KEYWORDS[i % NATURE_KEYWORDS.length];
     NATURE_ITEMS.push({
@@ -3382,6 +3420,56 @@ tickClock();
   }
   renderAll();
   setInterval(renderAll, 30000);
+
+  /* ---------- motivational quotes: 10,000-strong pool, one every 30s ----------
+     Built combinatorially (25 openers x 20 subjects x 20 closing lines = 10,000
+     distinct, addressable quotes) rather than stored as a literal 10,000-line
+     array, so the app stays small while still having a real 10,000-quote space. */
+  const QUOTE_OPENERS = [
+    "Remember,","Today,","Right now,","Quietly,","Somewhere in this,","Even now,",
+    "Little by little,","Step by step,","In your own time,","Without rushing,",
+    "Slowly but surely,","One breath at a time,","In this moment,","Even on hard days,",
+    "Trust that","Know that","Believe that","Hold onto this:","Keep in mind,","Above all,",
+    "Through it all,","Piece by piece,","Day after day,","With patience,","With steady hands,"
+  ];
+  const QUOTE_SUBJECTS = [
+    "progress","discipline","patience","focus","courage","growth","consistency","clarity",
+    "resilience","momentum","effort","hope","persistence","strength","purpose","gratitude",
+    "kindness","confidence","balance","calm"
+  ];
+  const QUOTE_ACTIONS = [
+    "begins with a single step.","is built quietly, one day at a time.",
+    "rewards those who keep showing up.","doesn't ask for perfection, only honesty.",
+    "grows in the spaces between big moments.","is the quiet work no one applauds yet.",
+    "compounds faster than it feels like it does.","is choosing again, even after a rough start.",
+    "doesn't need an audience to matter.","is already happening, even when it's invisible.",
+    "is the difference between wishing and doing.","starts the moment you decide it does.",
+    "is proof you haven't given up.","is built one honest choice at a time.",
+    "doesn't require you to feel ready.","is the sum of small decisions no one sees.",
+    "outlasts motivation on the days it runs out.","is quieter than doubt, but it wins.",
+    "is enough, even in small doses today.","is a muscle — it grows with use."
+  ];
+  const QUOTE_COUNT = QUOTE_OPENERS.length * QUOTE_SUBJECTS.length * QUOTE_ACTIONS.length; // 10,000
+
+  function quoteAt(i){
+    const oi = i % QUOTE_OPENERS.length;
+    const si = Math.floor(i / QUOTE_OPENERS.length) % QUOTE_SUBJECTS.length;
+    const ai = Math.floor(i / (QUOTE_OPENERS.length * QUOTE_SUBJECTS.length)) % QUOTE_ACTIONS.length;
+    return `${QUOTE_OPENERS[oi]} ${QUOTE_SUBJECTS[si]} ${QUOTE_ACTIONS[ai]}`;
+  }
+
+  function renderMotivateQuote(){
+    const el = document.getElementById('motivateQuote');
+    if(!el) return;
+    const idx = Math.floor(Math.random() * QUOTE_COUNT);
+    el.classList.add('fade');
+    setTimeout(()=>{
+      el.textContent = `"${quoteAt(idx)}"`;
+      el.classList.remove('fade');
+    }, 300);
+  }
+  document.getElementById('motivateQuote').textContent = `"${quoteAt(Math.floor(Math.random()*QUOTE_COUNT))}"`;
+  setInterval(renderMotivateQuote, 30000);
 })();
 
 </script>
@@ -3869,6 +3957,14 @@ tickClock();
   }
 
   buttons.forEach(b => b.addEventListener('click', () => activate(b.dataset.shellTab)));
+
+  const shellTabsEl = document.querySelector('.shell-tabs');
+  function updateShellTabsOverflow(){
+    if(!shellTabsEl) return;
+    shellTabsEl.classList.toggle('overflowing', shellTabsEl.scrollWidth > shellTabsEl.clientWidth + 1);
+  }
+  updateShellTabsOverflow();
+  window.addEventListener('resize', updateShellTabsOverflow);
 
   let initialTab = 'dashboard';
   try{
