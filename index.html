@@ -994,6 +994,60 @@ html[data-theme="light"] #officeHoursRoot{
   font-family:'Fraunces',serif;font-weight:600;font-size:19px;margin:0 0 14px;display:flex;align-items:center;gap:8px;
 }
 
+/* ---------- calendar date navigation ---------- */
+#officeHoursRoot .cal-datenav{display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap;}
+#officeHoursRoot .cal-datenav-btns{display:flex;align-items:center;gap:6px;}
+#officeHoursRoot .cal-nav-btn{
+  width:36px;height:36px;min-width:36px;border-radius:50%;border:1px solid var(--oh-line);
+  background:var(--oh-surface-soft);color:var(--oh-ink);cursor:pointer;font-size:15px;
+  display:flex;align-items:center;justify-content:center;
+}
+#officeHoursRoot .cal-nav-btn:hover{border-color:var(--oh-brass);color:var(--oh-brass);}
+#officeHoursRoot .cal-today-btn{
+  height:36px;padding:0 12px;border-radius:100px;border:1px solid var(--oh-line);background:var(--oh-surface-soft);
+  color:var(--oh-ink-soft);font-family:'IBM Plex Mono',monospace;font-size:10.5px;font-weight:700;text-transform:uppercase;
+  letter-spacing:0.04em;cursor:pointer;
+}
+#officeHoursRoot .cal-today-btn:hover{color:var(--oh-brass);border-color:var(--oh-brass);}
+#officeHoursRoot .cal-datenav-range{
+  flex:1;min-width:150px;text-align:center;font-family:'IBM Plex Mono',monospace;font-size:12.5px;
+  font-weight:700;color:var(--oh-ink);
+}
+#officeHoursRoot .cal-add-btn{
+  height:36px;padding:0 16px;border-radius:100px;border:none;background:var(--oh-brass);color:#fff;
+  font-size:12.5px;font-weight:700;cursor:pointer;white-space:nowrap;
+}
+#officeHoursRoot .cal-add-btn:hover{filter:brightness(1.1);}
+#officeHoursRoot .cal-daycol-hdr .dnum{display:block;font-size:14px;margin-top:2px;font-weight:700;}
+
+/* ---------- add-session modal ---------- */
+#officeHoursRoot .cal-add-modal-backdrop{position:fixed;inset:0;z-index:600;display:none;background:rgba(0,0,0,0.55);}
+#officeHoursRoot .cal-add-modal-backdrop.show{display:block;}
+#officeHoursRoot .cal-add-modal{
+  position:fixed;z-index:601;left:50%;top:50%;transform:translate(-50%,-50%);
+  background:var(--oh-surface);border-radius:18px;padding:22px;width:min(340px, calc(100vw - 32px));
+  box-shadow:0 20px 50px rgba(0,0,0,0.5);display:none;
+}
+#officeHoursRoot .cal-add-modal.show{display:block;}
+#officeHoursRoot .cal-add-modal h3{font-family:'Fraunces',serif;font-weight:600;font-size:17px;margin:0 0 16px;}
+#officeHoursRoot .cal-add-field{
+  display:block;margin-bottom:12px;font-size:11px;color:var(--oh-ink-soft);font-family:'IBM Plex Mono',monospace;
+  text-transform:uppercase;letter-spacing:0.04em;
+}
+#officeHoursRoot .cal-add-field input{
+  display:block;width:100%;margin-top:6px;padding:10px 12px;border-radius:10px;border:1px solid var(--oh-line);
+  background:var(--oh-surface-soft);color:var(--oh-ink);font-size:14px;font-family:'Inter',sans-serif;min-height:44px;
+}
+#officeHoursRoot .cal-add-actions{display:flex;gap:10px;margin-top:16px;}
+#officeHoursRoot .cal-add-actions button{flex:1;min-height:44px;border-radius:10px;border:none;font-size:13px;font-weight:700;cursor:pointer;}
+#officeHoursRoot .cal-add-cancel{background:var(--oh-surface-soft);color:var(--oh-ink);border:1px solid var(--oh-line) !important;}
+#officeHoursRoot .cal-add-save{background:var(--oh-brass);color:#fff;}
+#officeHoursRoot .cal-event.oneoff{border:2px dashed rgba(255,255,255,0.85);}
+#officeHoursRoot .oneoff-delete{
+  width:100%;min-height:44px;border-radius:10px;border:1px solid #8a3a3a;background:transparent;color:#c96a6a;
+  font-size:13px;font-weight:700;cursor:pointer;margin-top:4px;
+}
+
 /* ---------- calendar (Google-Calendar-style week grid, fixed 16:9, no scroll) ---------- */
 #officeHoursRoot .cal-wrap{
   width:100%;aspect-ratio:16/9;background:var(--oh-surface);border-radius:16px;box-shadow:var(--oh-shadow);
@@ -1681,9 +1735,39 @@ html[data-theme="light"] #businessRoot{
 
   <h2 class="sec-title">📚 Tutoring Sessions</h2>
   <div id="todayStats"></div>
+  <div class="cal-datenav">
+    <div class="cal-datenav-btns">
+      <button class="cal-nav-btn" onclick="calShiftWeek(-1)" aria-label="Previous week">‹</button>
+      <button class="cal-today-btn" onclick="calGoToday()">Today</button>
+      <button class="cal-nav-btn" onclick="calShiftWeek(1)" aria-label="Next week">›</button>
+    </div>
+    <div class="cal-datenav-range" id="calDateRange">—</div>
+    <button class="cal-add-btn" onclick="openAddSessionModal()">+ Add Session</button>
+  </div>
   <div id="sessionCalendar"></div>
   <div class="cal-popover-backdrop" id="calPopoverBackdrop" onclick="closeSessionPopover()"></div>
   <div class="cal-popover" id="calPopover" style="display:none"></div>
+
+  <div class="cal-add-modal-backdrop" id="calAddBackdrop" onclick="closeAddSessionModal()"></div>
+  <div class="cal-add-modal" id="calAddModal">
+    <h3>Add a one-off session</h3>
+    <label class="cal-add-field">Name
+      <input type="text" id="addSessName" placeholder="e.g. Substitute for Kiren">
+    </label>
+    <label class="cal-add-field">Date
+      <input type="date" id="addSessDate">
+    </label>
+    <label class="cal-add-field">Time
+      <input type="time" id="addSessTime">
+    </label>
+    <label class="cal-add-field">Session Link
+      <input type="url" id="addSessLink" placeholder="https://meet.google.com/...">
+    </label>
+    <div class="cal-add-actions">
+      <button class="cal-add-cancel" onclick="closeAddSessionModal()">Cancel</button>
+      <button class="cal-add-save" onclick="saveAddSession()">Add</button>
+    </div>
+  </div>
 
   <h2 class="sec-title">👥 Your Roster</h2>
   <div id="rosterBoard"></div>
@@ -3008,30 +3092,69 @@ tickClock();
 
   /* ---------- daily cancelled/rescheduled status, keyed by calendar date ---------- */
   const DAILY_STATUS_KEY = 'oh-daily-status';
-  function todayISO(){ return new Date().toISOString().slice(0,10); }
+  function todayISO(){ return calDateISO(new Date()); }
   function loadDailyStatus(){ try{ return JSON.parse(localStorage.getItem(DAILY_STATUS_KEY)) || {}; }catch(e){ return {}; } }
   function saveDailyStatus(obj){ try{ localStorage.setItem(DAILY_STATUS_KEY, JSON.stringify(obj)); }catch(e){} }
-  function getSessionStatusToday(id){ const data = loadDailyStatus(); return (data[todayISO()] || {})[id] || null; }
-  function setSessionStatusToday(id, status){
+  function getSessionStatusForDate(id, dateISO){ const data = loadDailyStatus(); return (data[dateISO] || {})[id] || null; }
+  function setSessionStatusForDate(id, dateISO, status){
     const data = loadDailyStatus();
-    const day = todayISO();
-    if(!data[day]) data[day] = {};
-    if(status) data[day][id] = status; else delete data[day][id];
+    if(!data[dateISO]) data[dateISO] = {};
+    if(status) data[dateISO][id] = status; else delete data[dateISO][id];
     saveDailyStatus(data);
   }
 
-  /* ---------- calendar view: Google-Calendar-style week grid, fixed 16:9, no scrolling ---------- */
-  // only the hours that actually have a session get a row — keeps everything on-screen at once
-  const CAL_HOURS = [...new Set(SESSIONS.flatMap(s => s.times.map(t => parseInt(t.time,10))))].sort((a,b) => a-b);
-  const CAL_ROWS = CAL_HOURS.length;
+  /* ---------- one-off sessions (substitutes, demos) pinned to a specific date ---------- */
+  const ONEOFF_KEY = 'oh-oneoff-events';
+  function loadOneOffs(){ try{ return JSON.parse(localStorage.getItem(ONEOFF_KEY)) || []; }catch(e){ return []; } }
+  function saveOneOffs(list){ try{ localStorage.setItem(ONEOFF_KEY, JSON.stringify(list)); }catch(e){} }
 
+  /* ---------- date helpers for week navigation ---------- */
+  function calDateISO(d){ return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; }
+  function calAddDays(d, n){ const x = new Date(d); x.setDate(x.getDate()+n); return x; }
+  function calWeekStartOf(d){ const x = new Date(d); x.setHours(0,0,0,0); x.setDate(x.getDate() - x.getDay()); return x; }
+  const MONTH_SHORT = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+  let calWeekStart = calWeekStartOf(new Date());
+
+  window.calShiftWeek = function(dir){
+    calWeekStart = calAddDays(calWeekStart, dir*7);
+    renderCalendar();
+  };
+  window.calGoToday = function(){
+    calWeekStart = calWeekStartOf(new Date());
+    renderCalendar();
+  };
+
+  /* ---------- calendar view: Google-Calendar-style week grid, fixed 16:9, no scrolling ---------- */
   function renderCalendar(){
     const holder = document.getElementById('sessionCalendar');
     if(!holder) return;
-    const today = DAY_ORDER[new Date().getDay()];
+    const todayStr = todayISO();
+    const weekDates = DAY_ORDER.map((d,i) => calAddDays(calWeekStart, i));
+    const oneOffs = loadOneOffs();
+
+    // date range label
+    const first = weekDates[0], last = weekDates[6];
+    const rangeLbl = first.getMonth() === last.getMonth()
+      ? `${MONTH_SHORT[first.getMonth()]} ${first.getDate()}–${last.getDate()}, ${last.getFullYear()}`
+      : `${MONTH_SHORT[first.getMonth()]} ${first.getDate()} – ${MONTH_SHORT[last.getMonth()]} ${last.getDate()}, ${last.getFullYear()}`;
+    const rangeEl = document.getElementById('calDateRange');
+    if(rangeEl) rangeEl.textContent = rangeLbl;
+
+    // only the hours that actually have a session (recurring or one-off, this week) get a row
+    const oneOffThisWeek = oneOffs.filter(ev => weekDates.some(dt => calDateISO(dt) === ev.date));
+    const CAL_HOURS = [...new Set([
+      ...SESSIONS.flatMap(s => s.times.map(t => parseInt(t.time,10))),
+      ...oneOffThisWeek.map(ev => parseInt(ev.time,10))
+    ])].sort((a,b) => a-b);
+    const CAL_ROWS = CAL_HOURS.length || 1;
 
     let hdr = `<div class="cal-corner"></div>`;
-    DAY_ORDER.forEach(d => { hdr += `<div class="cal-daycol-hdr ${d===today?'today':''}">${DAY_LABEL[d]}</div>`; });
+    DAY_ORDER.forEach((d,i) => {
+      const dt = weekDates[i];
+      const isToday = calDateISO(dt) === todayStr;
+      hdr += `<div class="cal-daycol-hdr ${isToday?'today':''}">${DAY_LABEL[d]}<span class="dnum">${dt.getDate()}</span></div>`;
+    });
 
     let timeCol = `<div class="cal-time-col">`;
     CAL_HOURS.forEach((h,i) => {
@@ -3040,21 +3163,33 @@ tickClock();
     timeCol += `</div>`;
 
     let dayCols = '';
-    DAY_ORDER.forEach(d => {
+    DAY_ORDER.forEach((d,i) => {
+      const dt = weekDates[i];
+      const dISO = calDateISO(dt);
+      const isToday = dISO === todayStr;
       let lines = '';
-      for(let i=1;i<CAL_ROWS;i++){ lines += `<div class="cal-hr-line" style="top:${(i/CAL_ROWS)*100}%"></div>`; }
-      // collect this day's events first, then group by hour row so simultaneous
-      // sessions sit side-by-side instead of stacking exactly on top of each other
+      for(let r=1;r<CAL_ROWS;r++){ lines += `<div class="cal-hr-line" style="top:${(r/CAL_ROWS)*100}%"></div>`; }
+
+      // collect this day's events (recurring + one-off), then group by hour row so
+      // simultaneous sessions sit side-by-side instead of stacking on top of each other
       const dayEvents = [];
       SESSIONS.forEach(s => {
         s.times.forEach(t => {
           if(t.day !== d) return;
-          const [hh,mm] = t.time.split(':').map(Number);
+          const hh = parseInt(t.time,10);
           const rowIdx = CAL_HOURS.indexOf(hh);
           if(rowIdx === -1) return;
-          dayEvents.push({s, t, hh, mm, rowIdx});
+          dayEvents.push({kind:'session', s, t, mm:Number(t.time.split(':')[1]), rowIdx});
         });
       });
+      oneOffs.forEach(ev => {
+        if(ev.date !== dISO) return;
+        const hh = parseInt(ev.time,10);
+        const rowIdx = CAL_HOURS.indexOf(hh);
+        if(rowIdx === -1) return;
+        dayEvents.push({kind:'oneoff', ev, mm:Number(ev.time.split(':')[1]), rowIdx});
+      });
+
       const rowGroups = {};
       dayEvents.forEach(e => { (rowGroups[e.rowIdx] = rowGroups[e.rowIdx] || []).push(e); });
 
@@ -3066,13 +3201,20 @@ tickClock();
           const height = Math.min((1/CAL_ROWS)*100, 100 - top);
           const widthPct = 100 / n;
           const leftPct = slot * widthPct;
-          const st = sessionStatus([e.t]);
-          const dayStatus = (d === today) ? getSessionStatusToday(e.s.id) : null;
-          const statusCls = dayStatus === 'rescheduled' ? 'day-rescheduled' : '';
-          events += `<div class="cal-event ${st.live?'live':''} ${statusCls}" style="top:${top}%;height:${height}%;left:calc(${leftPct}% + 1px);width:calc(${widthPct}% - 2px);background:${e.s.color}" onclick="openSessionPopover(event,'${e.s.id}','${d}')">
-            <div class="cal-event-name">${e.s.name}</div>
-            <div class="cal-event-time">${formatTime12(e.t.time)}</div>
-          </div>`;
+          if(e.kind === 'session'){
+            const st = sessionStatus([e.t]);
+            const dayStatus = isToday ? getSessionStatusForDate(e.s.id, dISO) : null;
+            const statusCls = dayStatus === 'rescheduled' ? 'day-rescheduled' : '';
+            events += `<div class="cal-event ${st.live?'live':''} ${statusCls}" style="top:${top}%;height:${height}%;left:calc(${leftPct}% + 1px);width:calc(${widthPct}% - 2px);background:${e.s.color}" onclick="openSessionPopover(event,'session','${e.s.id}','${dISO}')">
+              <div class="cal-event-name">${e.s.name}</div>
+              <div class="cal-event-time">${formatTime12(e.t.time)}</div>
+            </div>`;
+          } else {
+            events += `<div class="cal-event oneoff" style="top:${top}%;height:${height}%;left:calc(${leftPct}% + 1px);width:calc(${widthPct}% - 2px);background:#5b3b66" onclick="openSessionPopover(event,'oneoff','${e.ev.id}','${dISO}')">
+              <div class="cal-event-name">📌 ${e.ev.name}</div>
+              <div class="cal-event-time">${formatTime12(e.ev.time)}</div>
+            </div>`;
+          }
         });
       });
       dayCols += `<div class="cal-day-body">${lines}${events}</div>`;
@@ -3086,11 +3228,12 @@ tickClock();
   renderCalendar();
   setInterval(()=>{ renderCalendar(); renderTodayStats(); }, 30000);
 
+  let popoverKind = null;
   let popoverSessionId = null;
   let popoverTickInterval = null;
 
   function tickPopoverCountdown(){
-    if(!popoverSessionId) return;
+    if(popoverKind !== 'session' || !popoverSessionId) return;
     const s = SESSIONS.find(x => x.id === popoverSessionId);
     if(!s) return;
     const st = sessionStatus(s.times);
@@ -3098,18 +3241,54 @@ tickClock();
     if(el){ el.textContent = st.text; el.classList.toggle('live', st.live); }
   }
 
-  window.openSessionPopover = function(evt, id, day){
+  function positionPopover(evt){
+    const pop = document.getElementById('calPopover');
+    const backdrop = document.getElementById('calPopoverBackdrop');
+    const rect = evt.currentTarget.getBoundingClientRect();
+    const popW = 280;
+    let left = rect.left;
+    if(left + popW > window.innerWidth - 16) left = window.innerWidth - popW - 16;
+    if(left < 16) left = 16;
+    let top = rect.bottom + 8;
+    if(top + 260 > window.innerHeight) top = Math.max(16, rect.top - 260);
+    pop.style.left = left + 'px';
+    pop.style.top = top + 'px';
+    pop.style.display = 'block';
+    backdrop.classList.add('show');
+  }
+
+  window.openSessionPopover = function(evt, kind, id, dateISO){
+    const pop = document.getElementById('calPopover');
+    popoverKind = kind;
+    popoverSessionId = id;
+    if(popoverTickInterval){ clearInterval(popoverTickInterval); popoverTickInterval = null; }
+
+    if(kind === 'oneoff'){
+      const ev = loadOneOffs().find(x => x.id === id);
+      if(!ev) return;
+      pop.style.setProperty('--accent', '#5b3b66');
+      const d = new Date(ev.date+'T00:00:00');
+      pop.innerHTML = `
+        <div class="student-name">📌 ${ev.name}</div>
+        <div class="student-status">One-off session</div>
+        <div class="student-schedule">🗓️ ${DAY_LABEL[DAY_ORDER[d.getDay()]]} ${MONTH_SHORT[d.getMonth()]} ${d.getDate()} · ${formatTime12(ev.time)} IST</div>
+        <div class="student-actions">
+          ${ev.link ? `<a class="student-btn join" href="${ev.link}" target="_blank" rel="noopener">🎥 Join Session</a>` : ''}
+        </div>
+        <button class="oneoff-delete" onclick="deleteOneOffEvent('${ev.id}')">🗑️ Remove this session</button>`;
+      positionPopover(evt);
+      evt.stopPropagation();
+      return;
+    }
+
     const s = SESSIONS.find(x => x.id === id);
     if(!s) return;
     const st = sessionStatus(s.times);
-    const pop = document.getElementById('calPopover');
-    const backdrop = document.getElementById('calPopoverBackdrop');
     pop.style.setProperty('--accent', s.color);
-    const today = DAY_ORDER[new Date().getDay()];
-    const isToday = day === today;
-    const current = isToday ? getSessionStatusToday(s.id) : null;
+    const isToday = dateISO === todayISO();
+    const current = isToday ? getSessionStatusForDate(s.id, dateISO) : null;
     const statusControls = isToday ? `
-      <div class="session-status-controls" id="statusControls" data-session="${s.id}">
+      <div class="session-status-controls" id="statusControls" data-session="${s.id}" data-date="${dateISO}">
         <div class="status-label">Mark today's session</div>
         <div class="status-btns">
           <button class="status-btn ${current==='rescheduled'?'active':''}" data-status="rescheduled" onclick="toggleSessionStatus('${s.id}','rescheduled')">↻ Rescheduled</button>
@@ -3124,18 +3303,7 @@ tickClock();
         <a class="student-btn join" href="${s.session}" target="_blank" rel="noopener">🎥 Join Session</a>
       </div>
       ${statusControls}`;
-    const rect = evt.currentTarget.getBoundingClientRect();
-    const popW = 280;
-    let left = rect.left;
-    if(left + popW > window.innerWidth - 16) left = window.innerWidth - popW - 16;
-    if(left < 16) left = 16;
-    let top = rect.bottom + 8;
-    if(top + 220 > window.innerHeight) top = Math.max(16, rect.top - 220);
-    pop.style.left = left + 'px';
-    pop.style.top = top + 'px';
-    pop.style.display = 'block';
-    backdrop.classList.add('show');
-    popoverSessionId = id;
+    positionPopover(evt);
     if(popoverTickInterval) clearInterval(popoverTickInterval);
     popoverTickInterval = setInterval(tickPopoverCountdown, 1000);
     evt.stopPropagation();
@@ -3143,33 +3311,72 @@ tickClock();
   window.closeSessionPopover = function(){
     document.getElementById('calPopover').style.display = 'none';
     document.getElementById('calPopoverBackdrop').classList.remove('show');
+    popoverKind = null;
     popoverSessionId = null;
     if(popoverTickInterval){ clearInterval(popoverTickInterval); popoverTickInterval = null; }
   };
 
   window.toggleSessionStatus = function(id, status){
-    const current = getSessionStatusToday(id);
-    setSessionStatusToday(id, current === status ? null : status);
     const controls = document.getElementById('statusControls');
+    const dateISO = controls ? controls.dataset.date : todayISO();
+    const current = getSessionStatusForDate(id, dateISO);
+    setSessionStatusForDate(id, dateISO, current === status ? null : status);
     if(controls){
-      const now = getSessionStatusToday(id);
+      const now = getSessionStatusForDate(id, dateISO);
       controls.querySelectorAll('.status-btn').forEach(b => b.classList.toggle('active', b.dataset.status === now));
     }
     renderTodayStats();
     renderCalendar();
   };
 
-  /* ---------- today's session bifurcation: allotted vs executed vs cancelled vs rescheduled ---------- */
+  window.deleteOneOffEvent = function(id){
+    saveOneOffs(loadOneOffs().filter(ev => ev.id !== id));
+    closeSessionPopover();
+    renderTodayStats();
+    renderCalendar();
+  };
+
+  /* ---------- add-session modal (one-off substitutes / demos) ---------- */
+  window.openAddSessionModal = function(){
+    document.getElementById('addSessName').value = '';
+    document.getElementById('addSessDate').value = todayISO();
+    document.getElementById('addSessTime').value = '';
+    document.getElementById('addSessLink').value = '';
+    document.getElementById('calAddModal').classList.add('show');
+    document.getElementById('calAddBackdrop').classList.add('show');
+  };
+  window.closeAddSessionModal = function(){
+    document.getElementById('calAddModal').classList.remove('show');
+    document.getElementById('calAddBackdrop').classList.remove('show');
+  };
+  window.saveAddSession = function(){
+    const name = document.getElementById('addSessName').value.trim();
+    const date = document.getElementById('addSessDate').value;
+    const time = document.getElementById('addSessTime').value;
+    const link = document.getElementById('addSessLink').value.trim();
+    if(!name || !date || !time){ alert('Please fill in at least the name, date, and time.'); return; }
+    const list = loadOneOffs();
+    list.push({ id:'oneoff-'+Date.now(), name, date, time, link });
+    saveOneOffs(list);
+    closeAddSessionModal();
+    calWeekStart = calWeekStartOf(new Date(date+'T00:00:00'));
+    renderTodayStats();
+    renderCalendar();
+  };
+
+  /* ---------- today's session bifurcation: allotted vs executed vs rescheduled ---------- */
   function renderTodayStats(){
     const holder = document.getElementById('todayStats');
     if(!holder) return;
     const today = DAY_ORDER[new Date().getDay()];
+    const todayDate = todayISO();
     const todaySessions = [];
     SESSIONS.forEach(s => { s.times.forEach(t => { if(t.day === today) todaySessions.push(s); }); });
-    const allotted = todaySessions.length;
+    const todayOneOffs = loadOneOffs().filter(ev => ev.date === todayDate);
+    const allotted = todaySessions.length + todayOneOffs.length;
     let rescheduled = 0;
     todaySessions.forEach(s => {
-      const st = getSessionStatusToday(s.id);
+      const st = getSessionStatusForDate(s.id, todayDate);
       if(st === 'rescheduled') rescheduled++;
     });
     const executed = allotted - rescheduled;
