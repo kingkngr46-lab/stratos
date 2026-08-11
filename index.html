@@ -91,6 +91,12 @@ input, select, textarea{
   font-family:'IBM Plex Mono', monospace; font-weight:600; font-size:13px;
   color:var(--shell-fg); letter-spacing:0.02em; margin-right:auto; white-space:nowrap;
 }
+/* on big screens, cluster the whole bar (brand + tabs + buttons) together in the
+   center instead of pinning the brand left and everything else to the far right */
+@media (min-width: 1024px){
+  #shellNav{ justify-content:center; }
+  #shellNav .brand{ margin-right:0; }
+}
 #shellNav .brand .dot{width:8px;height:8px;border-radius:50%;background:conic-gradient(from 0deg,#00d9ff,#9b7bf0,#ffb020,#f0578f,#00d9ff);}
 .shell-tabs{display:flex; gap:4px; background:rgba(255,255,255,0.05); border-radius:100px; padding:4px; overflow-x:auto; max-width:100%; scrollbar-width:none;}
 .shell-tabs::-webkit-scrollbar{display:none;}
