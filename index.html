@@ -1522,6 +1522,57 @@ html[data-theme="light"] #booksRoot{
 #booksRoot .book-verse.done .book-verse-txt{color:var(--bk-ink-soft); text-decoration:line-through;}
 #booksRoot .book-empty{text-align:center; padding:30px 10px; color:var(--bk-ink-soft); font-size:13px; font-style:italic;}
 
+#booksRoot .book-sec-title{
+  font-family:'Fraunces',serif; font-weight:600; font-size:16.5px; margin:22px 0 12px; display:flex; align-items:center; gap:8px;
+}
+
+/* ---- reading streak ---- */
+#booksRoot .book-streak-card{
+  display:flex; align-items:center; gap:14px; flex-wrap:wrap;
+  background:linear-gradient(135deg, rgba(199,154,62,0.14), rgba(155,123,240,0.08)), var(--bk-surface);
+  border:1px solid var(--bk-line); border-radius:18px; padding:16px 20px; margin-bottom:16px; box-shadow:var(--bk-shadow);
+}
+#booksRoot .bsc-num{font-family:'Fraunces',serif; font-weight:600; font-size:32px; line-height:1;}
+#booksRoot .bsc-lab{font-family:'IBM Plex Mono',monospace; font-size:10px; text-transform:uppercase; letter-spacing:0.05em; color:var(--bk-ink-soft); margin-top:2px;}
+#booksRoot .bsc-stats{display:flex; gap:16px; flex:1; min-width:140px;}
+#booksRoot .bsc-stat{font-size:12px; color:var(--bk-ink-soft);}
+#booksRoot .bsc-stat b{display:block; font-family:'Fraunces',serif; font-size:16px; color:var(--bk-ink);}
+#booksRoot .bsc-checkin{
+  min-height:44px; padding:0 18px; border-radius:100px; border:none; background:var(--bk-accent); color:#fff;
+  font-family:'IBM Plex Mono',monospace; font-weight:700; font-size:11.5px; text-transform:uppercase; letter-spacing:0.04em;
+  cursor:pointer; white-space:nowrap;
+}
+#booksRoot .bsc-checkin.done{background:var(--bk-surface-soft); color:var(--bk-ink-soft); border:1px solid var(--bk-line);}
+
+/* ---- top-level classic book card ---- */
+#booksRoot .book-card{
+  background:var(--bk-surface); border:1px solid var(--bk-line); border-radius:16px; margin-bottom:12px;
+  box-shadow:var(--bk-shadow); overflow:hidden;
+}
+#booksRoot .book-card-hdr{display:flex; align-items:center; justify-content:space-between; gap:10px; padding:16px 18px; cursor:pointer;}
+#booksRoot .book-card-title{font-family:'Fraunces',serif; font-weight:600; font-size:16px;}
+#booksRoot .book-card-author{font-family:'IBM Plex Mono',monospace; font-size:10.5px; color:var(--bk-ink-soft); text-transform:uppercase; letter-spacing:0.04em; margin-top:3px;}
+#booksRoot .book-card-body{display:none; padding:0 18px 18px;}
+#booksRoot .book-card.open .book-card-body{display:block;}
+#booksRoot .book-card.open .book-chapter-caret{transform:rotate(180deg);}
+
+/* ---- modern-book shelf tracker cards ---- */
+#booksRoot .shelf-card{
+  background:var(--bk-surface); border:1px solid var(--bk-line); border-radius:16px; padding:16px 18px; margin-bottom:12px;
+  box-shadow:var(--bk-shadow);
+}
+#booksRoot .shelf-title{font-family:'Fraunces',serif; font-weight:600; font-size:15.5px;}
+#booksRoot .shelf-author{font-family:'IBM Plex Mono',monospace; font-size:10.5px; color:var(--bk-accent); text-transform:uppercase; letter-spacing:0.04em; margin-top:3px; margin-bottom:8px;}
+#booksRoot .shelf-desc{font-size:13px; line-height:1.55; color:var(--bk-ink-soft); margin-bottom:12px;}
+#booksRoot .shelf-status-btns{display:flex; gap:6px; flex-wrap:wrap;}
+#booksRoot .shelf-status-btn{
+  flex:1; min-width:90px; min-height:38px; padding:0 10px; border-radius:10px; border:1px solid var(--bk-line);
+  background:var(--bk-surface-soft); color:var(--bk-ink-soft); font-size:11.5px; font-weight:700; cursor:pointer;
+  text-transform:uppercase; letter-spacing:0.03em; font-family:'IBM Plex Mono',monospace; transition:all .15s;
+}
+#booksRoot .shelf-status-btn.active[data-status="reading"]{background:#3e6fa8; color:#fff; border-color:#3e6fa8;}
+#booksRoot .shelf-status-btn.active[data-status="completed"]{background:#3d8f5f; color:#fff; border-color:#3d8f5f;}
+
 @media (min-aspect-ratio: 9/16), (max-height: 480px){
   #booksRoot{padding:16px 16px 56px;}
   #booksRoot header{margin-bottom:14px;}
@@ -1970,24 +2021,34 @@ html[data-theme="light"] #booksRoot{
 <div class="wrap" id="booksApp">
 
   <header>
-    <div class="eyebrow">Wisdom, one verse at a time</div>
-    <h1>📚 Chanakya Niti</h1>
-    <p class="sub">A curated set of Chanakya's most well-known teachings, organized across all 17 traditional chapters — read a little, check it off, and let it build.</p>
+    <div class="eyebrow">A library, not a shelf collecting dust</div>
+    <h1>📚 Books</h1>
+    <p class="sub">Classic texts to study deeply, and a personal-finance shelf to work through — one check-in at a time.</p>
   </header>
 
-  <div class="frame"><span class="frame-tag">A Note on This Edition</span>This is a carefully curated selection of well-known verses per chapter, not a guaranteed word-for-word complete transcription of the full ~300-verse text.</div>
+  <div class="frame"><span class="frame-tag">A Note on This Library</span>Classic texts here are curated, verifiable selections — not guaranteed word-for-word complete transcriptions. Modern books are tracked, not reproduced, out of respect for copyright.</div>
+
+  <div class="book-streak-card" id="bookStreakCard"></div>
 
   <div class="book-hero" id="bookVerseOfDay">
-    <div class="bvod-label">📖 Verse of the Day</div>
+    <div class="bvod-label">📖 Passage of the Day</div>
     <div class="bvod-text" id="bvodText">Loading…</div>
     <div class="bvod-ch" id="bvodCh"></div>
   </div>
 
-  <div class="book-progress-overall" id="bookProgressOverall"></div>
+  <input class="book-search" id="bookSearch" type="text" placeholder="🔍 Search classic texts…">
 
-  <input class="book-search" id="bookSearch" type="text" placeholder="🔍 Search verses…">
+  <h2 class="book-sec-title">📜 Classic Texts</h2>
+  <div id="bookClassics"></div>
 
-  <div id="bookChapters"></div>
+  <h2 class="book-sec-title">🧠 Mindset and Behavior</h2>
+  <div id="bookShelfMindset"></div>
+
+  <h2 class="book-sec-title">🛠️ Actionable Systems and Budgeting</h2>
+  <div id="bookShelfSystems"></div>
+
+  <h2 class="book-sec-title">📈 Investing Fundamentals</h2>
+  <div id="bookShelfInvesting"></div>
 
 </div>
 </div>
@@ -2087,7 +2148,7 @@ html[data-theme="light"] #booksRoot{
 
 <script>
 (function(){
-  const CHANAKYA = [
+  const CHANAKYA_NEETI = [
     { ch:1, verses:[
       "A man is born alone and dies alone; he alone experiences the results of his good and bad deeds.",
       "Of all forms of wealth, knowledge is the greatest — it cannot be stolen, divided, or ever exhausted.",
@@ -2209,52 +2270,192 @@ html[data-theme="light"] #booksRoot{
     ]}
   ];
 
-  const BOOK_PROGRESS_KEY = 'books-chanakya-progress';
-  function bookLoadProgress(){ try{ return JSON.parse(localStorage.getItem(BOOK_PROGRESS_KEY)) || {}; }catch(e){ return {}; } }
-  function bookSaveProgress(p){ try{ localStorage.setItem(BOOK_PROGRESS_KEY, JSON.stringify(p)); }catch(e){} }
+  const ART_OF_WAR = [
+    { ch:1, title:'Laying Plans', verses:[
+      "The art of war is of vital importance to the State. It is a matter of life and death, a road either to safety or to ruin.",
+      "All warfare is based on deception.",
+      "Attack him where he is unprepared; appear where you are not expected."
+    ]},
+    { ch:2, title:'Waging War', verses:[
+      "There is no instance of a country having benefited from prolonged warfare.",
+      "The skillful soldier does not raise a second levy, neither are his supply-wagons loaded more than twice.",
+      "In war, let your great object be victory, not lengthy campaigns."
+    ]},
+    { ch:3, title:'Attack by Stratagem', verses:[
+      "Supreme excellence consists in breaking the enemy's resistance without fighting.",
+      "If you know the enemy and know yourself, you need not fear the result of a hundred battles. If you know yourself but not the enemy, for every victory gained you will also suffer a defeat.",
+      "It is the rule in war: if our forces are ten to the enemy's one, surround him; if five to one, attack him."
+    ]},
+    { ch:4, title:'Tactical Dispositions', verses:[
+      "The good fighters of old first put themselves beyond the possibility of defeat, and then waited for an opportunity of defeating the enemy.",
+      "Security against defeat implies defensive tactics; ability to defeat the enemy means taking the offensive.",
+      "Victorious warriors win first and then go to war, while defeated warriors go to war first and then seek to win."
+    ]},
+    { ch:5, title:'Energy', verses:[
+      "The quality of decision is like the well-timed swoop of a falcon, which enables it to strike and destroy its victim.",
+      "In battle, there are not more than two methods of attack — the direct and the indirect — yet these two in combination give rise to an endless series of maneuvers."
+    ]},
+    { ch:6, title:'Weak Points and Strong', verses:[
+      "All men can see the tactics whereby I conquer, but what none can see is the strategy out of which victory is evolved.",
+      "Water shapes its course according to the nature of the ground; the soldier works out his victory in relation to the foe he is facing.",
+      "Appear at points which the enemy must hasten to defend; march swiftly to places where you are not expected."
+    ]},
+    { ch:7, title:'Maneuvering', verses:[
+      "Let your plans be dark and impenetrable as night, and when you move, fall like a thunderbolt.",
+      "Whoever is first in the field and awaits the coming of the enemy will be fresh for the fight; whoever is second and has to hasten to battle will arrive exhausted."
+    ]},
+    { ch:8, title:'Variation in Tactics', verses:[
+      "The general who thoroughly understands the advantages that accompany variation of tactics knows how to handle his troops.",
+      "In the midst of danger, always be ready to seize opportunity."
+    ]},
+    { ch:9, title:'The Army on the March', verses:[
+      "Camp in high places, facing the sun; do not climb heights in order to fight.",
+      "When the enemy is close at hand and remains quiet, he is relying on the natural strength of his position."
+    ]},
+    { ch:10, title:'Terrain', verses:[
+      "We may distinguish six kinds of terrain, each to be turned to account according to circumstance.",
+      "The general who advances without coveting fame and retreats without fearing disgrace, whose only thought is to protect his country — he is the jewel of the kingdom."
+    ]},
+    { ch:11, title:'The Nine Situations', verses:[
+      "Move swift as the wind, stay silent as the forest, attack like fire, and be still as the mountain.",
+      "In war, the way is to avoid what is strong and to strike at what is weak."
+    ]},
+    { ch:12, title:'Attack by Fire', verses:[
+      "Whenever circumstances are favorable, use fire; do not wait for the material to be provided beforehand.",
+      "The general must be alert to the changes of wind and adapt his plan accordingly."
+    ]},
+    { ch:13, title:'The Use of Spies', verses:[
+      "Knowledge of the enemy's dispositions can only be obtained from other men — hence the use of spies.",
+      "Be subtle! be subtle! and use your spies for every kind of business."
+    ]}
+  ];
 
-  const ALL_VERSES = [];
-  CHANAKYA.forEach(chapter => {
-    chapter.verses.forEach((text, vi) => {
-      ALL_VERSES.push({ id:`${chapter.ch}-${vi}`, ch:chapter.ch, text });
+  const ARTHASHASTRA_PRINCIPLES = [
+    "The king shall consider as good, not what pleases himself, but what pleases his subjects — in their happiness lies his own.",
+    "The strength of a kingdom lies not merely in its army but in the prosperity and contentment of its people.",
+    "Diplomacy has four approaches — conciliation, gift-giving, dissension, and force — to be used according to circumstance.",
+    "A wise ruler should treat his treasury and his army as the two pillars upon which the state truly stands.",
+    "Power is of three kinds: the power of counsel, the power of the army, and the power of energy and morale — and of these, wise counsel is supreme.",
+    "Espionage is the eye of the state; a king who governs without proper intelligence governs blindly.",
+    "A king well versed in statecraft and economics, and devoted to the welfare of his subjects, will hold his position unopposed.",
+    "A ruler's own self-discipline comes first — one who cannot govern his own senses cannot hope to govern a kingdom."
+  ];
+
+  const BOOKSHELF = [
+    { id:'psychmoney', title:'The Psychology of Money', author:'Morgan Housel', category:'mindset',
+      desc:'Explores how human behavior and soft skills shape financial success far more than raw math.' },
+    { id:'richdad', title:'Rich Dad Poor Dad', author:'Robert Kiyosaki', category:'mindset',
+      desc:'Challenges traditional ideas about jobs, assets, and liabilities to shift how you view wealth.' },
+    { id:'iwill', title:'I Will Teach You to Be Rich', author:'Ramit Sethi', category:'systems',
+      desc:'A practical, stress-free 6-week program to automate savings, handle credit cards, and spend without guilt.' },
+    { id:'letstalk', title:"Let's Talk Money", author:'Monika Halan', category:'systems',
+      desc:'Clear, jargon-free guidance for Indian readers on managing salary, insurance, and mutual funds.' },
+    { id:'brokemill', title:'Broke Millennial', author:'Erin Lowry', category:'systems',
+      desc:'Breaks down student loans, credit scores, and basic budgeting with relatable, non-judgmental humor.' },
+    { id:'simplepath', title:'The Simple Path to Wealth', author:'JL Collins', category:'investing',
+      desc:'Explains the stock market and wealth building simply through low-cost index funds.' },
+    { id:'commonsense', title:'The Little Book of Common Sense Investing', author:'John C. Bogle', category:'investing',
+      desc:'Focuses on the power of passive, long-term index investing.' }
+  ];
+
+  const CLASSICS = [
+    { id:'chanakya', title:'Chanakya Neeti', author:'Chanakya', type:'verses', data:CHANAKYA_NEETI,
+      note:"A curated selection of well-known verses per chapter, not a guaranteed word-for-word complete transcription of the full ~300-verse text." },
+    { id:'artofwar', title:'The Art of War', author:'Sun Tzu', type:'verses', data:ART_OF_WAR,
+      note:"Public-domain Lionel Giles translation — a curated set of the most well-known lines from each of the 13 chapters." },
+    { id:'arthashastra', title:"Kautilya's Arthashastra", author:'Kautilya (Chanakya)', type:'flat', data:ARTHASHASTRA_PRINCIPLES,
+      note:"A treatise on deep governance and statecraft — shown here as key recurring principles rather than a chapter-by-chapter breakdown." }
+  ];
+
+  /* ---------- progress storage ---------- */
+  function bookLoadProgress(bookId){ try{ return JSON.parse(localStorage.getItem('books-progress-'+bookId)) || {}; }catch(e){ return {}; } }
+  function bookSaveProgress(bookId, p){ try{ localStorage.setItem('books-progress-'+bookId, JSON.stringify(p)); }catch(e){} }
+  function bookLoadStatus(){ try{ return JSON.parse(localStorage.getItem('books-status')) || {}; }catch(e){ return {}; } }
+  function bookSaveStatus(s){ try{ localStorage.setItem('books-status', JSON.stringify(s)); }catch(e){} }
+
+  /* ---------- reading streak ---------- */
+  function bookTodayISO(){ const d=new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; }
+  function bookLoadCheckins(){ try{ return JSON.parse(localStorage.getItem('books-reading-checkins')) || {}; }catch(e){ return {}; } }
+  function bookSaveCheckins(c){ try{ localStorage.setItem('books-reading-checkins', JSON.stringify(c)); }catch(e){} }
+  function bookComputeStreak(){
+    const checkins = bookLoadCheckins();
+    let streak = 0;
+    let cursor = new Date();
+    while(true){
+      const iso = `${cursor.getFullYear()}-${String(cursor.getMonth()+1).padStart(2,'0')}-${String(cursor.getDate()).padStart(2,'0')}`;
+      if(checkins[iso]){ streak++; cursor.setDate(cursor.getDate()-1); } else break;
+    }
+    return streak;
+  }
+  function bookComputeLongest(){
+    const dates = Object.keys(bookLoadCheckins()).sort();
+    let longest = 0, cur = 0, prev = null;
+    dates.forEach(d => {
+      const dateObj = new Date(d+'T00:00:00');
+      cur = (prev && Math.round((dateObj-prev)/86400000) === 1) ? cur+1 : 1;
+      longest = Math.max(longest, cur);
+      prev = dateObj;
     });
+    return longest;
+  }
+  window.bookCheckInToday = function(){
+    const checkins = bookLoadCheckins();
+    checkins[bookTodayISO()] = true;
+    bookSaveCheckins(checkins);
+    renderBookStreak();
+  };
+  function renderBookStreak(){
+    const holder = document.getElementById('bookStreakCard');
+    if(!holder) return;
+    const streak = bookComputeStreak();
+    const longest = bookComputeLongest();
+    const completedCount = Object.values(bookLoadStatus()).filter(s => s === 'completed').length;
+    const checkedToday = !!bookLoadCheckins()[bookTodayISO()];
+    holder.innerHTML = `
+      <div><div class="bsc-num">${streak}🔥</div><div class="bsc-lab">Day Streak</div></div>
+      <div class="bsc-stats">
+        <div class="bsc-stat"><b>${longest}</b>longest</div>
+        <div class="bsc-stat"><b>${completedCount}</b>completed</div>
+      </div>
+      <button class="bsc-checkin ${checkedToday?'done':''}" onclick="bookCheckInToday()" ${checkedToday?'disabled':''}>${checkedToday?'✓ Read Today':'Mark Today as Read'}</button>`;
+  }
+
+  /* ---------- verse-of-the-day (pulled from all verse-type classics) ---------- */
+  const ALL_PASSAGES = [];
+  CLASSICS.forEach(book => {
+    if(book.type === 'verses'){
+      book.data.forEach(chapter => chapter.verses.forEach((text,vi) => {
+        ALL_PASSAGES.push({ text, label:`${book.title} · Chapter ${chapter.ch}` });
+      }));
+    } else if(book.type === 'flat'){
+      book.data.forEach(text => ALL_PASSAGES.push({ text, label: book.title }));
+    }
   });
-
-  const bookOpenChapters = new Set();
-
   function renderVerseOfDay(){
     const dayNum = Math.floor(Date.now() / 86400000);
-    const v = ALL_VERSES[dayNum % ALL_VERSES.length];
+    const v = ALL_PASSAGES[dayNum % ALL_PASSAGES.length];
     document.getElementById('bvodText').textContent = `"${v.text}"`;
-    document.getElementById('bvodCh').textContent = `Chapter ${v.ch}`;
+    document.getElementById('bvodCh').textContent = v.label;
   }
 
-  function renderBookProgressOverall(){
-    const progress = bookLoadProgress();
-    const learned = ALL_VERSES.filter(v => progress[v.id]).length;
-    const pct = Math.round((learned / ALL_VERSES.length) * 100);
-    document.getElementById('bookProgressOverall').innerHTML = `
-      <b>${learned} / ${ALL_VERSES.length}</b> verses learned across all 17 chapters (${pct}%)
-      <div class="book-progress-track"><div class="book-progress-fill" style="width:${pct}%"></div></div>`;
-  }
+  /* ---------- classics rendering ---------- */
+  const bookLibraryOpen = new Set();
+  const bookChapterOpen = new Set(); // keys: `${bookId}:${ch}`
 
-  function renderBookChapters(filterText){
-    const holder = document.getElementById('bookChapters');
-    const progress = bookLoadProgress();
-    const q = (filterText || '').trim().toLowerCase();
+  function chapterAccordionHTML(book, filterQ){
+    const progress = bookLoadProgress(book.id);
     let html = '';
-    let anyMatch = false;
-    CHANAKYA.forEach(chapter => {
+    book.data.forEach(chapter => {
       const verses = chapter.verses
         .map((text, vi) => ({ id:`${chapter.ch}-${vi}`, text }))
-        .filter(v => !q || v.text.toLowerCase().includes(q));
-      if(q && verses.length === 0) return;
-      anyMatch = true;
+        .filter(v => !filterQ || v.text.toLowerCase().includes(filterQ));
+      if(filterQ && verses.length === 0) return;
       const learnedCount = chapter.verses.filter((_, vi) => progress[`${chapter.ch}-${vi}`]).length;
-      const isOpen = bookOpenChapters.has(chapter.ch) || !!q;
-      html += `<div class="book-chapter ${isOpen?'open':''}" data-ch="${chapter.ch}">
-        <div class="book-chapter-hdr" onclick="toggleBookChapter(${chapter.ch})">
-          <div class="book-chapter-title">Chapter ${chapter.ch}</div>
+      const key = `${book.id}:${chapter.ch}`;
+      const isOpen = bookChapterOpen.has(key) || !!filterQ;
+      html += `<div class="book-chapter ${isOpen?'open':''}">
+        <div class="book-chapter-hdr" onclick="toggleBookChapter('${book.id}',${chapter.ch})">
+          <div class="book-chapter-title">Chapter ${chapter.ch}${chapter.title ? ' — '+chapter.title : ''}</div>
           <div class="book-chapter-meta">
             <div class="book-chapter-count">${learnedCount}/${chapter.verses.length}</div>
             <div class="book-chapter-caret">▾</div>
@@ -2262,33 +2463,125 @@ html[data-theme="light"] #booksRoot{
         </div>
         <div class="book-chapter-body">
           ${verses.map(v => `<label class="book-verse ${progress[v.id]?'done':''}">
-            <input type="checkbox" ${progress[v.id]?'checked':''} onchange="toggleBookVerse('${v.id}')">
+            <input type="checkbox" ${progress[v.id]?'checked':''} onchange="toggleBookVerse('${book.id}','${v.id}')">
             <span class="book-verse-txt">${v.text}</span>
           </label>`).join('')}
         </div>
       </div>`;
     });
-    if(!anyMatch) html = `<div class="book-empty">No verses match "${filterText}" — try a different word.</div>`;
+    return html;
+  }
+
+  function flatListHTML(book, filterQ){
+    const progress = bookLoadProgress(book.id);
+    const items = book.data
+      .map((text, i) => ({ id:String(i), text }))
+      .filter(v => !filterQ || v.text.toLowerCase().includes(filterQ));
+    if(filterQ && items.length === 0) return '';
+    return `<div class="book-chapter open"><div class="book-chapter-body" style="padding-top:16px;">
+      ${items.map(v => `<label class="book-verse ${progress[v.id]?'done':''}">
+        <input type="checkbox" ${progress[v.id]?'checked':''} onchange="toggleBookVerse('${book.id}','${v.id}')">
+        <span class="book-verse-txt">${v.text}</span>
+      </label>`).join('')}
+    </div></div>`;
+  }
+
+  function bookCounts(book){
+    const progress = bookLoadProgress(book.id);
+    let total = 0, done = 0;
+    if(book.type === 'verses'){
+      book.data.forEach(chapter => chapter.verses.forEach((_, vi) => {
+        total++; if(progress[`${chapter.ch}-${vi}`]) done++;
+      }));
+    } else {
+      book.data.forEach((_, i) => { total++; if(progress[String(i)]) done++; });
+    }
+    return { done, total };
+  }
+
+  function renderClassics(filterText){
+    const holder = document.getElementById('bookClassics');
+    const q = (filterText || '').trim().toLowerCase();
+    let html = '';
+    let anyMatch = false;
+    CLASSICS.forEach(book => {
+      const inner = book.type === 'verses' ? chapterAccordionHTML(book, q) : flatListHTML(book, q);
+      if(q && !inner) return;
+      anyMatch = true;
+      const { done, total } = bookCounts(book);
+      const isOpen = bookLibraryOpen.has(book.id) || !!q;
+      html += `<div class="book-card ${isOpen?'open':''}">
+        <div class="book-card-hdr" onclick="toggleBookLibrary('${book.id}')">
+          <div>
+            <div class="book-card-title">${book.title}</div>
+            <div class="book-card-author">${book.author} · ${done}/${total} learned</div>
+          </div>
+          <div class="book-chapter-caret">▾</div>
+        </div>
+        <div class="book-card-body">
+          <div class="frame" style="margin-bottom:14px;"><span class="frame-tag">Note</span>${book.note}</div>
+          ${inner}
+        </div>
+      </div>`;
+    });
+    if(!anyMatch) html = `<div class="book-empty">No passages match "${filterText}" — try a different word.</div>`;
     holder.innerHTML = html;
   }
 
-  window.toggleBookChapter = function(ch){
-    if(bookOpenChapters.has(ch)) bookOpenChapters.delete(ch); else bookOpenChapters.add(ch);
-    renderBookChapters(document.getElementById('bookSearch').value);
+  window.toggleBookLibrary = function(bookId){
+    if(bookLibraryOpen.has(bookId)) bookLibraryOpen.delete(bookId); else bookLibraryOpen.add(bookId);
+    renderClassics(document.getElementById('bookSearch').value);
   };
-  window.toggleBookVerse = function(id){
-    const progress = bookLoadProgress();
+  window.toggleBookChapter = function(bookId, ch){
+    const key = `${bookId}:${ch}`;
+    if(bookChapterOpen.has(key)) bookChapterOpen.delete(key); else bookChapterOpen.add(key);
+    renderClassics(document.getElementById('bookSearch').value);
+  };
+  window.toggleBookVerse = function(bookId, id){
+    const progress = bookLoadProgress(bookId);
     progress[id] = !progress[id];
     if(!progress[id]) delete progress[id];
-    bookSaveProgress(progress);
-    renderBookProgressOverall();
-    renderBookChapters(document.getElementById('bookSearch').value);
+    bookSaveProgress(bookId, progress);
+    renderClassics(document.getElementById('bookSearch').value);
   };
 
+  /* ---------- modern-book shelf (tracked, not reproduced) ---------- */
+  function renderShelf(category, holderId){
+    const holder = document.getElementById(holderId);
+    if(!holder) return;
+    const status = bookLoadStatus();
+    holder.innerHTML = BOOKSHELF.filter(b => b.category === category).map(b => {
+      const st = status[b.id] || 'not-started';
+      return `<div class="shelf-card">
+        <div class="shelf-title">${b.title}</div>
+        <div class="shelf-author">${b.author}</div>
+        <div class="shelf-desc">${b.desc}</div>
+        <div class="shelf-status-btns">
+          <button class="shelf-status-btn ${st==='not-started'?'active':''}" data-status="not-started" onclick="setBookStatus('${b.id}','not-started')">Not Started</button>
+          <button class="shelf-status-btn ${st==='reading'?'active':''}" data-status="reading" onclick="setBookStatus('${b.id}','reading')">Reading</button>
+          <button class="shelf-status-btn ${st==='completed'?'active':''}" data-status="completed" onclick="setBookStatus('${b.id}','completed')">Completed</button>
+        </div>
+      </div>`;
+    }).join('');
+  }
+  function renderAllShelves(){
+    renderShelf('mindset', 'bookShelfMindset');
+    renderShelf('systems', 'bookShelfSystems');
+    renderShelf('investing', 'bookShelfInvesting');
+  }
+  window.setBookStatus = function(id, status){
+    const s = bookLoadStatus();
+    s[id] = status;
+    bookSaveStatus(s);
+    renderAllShelves();
+    renderBookStreak();
+  };
+
+  renderBookStreak();
   renderVerseOfDay();
-  renderBookProgressOverall();
-  renderBookChapters('');
-  document.getElementById('bookSearch').addEventListener('input', (e) => renderBookChapters(e.target.value));
+  renderClassics('');
+  renderAllShelves();
+  document.getElementById('bookSearch').addEventListener('input', (e) => renderClassics(e.target.value));
 })();
 </script>
 
