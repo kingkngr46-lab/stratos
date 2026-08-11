@@ -1,4 +1,4 @@
-const VERSION = 'v32';
+const VERSION = 'v33';
 const CACHE = `mission-control-${VERSION}`;
 const ASSETS = [
   './',
