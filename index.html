@@ -1556,14 +1556,7 @@ html[data-theme="light"] #booksRoot{
 #booksRoot .book-card.open .book-card-body{display:block;}
 #booksRoot .book-card.open .book-chapter-caret{transform:rotate(180deg);}
 
-/* ---- modern-book shelf tracker cards ---- */
-#booksRoot .shelf-card{
-  background:var(--bk-surface); border:1px solid var(--bk-line); border-radius:16px; padding:16px 18px; margin-bottom:12px;
-  box-shadow:var(--bk-shadow);
-}
-#booksRoot .shelf-title{font-family:'Fraunces',serif; font-weight:600; font-size:15.5px;}
-#booksRoot .shelf-author{font-family:'IBM Plex Mono',monospace; font-size:10.5px; color:var(--bk-accent); text-transform:uppercase; letter-spacing:0.04em; margin-top:3px; margin-bottom:8px;}
-#booksRoot .shelf-desc{font-size:13px; line-height:1.55; color:var(--bk-ink-soft); margin-bottom:12px;}
+/* ---- modern-book shelf status buttons (books shown as book-card, see classics above) ---- */
 #booksRoot .shelf-status-btns{display:flex; gap:6px; flex-wrap:wrap;}
 #booksRoot .shelf-status-btn{
   flex:1; min-width:90px; min-height:38px; padding:0 10px; border-radius:10px; border:1px solid var(--bk-line);
@@ -2343,19 +2336,94 @@ html[data-theme="light"] #booksRoot{
 
   const BOOKSHELF = [
     { id:'psychmoney', title:'The Psychology of Money', author:'Morgan Housel', category:'mindset',
-      desc:'Explores how human behavior and soft skills shape financial success far more than raw math.' },
+      desc:'Explores how human behavior and soft skills shape financial success far more than raw math.',
+      summary:[
+        "Financial success is more about behavior than intelligence — how you act matters more than what you know.",
+        "Luck and risk both play a bigger role in outcomes than people admit; be careful who you use as a role model.",
+        "\"Never enough\" is the biggest risk to happiness — chasing more when you already have enough. Know when to stop.",
+        "Compounding isn't intuitive — small, unremarkable habits sustained for decades produce extraordinary results.",
+        "Getting money requires taking risks; keeping money requires humility, frugality, and a margin of safety.",
+        "Wealth is what you don't see — the things people don't buy are the real sign of wealth, not what's flaunted.",
+        "Save money without needing a specific reason — savings that don't require justification give you real options.",
+        "Aim for financial decisions you can actually stick with emotionally, not just the mathematically optimal one.",
+        "Build room for error into every plan — you will be wrong sometimes, so plan for a range of outcomes, not one.",
+        "Your goals and desires will change over decades, so avoid extreme, all-in financial commitments.",
+        "Every investment return has a price (volatility, fear, doubt) — accept it like a fee, not a fine.",
+        "Controlling your own time is the highest dividend money actually pays."
+      ]},
     { id:'richdad', title:'Rich Dad Poor Dad', author:'Robert Kiyosaki', category:'mindset',
-      desc:'Challenges traditional ideas about jobs, assets, and liabilities to shift how you view wealth.' },
+      desc:'Challenges traditional ideas about jobs, assets, and liabilities to shift how you view wealth.',
+      summary:[
+        "The rich don't work for money — they focus on acquiring assets that work for them instead.",
+        "An asset puts money in your pocket; a liability takes money out. Most people mistake liabilities for assets.",
+        "Financial literacy — accounting, investing, markets, and law — matters more than a high salary alone.",
+        "\"Mind your own business\" — build your own asset column even while working a job for someone else.",
+        "The tax and legal advantages available to business owners and investors differ sharply from those of employees.",
+        "Opportunity is often more valuable than money itself — train yourself to spot what others miss.",
+        "Early on, work to learn broad, valuable skills — not just to earn a paycheck.",
+        "Five common obstacles block wealth-building: fear, cynicism, laziness, bad habits, and arrogance.",
+        "A strong enough personal \"why\" carries you through the inevitable financial setbacks."
+      ]},
     { id:'iwill', title:'I Will Teach You to Be Rich', author:'Ramit Sethi', category:'systems',
-      desc:'A practical, stress-free 6-week program to automate savings, handle credit cards, and spend without guilt.' },
+      desc:'A practical, stress-free 6-week program to automate savings, handle credit cards, and spend without guilt.',
+      summary:[
+        "A 6-week practical program: get your accounts set up first, before worrying about optimizing everything.",
+        "\"Conscious spending\" — cut costs mercilessly on things you don't care about, spend freely on what you love.",
+        "Automate your finances so saving and investing happen on their own, without relying on willpower.",
+        "Pick the right accounts: a checking account, a high-interest savings account, and low-cost investment accounts.",
+        "Negotiate away fees, and use rewards credit cards responsibly to build credit while avoiding debt.",
+        "Start investing early even with small amounts — low-cost target-date or index funds are usually enough.",
+        "Everyone has a few \"money dial\" categories that genuinely bring them joy — spend big there, guilt-free.",
+        "Focus on the big wins (salary negotiation, automated investing) rather than obsessing over daily expenses."
+      ]},
     { id:'letstalk', title:"Let's Talk Money", author:'Monika Halan', category:'systems',
-      desc:'Clear, jargon-free guidance for Indian readers on managing salary, insurance, and mutual funds.' },
+      desc:'Clear, jargon-free guidance for Indian readers on managing salary, insurance, and mutual funds.',
+      summary:[
+        "Build a simple personal financial structure: separate buckets for spending, saving, investing, and emergencies.",
+        "Build an emergency fund covering several months of expenses before investing aggressively.",
+        "Buy pure term life insurance (not investment-linked policies) and adequate health insurance early.",
+        "Keep insurance and investment separate — don't buy products that try to be both at once.",
+        "Use simple index or mutual funds via SIPs for long-term goals rather than chasing complex products.",
+        "Be wary of financial products sold by relationship managers whose commission incentives don't match yours.",
+        "Have a will and basic estate planning in place, even early in life.",
+        "Review your financial plan once a year — avoid obsessively tracking or tinkering with it daily."
+      ]},
     { id:'brokemill', title:'Broke Millennial', author:'Erin Lowry', category:'systems',
-      desc:'Breaks down student loans, credit scores, and basic budgeting with relatable, non-judgmental humor.' },
+      desc:'Breaks down student loans, credit scores, and basic budgeting with relatable, non-judgmental humor.',
+      summary:[
+        "Money conversations with friends, partners, and family are awkward but necessary — learn to have them early.",
+        "Understand your credit score: pay bills on time, keep utilization low, and check your report regularly.",
+        "Build a starter budget you'll actually stick to, even if it's imperfect at first.",
+        "Tackle debt strategically — know your interest rates and prioritize accordingly (avalanche vs. snowball).",
+        "Start an emergency fund, even a small one, before aggressively paying down every debt.",
+        "Learn to negotiate salary and bills — most offers have more flexibility than people assume.",
+        "Learn basic investing concepts (401k matches, index funds) early rather than waiting to feel \"ready\".",
+        "Talk about money in relationships before it becomes a bigger problem — splitting bills, merging finances."
+      ]},
     { id:'simplepath', title:'The Simple Path to Wealth', author:'JL Collins', category:'investing',
-      desc:'Explains the stock market and wealth building simply through low-cost index funds.' },
+      desc:'Explains the stock market and wealth building simply through low-cost index funds.',
+      summary:[
+        "Avoid debt, spend less than you earn, invest the surplus — the whole philosophy rests on simplicity.",
+        "Low-cost, broad-market index funds are the most reliable path to long-term wealth for most investors.",
+        "Avoid actively managed funds — their fees quietly erode returns, and most fail to beat the index anyway.",
+        "Market volatility is normal — don't panic-sell during downturns; time in the market beats timing it.",
+        "\"F-You Money\" — enough savings to walk away from any job or bad situation gives you real freedom.",
+        "A simple two-fund portfolio (total stock market + bonds) can carry most investors through their whole life.",
+        "In retirement, a disciplined, modest withdrawal rate lets a properly invested portfolio sustain you indefinitely.",
+        "Avoid advisors who profit from your transactions — simplicity and low fees usually win over complexity."
+      ]},
     { id:'commonsense', title:'The Little Book of Common Sense Investing', author:'John C. Bogle', category:'investing',
-      desc:'Focuses on the power of passive, long-term index investing.' }
+      desc:'Focuses on the power of passive, long-term index investing.',
+      summary:[
+        "Own the entire stock market through a low-cost index fund rather than picking individual winning stocks.",
+        "Costs matter enormously — even small fee differences compound into huge gaps in long-term returns.",
+        "Past fund performance predicts little — most actively managed funds underperform their benchmark over time.",
+        "Time is your friend, impulse is your enemy — stay invested for the long haul instead of reacting to noise.",
+        "Funds and stocks that outperform for a while tend to revert back toward average performance eventually.",
+        "Simplicity beats complexity — a broad index fund captures the market's return with minimal cost and effort.",
+        "Every broker, manager, and advisor takes a cut — those costs matter just as much as the returns you earn.",
+        "The biggest threat to an investor's return is usually their own behavior, not the market itself."
+      ]}
   ];
 
   const CLASSICS = [
@@ -2531,6 +2599,7 @@ html[data-theme="light"] #booksRoot{
   window.toggleBookLibrary = function(bookId){
     if(bookLibraryOpen.has(bookId)) bookLibraryOpen.delete(bookId); else bookLibraryOpen.add(bookId);
     renderClassics(document.getElementById('bookSearch').value);
+    renderAllShelves();
   };
   window.toggleBookChapter = function(bookId, ch){
     const key = `${bookId}:${ch}`;
@@ -2543,23 +2612,48 @@ html[data-theme="light"] #booksRoot{
     if(!progress[id]) delete progress[id];
     bookSaveProgress(bookId, progress);
     renderClassics(document.getElementById('bookSearch').value);
+    renderAllShelves();
   };
 
   /* ---------- modern-book shelf (tracked, not reproduced) ---------- */
+  function shelfSummaryHTML(book){
+    const progress = bookLoadProgress(book.id);
+    return book.summary.map((text, i) => {
+      const id = String(i);
+      return `<label class="book-verse ${progress[id]?'done':''}">
+        <input type="checkbox" ${progress[id]?'checked':''} onchange="toggleBookVerse('${book.id}','${id}')">
+        <span class="book-verse-txt">${text}</span>
+      </label>`;
+    }).join('');
+  }
+
   function renderShelf(category, holderId){
     const holder = document.getElementById(holderId);
     if(!holder) return;
     const status = bookLoadStatus();
     holder.innerHTML = BOOKSHELF.filter(b => b.category === category).map(b => {
       const st = status[b.id] || 'not-started';
-      return `<div class="shelf-card">
-        <div class="shelf-title">${b.title}</div>
-        <div class="shelf-author">${b.author}</div>
-        <div class="shelf-desc">${b.desc}</div>
-        <div class="shelf-status-btns">
-          <button class="shelf-status-btn ${st==='not-started'?'active':''}" data-status="not-started" onclick="setBookStatus('${b.id}','not-started')">Not Started</button>
-          <button class="shelf-status-btn ${st==='reading'?'active':''}" data-status="reading" onclick="setBookStatus('${b.id}','reading')">Reading</button>
-          <button class="shelf-status-btn ${st==='completed'?'active':''}" data-status="completed" onclick="setBookStatus('${b.id}','completed')">Completed</button>
+      const progress = bookLoadProgress(b.id);
+      const done = b.summary.filter((_, i) => progress[String(i)]).length;
+      const isOpen = bookLibraryOpen.has(b.id);
+      return `<div class="book-card ${isOpen?'open':''}">
+        <div class="book-card-hdr" onclick="toggleBookLibrary('${b.id}')">
+          <div>
+            <div class="book-card-title">${b.title}</div>
+            <div class="book-card-author">${b.author} · ${done}/${b.summary.length} key lessons</div>
+          </div>
+          <div class="book-chapter-caret">▾</div>
+        </div>
+        <div class="book-card-body">
+          <div class="frame" style="margin-bottom:14px;"><span class="frame-tag">Summary, Not Excerpt</span>${b.desc} These are key-lesson notes written in our own words, not passages from the book itself.</div>
+          <div class="shelf-status-btns" style="margin-bottom:14px;">
+            <button class="shelf-status-btn ${st==='not-started'?'active':''}" data-status="not-started" onclick="setBookStatus('${b.id}','not-started')">Not Started</button>
+            <button class="shelf-status-btn ${st==='reading'?'active':''}" data-status="reading" onclick="setBookStatus('${b.id}','reading')">Reading</button>
+            <button class="shelf-status-btn ${st==='completed'?'active':''}" data-status="completed" onclick="setBookStatus('${b.id}','completed')">Completed</button>
+          </div>
+          <div class="book-chapter open"><div class="book-chapter-body" style="padding-top:0;">
+            ${shelfSummaryHTML(b)}
+          </div></div>
         </div>
       </div>`;
     }).join('');
