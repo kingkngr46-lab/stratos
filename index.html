@@ -1650,6 +1650,7 @@ html[data-theme="light"] #businessRoot{
   <div class="admin-links">
     <a class="admin-link" href="https://docs.google.com/forms/d/e/1FAIpQLSdQVeSa6TLaXK6AXH3kgDHdmJAu0ZoWhpanEBPG2xGa2z5WBg/viewform" target="_blank" rel="noopener">📋 EdifyChamps Daily Report</a>
     <a class="admin-link" href="https://docs.google.com/forms/d/e/1FAIpQLSdjglMlW7BtHRwcwNwI3IqwsBrkTQO5THmUc2zNcavwQUZqjQ/viewform" target="_blank" rel="noopener">🚫 Infinity Learn — No Show Form</a>
+    <a class="admin-link" href="https://docs.google.com/spreadsheets/d/1liKJ9Q2TDtue1E0ujCrUuyXFNyMQmZbO2eGXQB9SiSs/edit?usp=sharing" target="_blank" rel="noopener">📊 Bright Mind Tutors Daily Report</a>
   </div>
 
   <h2 class="sec-title">📚 Tutoring Sessions</h2>
@@ -3153,7 +3154,7 @@ tickClock();
           <div class="roster-group-count">${list.length}</div>
         </div>
         <div class="roster-chips">
-          ${list.map(s => `<span class="roster-chip ${s.isBatch?'batch':''}" style="--accent:${s.color}">${s.student}${s.isBatch ? ' (batch)' : ''}</span>`).join('')}
+          ${list.map(s => `<span class="roster-chip ${s.isBatch?'batch':''}" style="--accent:${s.color}">${s.student}</span>`).join('')}
         </div>
       </div>`;
     });
