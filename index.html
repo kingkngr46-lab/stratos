@@ -98,6 +98,7 @@ input, select, textarea{
   #shellNav .brand{ margin-right:0; }
 }
 #shellNav .brand .dot{width:8px;height:8px;border-radius:50%;background:conic-gradient(from 0deg,#00d9ff,#9b7bf0,#ffb020,#f0578f,#00d9ff);}
+#shellNav .brand #brandTimeIcon{font-size:14px;line-height:1;}
 .shell-tabs{display:flex; gap:4px; background:rgba(255,255,255,0.05); border-radius:100px; padding:4px; overflow-x:auto; max-width:100%; scrollbar-width:none;}
 .shell-tabs::-webkit-scrollbar{display:none;}
 .shell-tab{
@@ -140,20 +141,25 @@ input, select, textarea{
 }
 
 #sessionVibrateBanner{
-  display:none; align-items:center; justify-content:space-between; gap:12px;
+  display:none; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;
   position:fixed; left:12px; right:12px; top:calc(var(--safe-top, 0px) + 68px); z-index:9998;
-  background:#3a1f1f; border:1px solid rgba(255,111,94,0.4); border-radius:14px;
-  padding:12px 16px; font-family:'Inter',sans-serif; box-shadow:0 12px 28px rgba(0,0,0,0.4);
-  animation:svbPulse 1.5s ease-in-out infinite;
+  background:linear-gradient(135deg,#3a1f1f,#2a1010); border:1px solid rgba(255,111,94,0.45); border-radius:16px;
+  padding:14px 18px; font-family:'Inter',sans-serif; box-shadow:0 14px 32px rgba(0,0,0,0.5);
+  animation:svbPulse 1.5s ease-in-out infinite, svbSlideIn .35s cubic-bezier(.2,.9,.3,1.2);
 }
 #sessionVibrateBanner.show{display:flex;}
-#sessionVibrateBanner .svb-text{font-size:13.5px; font-weight:700; color:#ffd8d0;}
+#sessionVibrateBanner.late{animation:svbSlideIn .35s cubic-bezier(.2,.9,.3,1.2); background:linear-gradient(135deg,#2a2a1f,#1e1e14); border-color:rgba(255,193,94,0.4);}
+#sessionVibrateBanner .svb-text{font-size:13.5px; font-weight:700; color:#ffd8d0; flex:1; min-width:160px;}
+#sessionVibrateBanner.late .svb-text{color:#ffe8c0;}
+#sessionVibrateBanner .svb-btns{display:flex; gap:8px;}
 #sessionVibrateBanner button{
   font-family:'Inter',sans-serif; font-weight:700; font-size:12.5px;
-  background:#ff6f5e; color:#2a0d08; border:none;
-  padding:9px 16px; border-radius:100px; cursor:pointer; white-space:nowrap; min-height:38px;
+  border:none; padding:9px 16px; border-radius:100px; cursor:pointer; white-space:nowrap; min-height:38px;
 }
-@keyframes svbPulse{ 0%,100%{ box-shadow:0 12px 28px rgba(0,0,0,0.4); } 50%{ box-shadow:0 12px 28px rgba(255,111,94,0.5); } }
+#sessionVibrateBanner #svbJoinBtn{background:#3ddc84; color:#0a1c10;}
+#sessionVibrateBanner #svbStopBtn{background:#ff6f5e; color:#2a0d08;}
+@keyframes svbPulse{ 0%,100%{ box-shadow:0 14px 32px rgba(0,0,0,0.5); } 50%{ box-shadow:0 14px 32px rgba(255,111,94,0.55); } }
+@keyframes svbSlideIn{ from{ opacity:0; transform:translateY(-14px); } to{ opacity:1; transform:translateY(0); } }
 @media (prefers-reduced-motion: reduce){ #sessionVibrateBanner{ animation:none; } }
 
 .about-btn{
@@ -1064,7 +1070,7 @@ html[data-theme="light"] #officeHoursRoot{
   display:block;margin-bottom:12px;font-size:11px;color:var(--oh-ink-soft);font-family:'IBM Plex Mono',monospace;
   text-transform:uppercase;letter-spacing:0.04em;
 }
-#officeHoursRoot .cal-add-field input{
+#officeHoursRoot .cal-add-field input, #officeHoursRoot .cal-add-field select{
   display:block;width:100%;margin-top:6px;padding:10px 12px;border-radius:10px;border:1px solid var(--oh-line);
   background:var(--oh-surface-soft);color:var(--oh-ink);font-size:14px;font-family:'Inter',sans-serif;min-height:44px;
 }
@@ -1496,8 +1502,9 @@ html[data-theme="light"] #booksRoot{
 
 #booksRoot .book-search{
   width:100%; min-height:44px; padding:10px 14px; border-radius:100px; border:1px solid var(--bk-line);
-  background:var(--bk-surface-soft); color:var(--bk-ink); font-size:14px; margin-bottom:16px;
+  background:var(--bk-surface-soft); color:var(--bk-ink); font-size:14px; margin-bottom:4px;
 }
+#booksRoot .book-search-status{font-family:'IBM Plex Mono',monospace; font-size:10.5px; color:var(--bk-ink-soft); text-align:center; margin-bottom:14px; min-height:14px;}
 
 #booksRoot .book-chapter{
   background:var(--bk-surface); border:1px solid var(--bk-line); border-radius:16px; margin-bottom:12px;
@@ -1572,6 +1579,71 @@ html[data-theme="light"] #booksRoot{
   #booksRoot h1{font-size:clamp(22px,5vw,28px);}
 }
 
+/* ---------- Adapt & Rest tab ---------- */
+#adaptRoot{
+  --ad-bg:#12151b; --ad-surface:#1b1f28; --ad-surface-soft:#232833;
+  --ad-ink:#EDEFF4; --ad-ink-soft:#9AA1AE; --ad-line:rgba(255,255,255,0.09);
+  --ad-shadow:0 10px 28px rgba(0,0,0,0.35); --ad-accent:#4FBF8B; --ad-accent2:#8AA6FF;
+}
+html[data-theme="light"] #adaptRoot{
+  --ad-bg:#EEF1F5; --ad-surface:#FFFFFF; --ad-surface-soft:#F4F6F9;
+  --ad-ink:#20242C; --ad-ink-soft:#666E7A; --ad-line:rgba(32,36,44,0.10);
+  --ad-shadow:0 10px 28px rgba(32,36,44,0.08); --ad-accent:#2E9B6C; --ad-accent2:#4C6FE0;
+}
+#adaptRoot, #adaptRoot *{box-sizing:border-box;}
+#adaptRoot{margin:0;padding:0;}
+#adaptRoot{
+  background:var(--ad-bg); color:var(--ad-ink); font-family:'Inter',sans-serif;
+  -webkit-font-smoothing:antialiased; padding:28px 18px calc(70px + env(safe-area-inset-bottom, 0px));
+}
+#adaptRoot .wrap{max-width:640px;margin:0 auto;}
+#adaptRoot header{text-align:center;margin-bottom:20px;}
+#adaptRoot .eyebrow{font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ad-ink-soft);margin-bottom:8px;}
+#adaptRoot h1{font-family:'Fraunces',serif;font-style:italic;font-weight:600;font-size:clamp(26px,5vw,36px);margin:0 0 6px;}
+#adaptRoot h1 span{color:var(--ad-accent);}
+#adaptRoot header p.sub{color:var(--ad-ink-soft);font-size:13.5px;max-width:480px;margin:0 auto;line-height:1.55;}
+
+#adaptRoot .ad-hero{
+  background:linear-gradient(135deg, rgba(79,191,139,0.14), rgba(138,166,255,0.08)), var(--ad-surface);
+  border:1px solid var(--ad-line); border-radius:18px; padding:20px 22px; margin-bottom:16px;
+  box-shadow:var(--ad-shadow); text-align:center;
+}
+#adaptRoot .ad-hero-label{font-family:'IBM Plex Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.08em;color:var(--ad-accent);margin-bottom:10px;}
+#adaptRoot .ad-hero-text{font-family:'Fraunces',serif;font-style:italic;font-size:16px;line-height:1.6;color:var(--ad-ink);}
+
+#adaptRoot .ad-streak-card{
+  display:flex; align-items:center; gap:14px; flex-wrap:wrap;
+  background:var(--ad-surface-soft); border:1px solid var(--ad-line); border-radius:16px;
+  padding:14px 18px; margin-bottom:20px; font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--ad-ink-soft);
+}
+#adaptRoot .ad-streak-card b{color:var(--ad-ink); font-family:'Fraunces',serif; font-size:16px;}
+
+#adaptRoot .ad-sec-title{
+  font-family:'Fraunces',serif; font-weight:600; font-size:16.5px; margin:22px 0 8px; display:flex; align-items:center; gap:8px;
+}
+#adaptRoot .ad-sec-note{color:var(--ad-ink-soft); font-size:12.5px; line-height:1.5; margin:0 0 14px;}
+
+#adaptRoot .ad-card{
+  background:var(--ad-surface); border:1px solid var(--ad-line); border-radius:16px;
+  padding:16px 18px; margin-bottom:12px; box-shadow:var(--ad-shadow);
+}
+#adaptRoot .ad-card-top{display:flex; align-items:center; gap:12px; margin-bottom:6px;}
+#adaptRoot .ad-card-icon{font-size:20px;}
+#adaptRoot .ad-card-title{font-family:'Fraunces',serif; font-weight:600; font-size:15px; flex:1;}
+#adaptRoot .ad-card-text{font-size:13px; color:var(--ad-ink-soft); line-height:1.55; margin:0 0 12px;}
+#adaptRoot .ad-card-btn{
+  min-height:38px; padding:0 16px; border-radius:100px; border:1px solid var(--ad-line); background:var(--ad-surface-soft);
+  color:var(--ad-ink); font-family:'IBM Plex Mono',monospace; font-weight:700; font-size:11px; text-transform:uppercase;
+  letter-spacing:0.04em; cursor:pointer; transition:all .15s;
+}
+#adaptRoot .ad-card-btn.done{background:var(--ad-accent); color:#0d1c15; border-color:transparent;}
+#adaptRoot .ad-card-btn.timing{background:var(--ad-accent2); color:#0d1220; border-color:transparent; font-variant-numeric:tabular-nums;}
+
+@media (min-aspect-ratio: 9/16), (max-height: 480px){
+  #adaptRoot{padding:16px 16px 56px;}
+  #adaptRoot header{margin-bottom:14px;}
+  #adaptRoot h1{font-size:clamp(22px,5vw,28px);}
+}
 
 </style>
 </head>
@@ -1594,7 +1666,7 @@ html[data-theme="light"] #booksRoot{
 </div>
 
 <div id="shellNav">
-  <div class="brand"><span class="dot"></span> Mission Control</div>
+  <div class="brand"><span class="dot"></span><span id="brandTimeIcon" aria-hidden="true"></span> Mission Control</div>
   <div class="shell-tabs">
     <button class="shell-tab active" data-shell-tab="dashboard"><span class="emo">🏠</span> Dashboard</button>
     <button class="shell-tab" data-shell-tab="vitality"><span class="emo">🥗</span> Vitality</button>
@@ -1603,6 +1675,7 @@ html[data-theme="light"] #booksRoot{
     <button class="shell-tab" data-shell-tab="pitstop"><span class="emo">🧯</span> Pit Stop</button>
     <button class="shell-tab" data-shell-tab="business"><span class="emo">💼</span> Business</button>
     <button class="shell-tab" data-shell-tab="books"><span class="emo">📚</span> Books</button>
+    <button class="shell-tab" data-shell-tab="adapt"><span class="emo">🌱</span> Adapt & Rest</button>
   </div>
   <button class="about-btn" id="themeToggleBtn" aria-label="Switch light/dark theme">🌙</button>
   <button class="about-btn" id="aboutBtn" aria-label="About Mission Control">ℹ️</button>
@@ -1620,7 +1693,10 @@ html[data-theme="light"] #booksRoot{
 </div>
 <div id="sessionVibrateBanner">
   <div class="svb-text">🔔 Session starting</div>
-  <button id="svbStopBtn" onclick="stopSessionVibration()">Stop</button>
+  <div class="svb-btns">
+    <button id="svbJoinBtn" onclick="joinAlertedSession()">Join</button>
+    <button id="svbStopBtn" onclick="stopSessionVibration()">Stop</button>
+  </div>
 </div>
 
 <div id="aboutOverlay">
@@ -1915,6 +1991,17 @@ html[data-theme="light"] #booksRoot{
     <label class="cal-add-field">Time
       <input type="time" id="addSessTime">
     </label>
+    <label class="cal-add-field">Platform (auto-fills the shared link)
+      <select id="addSessPlatform" onchange="applyPlatformLink()">
+        <option value="">Custom / other</option>
+        <option value="https://meet.google.com/gry-waog-iji">Tutorang</option>
+        <option value="https://meet.google.com/ugu-vcgk-iaw">Tutoring MaPhy</option>
+        <option value="https://meet.google.com/fnr-hzha-tfc">Voage Learning</option>
+        <option value="https://epicenter.codeyoung.com/index.html#/mentorDashboard">Codeyoung</option>
+        <option value="https://www.tutoroot.com/faculty/dashboard">Tutoroot</option>
+        <option value="https://teacher.infinitylearn.com/dashboard/liveclass">Infinity Learn</option>
+      </select>
+    </label>
     <label class="cal-add-field">Session Link
       <input type="url" id="addSessLink" placeholder="https://meet.google.com/...">
     </label>
@@ -2029,7 +2116,8 @@ html[data-theme="light"] #booksRoot{
     <div class="bvod-ch" id="bvodCh"></div>
   </div>
 
-  <input class="book-search" id="bookSearch" type="text" placeholder="🔍 Search classic texts…">
+  <input class="book-search" id="bookSearch" type="text" placeholder="🔍 Search any book, quote, or keyword…">
+  <div id="bookSearchStatus" class="book-search-status"></div>
 
   <h2 class="book-sec-title">📜 Classic Texts</h2>
   <div id="bookClassics"></div>
@@ -2043,9 +2131,183 @@ html[data-theme="light"] #booksRoot{
   <h2 class="book-sec-title">📈 Investing Fundamentals</h2>
   <div id="bookShelfInvesting"></div>
 
+  <h2 class="book-sec-title">♟️ Power and Strategy</h2>
+  <div id="bookShelfPower"></div>
+
+  <h2 class="book-sec-title">🎯 Habits and Focus</h2>
+  <div id="bookShelfHabits"></div>
+
 </div>
 </div>
 </div>
+
+<div class="tab-panel" data-tab="adapt">
+<div id="adaptRoot">
+  <div class="wrap">
+    <header>
+      <div class="eyebrow">Adaptability & Recovery</div>
+      <h1>Adapt & <span>Rest</span></h1>
+      <p class="sub">Small tools for handling change without losing your footing — and quick resets for when heavy work, learning sessions, and short sleep catch up with you.</p>
+    </header>
+
+    <div class="ad-hero">
+      <div class="ad-hero-label">💡 Today's Angle</div>
+      <div class="ad-hero-text" id="adaptHeroText">Loading…</div>
+    </div>
+
+    <div class="ad-streak-card" id="adaptStreakCard"></div>
+
+    <h2 class="ad-sec-title">🌱 Adaptability Toolkit</h2>
+    <p class="ad-sec-note">Practical moves for when a plan changes, a class shifts, or something unexpected lands on you.</p>
+    <div id="adaptToolkitList"></div>
+
+    <h2 class="ad-sec-title">🧘 Brain Rest</h2>
+    <p class="ad-sec-note">Pick one and start the timer. These are meant to take minutes, not willpower.</p>
+    <div id="adaptRestList"></div>
+  </div>
+</div>
+</div>
+
+<script>
+(function(){
+  const ADAPT_PROMPTS = [
+    "You don't need to feel ready for a change — you just need to take the next small step inside it.",
+    "Adaptability isn't about liking the change. It's about not letting the change decide how you respond.",
+    "A plan that bends survives. A plan that only works one way breaks the first time reality disagrees with it.",
+    "Tired isn't the same as wrong. Before you judge a hard day, rest first — then decide what it actually means.",
+    "The fastest way through an unexpected shift is usually the smallest next action, not the perfect long-term fix.",
+    "You can't control what changed. You can always control what you do in the next ten minutes.",
+    "Recovery is part of the work, not a break from it — rest is what makes the next effort possible.",
+    "Most days don't go as planned. The skill worth building is how quickly you re-plan, not how rarely things shift.",
+    "A short, deliberate rest now is cheaper than the mistakes that come from pushing through exhaustion.",
+    "Naming what's actually in your control — and letting the rest go — is most of what adaptability is."
+  ];
+
+  const ADAPT_PRACTICES = [
+    { id:'reframe', icon:'🔄', title:'Reframe the setback', text:'Ask "what can this teach me" instead of "why is this happening to me" — same event, a more useful lens.' },
+    { id:'control', icon:'🎯', title:'Sort what you can control', text:"List what's actually in your hands versus what isn't. Spend your energy only on the first list." },
+    { id:'smallstep', icon:'🪜', title:'Shrink the next step', text:'When a change feels too big, find the smallest possible action you could take in the next 10 minutes.' },
+    { id:'namefeeling', icon:'🏷️', title:'Name what you feel', text:'Put a precise word on the emotion — "overwhelmed", not just "bad". Naming it tends to loosen its grip.' },
+    { id:'pause', icon:'⏸️', title:'Add a pause before reacting', text:'Take one slow breath before responding to a surprise or a change of plans — a few seconds resets the reflex.' },
+    { id:'askhelp', icon:'🤝', title:'Ask before assuming', text:'When plans shift on you, ask a clarifying question instead of guessing the worst-case reason.' }
+  ];
+
+  const REST_ACTIVITIES = [
+    { id:'grounding', icon:'🌬️', title:'5-4-3-2-1 Grounding', text:'Name 5 things you see, 4 you can touch, 3 you hear, 2 you smell, 1 you taste. Pulls your mind out of the spiral.', seconds:120 },
+    { id:'boxbreath', icon:'🫁', title:'Box Breathing', text:'Inhale 4s, hold 4s, exhale 4s, hold 4s. Repeat gently until the timer ends.', seconds:180 },
+    { id:'eyerest', icon:'👀', title:'Screen-Free Eye Rest', text:'Close your eyes, or look at something far away. Let your eyes stop focusing on anything close for a bit.', seconds:60 },
+    { id:'stretch', icon:'🧍', title:'Stand & Stretch', text:'Get up, roll your shoulders and neck, stretch your arms overhead. Movement resets a stuck brain.', seconds:90 },
+    { id:'napcue', icon:'😴', title:'Power Nap Timer', text:"Lie down and close your eyes. This won't force sleep — it just protects the window from being interrupted.", seconds:900 }
+  ];
+
+  function adaptTodayISO(){ const d=new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; }
+  function adaptLoadCheckins(){ try{ return JSON.parse(localStorage.getItem('adapt-rest-checkins')) || {}; }catch(e){ return {}; } }
+  function adaptSaveCheckins(c){ try{ localStorage.setItem('adapt-rest-checkins', JSON.stringify(c)); }catch(e){} }
+  function adaptLoadDoneToday(){ try{ return JSON.parse(localStorage.getItem('adapt-rest-done-'+adaptTodayISO())) || {}; }catch(e){ return {}; } }
+  function adaptSaveDoneToday(d){ try{ localStorage.setItem('adapt-rest-done-'+adaptTodayISO(), JSON.stringify(d)); }catch(e){} }
+
+  function adaptComputeStreak(){
+    const checkins = adaptLoadCheckins();
+    let streak = 0;
+    let cursor = new Date();
+    while(true){
+      const iso = `${cursor.getFullYear()}-${String(cursor.getMonth()+1).padStart(2,'0')}-${String(cursor.getDate()).padStart(2,'0')}`;
+      if(checkins[iso]){ streak++; cursor.setDate(cursor.getDate()-1); } else break;
+    }
+    return streak;
+  }
+
+  function markAdaptDoneToday(itemId){
+    const done = adaptLoadDoneToday();
+    done[itemId] = true;
+    adaptSaveDoneToday(done);
+    const checkins = adaptLoadCheckins();
+    checkins[adaptTodayISO()] = true;
+    adaptSaveCheckins(checkins);
+    renderAdaptStreak();
+  }
+
+  function renderAdaptStreak(){
+    const holder = document.getElementById('adaptStreakCard');
+    if(!holder) return;
+    const streak = adaptComputeStreak();
+    holder.innerHTML = `<div><b>${streak}</b> day streak</div><div style="flex:1;">${streak ? "You've used at least one tool here " + streak + (streak===1?' day':' days') + " in a row." : 'Practice one item below to start a streak.'}</div>`;
+  }
+
+  function renderAdaptHero(){
+    const dayNum = Math.floor(Date.now() / 86400000);
+    document.getElementById('adaptHeroText').textContent = ADAPT_PROMPTS[dayNum % ADAPT_PROMPTS.length];
+  }
+
+  function renderAdaptToolkit(){
+    const holder = document.getElementById('adaptToolkitList');
+    if(!holder) return;
+    const done = adaptLoadDoneToday();
+    holder.innerHTML = ADAPT_PRACTICES.map(p => `
+      <div class="ad-card">
+        <div class="ad-card-top"><span class="ad-card-icon">${p.icon}</span><span class="ad-card-title">${p.title}</span></div>
+        <p class="ad-card-text">${p.text}</p>
+        <button class="ad-card-btn ${done[p.id]?'done':''}" onclick="markAdaptPractice('${p.id}')">${done[p.id] ? '✓ Practiced Today' : 'Mark Practiced'}</button>
+      </div>`).join('');
+  }
+  window.markAdaptPractice = function(id){
+    markAdaptDoneToday(id);
+    renderAdaptToolkit();
+  };
+
+  const activeTimers = {};
+
+  function fmtTime(s){ const m = Math.floor(s/60); const sec = s%60; return `${m}:${String(sec).padStart(2,'0')}`; }
+
+  function renderAdaptRest(){
+    const holder = document.getElementById('adaptRestList');
+    if(!holder) return;
+    const done = adaptLoadDoneToday();
+    holder.innerHTML = REST_ACTIVITIES.map(a => {
+      const timing = activeTimers[a.id];
+      const btnLabel = timing ? fmtTime(timing.remaining) : (done[a.id] ? '✓ Done Today · Restart' : `Start ${fmtTime(a.seconds)} Timer`);
+      const btnClass = timing ? 'timing' : (done[a.id] ? 'done' : '');
+      return `
+      <div class="ad-card">
+        <div class="ad-card-top"><span class="ad-card-icon">${a.icon}</span><span class="ad-card-title">${a.title}</span></div>
+        <p class="ad-card-text">${a.text}</p>
+        <button class="ad-card-btn ${btnClass}" onclick="toggleAdaptTimer('${a.id}')">${btnLabel}</button>
+      </div>`;
+    }).join('');
+  }
+
+  window.toggleAdaptTimer = function(id){
+    if(activeTimers[id]){
+      clearInterval(activeTimers[id].handle);
+      delete activeTimers[id];
+      renderAdaptRest();
+      return;
+    }
+    const activity = REST_ACTIVITIES.find(a => a.id === id);
+    if(!activity) return;
+    const timer = { remaining: activity.seconds, handle: null };
+    activeTimers[id] = timer;
+    timer.handle = setInterval(() => {
+      timer.remaining--;
+      if(timer.remaining <= 0){
+        clearInterval(timer.handle);
+        delete activeTimers[id];
+        markAdaptDoneToday(id);
+        if(navigator.vibrate) navigator.vibrate([120,80,120]);
+        renderAdaptRest();
+        return;
+      }
+      renderAdaptRest();
+    }, 1000);
+    renderAdaptRest();
+  };
+
+  renderAdaptHero();
+  renderAdaptStreak();
+  renderAdaptToolkit();
+  renderAdaptRest();
+})();
+</script>
 
 <script>
 (function(){
@@ -2423,6 +2685,74 @@ html[data-theme="light"] #booksRoot{
         "Simplicity beats complexity — a broad index fund captures the market's return with minimal cost and effort.",
         "Every broker, manager, and advisor takes a cut — those costs matter just as much as the returns you earn.",
         "The biggest threat to an investor's return is usually their own behavior, not the market itself."
+      ]},
+    { id:'48laws', title:'The 48 Laws of Power', author:'Robert Greene', category:'power',
+      desc:'A study of power dynamics through historical example. Summary, Not Excerpt — presented here as observations to recognize, not a playbook to follow blindly.',
+      summary:[
+        "Never outshine the master — let those above you feel comfortably superior, or their insecurity becomes your problem.",
+        "Guard your reputation carefully — it is often the only leverage you have, and it can be destroyed faster than it's built.",
+        "Say less than necessary — the more you say, the more ordinary and controllable you appear.",
+        "Win through actions, not argument — a demonstrated result persuades far more reliably than a clever debate.",
+        "Court attention wisely — being seen for the wrong things is worse than not being noticed at all.",
+        "Study the people around you — knowing what actually motivates someone matters more than what they claim motivates them.",
+        "Keep some unpredictability in reserve — total transparency gives others an easy playbook against you.",
+        "Recognize when to walk away from a fight — not every provocation deserves your energy or attention.",
+        "Power that depends entirely on one person or position is fragile — build capability and relationships that stand on their own.",
+        "Read this critically, not as a moral code — it maps how power often behaves, not how you're obligated to behave."
+      ]},
+    { id:'thinkgrowrich', title:'Think and Grow Rich', author:'Napoleon Hill', category:'mindset',
+      desc:'A classic on the mindset and habits behind achievement, drawn from interviews with successful figures of its era.',
+      summary:[
+        "A burning, specific desire — not a vague wish — is the starting point of every real achievement.",
+        "Write down exactly what you want and the date you intend to have it; vague goals produce vague effort.",
+        "Faith and persistence compound — repeated action backed by genuine belief reshapes what you think is possible.",
+        "Specialized knowledge applied toward a clear goal beats general knowledge scattered across many.",
+        "Imagination turns plans into reality — rehearse the outcome in detail before you ever attempt it.",
+        "Organized planning means having a definite, written plan of action, and revising it the moment it fails without abandoning the goal itself.",
+        "Decisiveness is a habit of successful people; chronic indecision is a habit of those who never start.",
+        "Persistence is the one quality most people quit right before mastering — most failure happens one step from success.",
+        "Your inner circle shapes your thinking — surround yourself with people whose standards pull you upward.",
+        "Master your own mind before you try to master any external outcome — self-discipline is the real prerequisite."
+      ]},
+    { id:'richestbabylon', title:'The Richest Man in Babylon', author:'George S. Clason', category:'mindset',
+      desc:'Timeless money principles told as parables set in ancient Babylon.',
+      summary:[
+        "Pay yourself first — set aside at least a tenth of everything you earn before spending on anything else.",
+        "Control your expenses — what looks like a necessity is often just a want you haven't questioned.",
+        "Make your savings work for you — idle money earns nothing; put it to productive use so it multiplies.",
+        "Guard your money from loss — protect principal above all, and don't chase returns you don't understand.",
+        "Own your home rather than only renting, when you're able — it converts a recurring expense into a lasting asset.",
+        "Insure a future income — plan deliberately for the years you won't be able to earn as much.",
+        "Increase your ability to earn — deliberately improve your skills, because capability is what income is built on.",
+        "Seek advice only from those who are truly qualified by experience in the matter at hand, not just the confident-sounding.",
+        "Wealth grows slowly through consistent discipline — there is no shortcut that replaces the habit of saving and investing steadily."
+      ]},
+    { id:'atomichabits', title:'Atomic Habits', author:'James Clear', category:'habits',
+      desc:'A practical framework for building good habits and breaking bad ones through small, consistent changes.',
+      summary:[
+        "Small improvements compound — a 1% change repeated daily produces enormous differences over months and years.",
+        "Focus on systems, not just goals — the goal sets the direction, but the system determines whether you actually get there.",
+        "Identity change drives lasting habits — aim to become the type of person who does the behavior, not just to complete a task.",
+        "Make the cue obvious — design your environment so the trigger for a good habit is impossible to miss.",
+        "Make the habit attractive — pair actions you need to do with things you want to do.",
+        "Make it easy — reduce friction for good habits (two-minute rule: shrink any habit to its smallest starting action) and add friction for bad ones.",
+        "Make it satisfying — immediate small rewards reinforce a habit far more reliably than a distant payoff.",
+        "Habit tracking and visible streaks create momentum — don't break the chain, and never miss twice in a row.",
+        "Environment design often beats willpower — change what's easy to reach and easy to avoid rather than relying on discipline alone.",
+        "Every action is a vote for the type of person you wish to become — habits are identity, cast one vote at a time."
+      ]},
+    { id:'deepwork', title:'Deep Work', author:'Cal Newport', category:'habits',
+      desc:'A case for focused, distraction-free work as a rare and valuable skill in an increasingly distracted world.',
+      summary:[
+        "Deep work — focused, undistracted effort on cognitively demanding tasks — is becoming rarer and more valuable at the same time.",
+        "Shallow, low-focus tasks feel productive but produce little of lasting value; protect time from being consumed by them.",
+        "Schedule deep work like an appointment — vague intentions to 'focus later' rarely survive a full day of small interruptions.",
+        "Embrace boredom deliberately — constantly reaching for a phone during idle moments trains your brain to resist sustained focus.",
+        "Quit social media and low-value digital habits that don't clearly serve something you already care about.",
+        "Drain the shallows — batch or eliminate email, meetings, and busywork so they don't quietly consume your best hours.",
+        "Ritualize your deep work — a consistent time, place, and starting routine reduces the friction of beginning.",
+        "Working fewer, more focused hours often produces better output than long hours diluted by constant task-switching.",
+        "The ability to concentrate without distraction is a trainable skill, not a fixed trait — it grows with deliberate practice."
       ]}
   ];
 
@@ -2499,6 +2829,9 @@ html[data-theme="light"] #booksRoot{
       book.data.forEach(text => ALL_PASSAGES.push({ text, label: book.title }));
     }
   });
+  BOOKSHELF.forEach(book => {
+    book.summary.forEach(text => ALL_PASSAGES.push({ text, label: book.title }));
+  });
   function renderVerseOfDay(){
     const dayNum = Math.floor(Date.now() / 86400000);
     const v = ALL_PASSAGES[dayNum % ALL_PASSAGES.length];
@@ -2571,11 +2904,13 @@ html[data-theme="light"] #booksRoot{
     const holder = document.getElementById('bookClassics');
     const q = (filterText || '').trim().toLowerCase();
     let html = '';
-    let anyMatch = false;
+    let matchCount = 0;
     CLASSICS.forEach(book => {
-      const inner = book.type === 'verses' ? chapterAccordionHTML(book, q) : flatListHTML(book, q);
-      if(q && !inner) return;
-      anyMatch = true;
+      const titleMatches = !!q && (book.title.toLowerCase().includes(q) || book.author.toLowerCase().includes(q));
+      const innerQ = titleMatches ? '' : q;
+      const inner = book.type === 'verses' ? chapterAccordionHTML(book, innerQ) : flatListHTML(book, innerQ);
+      if(q && !inner && !titleMatches) return;
+      matchCount++;
       const { done, total } = bookCounts(book);
       const isOpen = bookLibraryOpen.has(book.id) || !!q;
       html += `<div class="book-card ${isOpen?'open':''}">
@@ -2588,18 +2923,20 @@ html[data-theme="light"] #booksRoot{
         </div>
         <div class="book-card-body">
           <div class="frame" style="margin-bottom:14px;"><span class="frame-tag">Note</span>${book.note}</div>
-          ${inner}
+          ${inner || (book.type === 'verses' ? chapterAccordionHTML(book, '') : flatListHTML(book, ''))}
         </div>
       </div>`;
     });
-    if(!anyMatch) html = `<div class="book-empty">No passages match "${filterText}" — try a different word.</div>`;
+    if(q && matchCount === 0) html = `<div class="book-empty">No passages match "${filterText}" — try a different word.</div>`;
     holder.innerHTML = html;
+    return matchCount;
   }
 
   window.toggleBookLibrary = function(bookId){
     if(bookLibraryOpen.has(bookId)) bookLibraryOpen.delete(bookId); else bookLibraryOpen.add(bookId);
-    renderClassics(document.getElementById('bookSearch').value);
-    renderAllShelves();
+    const q = document.getElementById('bookSearch').value;
+    renderClassics(q);
+    renderAllShelves(q);
   };
   window.toggleBookChapter = function(bookId, ch){
     const key = `${bookId}:${ch}`;
@@ -2611,14 +2948,16 @@ html[data-theme="light"] #booksRoot{
     progress[id] = !progress[id];
     if(!progress[id]) delete progress[id];
     bookSaveProgress(bookId, progress);
-    renderClassics(document.getElementById('bookSearch').value);
-    renderAllShelves();
+    const q = document.getElementById('bookSearch').value;
+    renderClassics(q);
+    renderAllShelves(q);
   };
 
   /* ---------- modern-book shelf (tracked, not reproduced) ---------- */
-  function shelfSummaryHTML(book){
+  function shelfSummaryHTML(book, filterQ, titleMatches){
     const progress = bookLoadProgress(book.id);
     return book.summary.map((text, i) => {
+      if(filterQ && !titleMatches && !text.toLowerCase().includes(filterQ)) return '';
       const id = String(i);
       return `<label class="book-verse ${progress[id]?'done':''}">
         <input type="checkbox" ${progress[id]?'checked':''} onchange="toggleBookVerse('${book.id}','${id}')">
@@ -2627,15 +2966,21 @@ html[data-theme="light"] #booksRoot{
     }).join('');
   }
 
-  function renderShelf(category, holderId){
+  function renderShelf(category, holderId, filterText){
     const holder = document.getElementById(holderId);
-    if(!holder) return;
+    if(!holder) return 0;
     const status = bookLoadStatus();
+    const q = (filterText || '').trim().toLowerCase();
+    let matchCount = 0;
     holder.innerHTML = BOOKSHELF.filter(b => b.category === category).map(b => {
+      const titleMatches = !!q && (b.title.toLowerCase().includes(q) || b.author.toLowerCase().includes(q));
+      const inner = shelfSummaryHTML(b, q, titleMatches);
+      if(q && !inner) return '';
+      matchCount++;
       const st = status[b.id] || 'not-started';
       const progress = bookLoadProgress(b.id);
       const done = b.summary.filter((_, i) => progress[String(i)]).length;
-      const isOpen = bookLibraryOpen.has(b.id);
+      const isOpen = bookLibraryOpen.has(b.id) || !!q;
       return `<div class="book-card ${isOpen?'open':''}">
         <div class="book-card-hdr" onclick="toggleBookLibrary('${b.id}')">
           <div>
@@ -2652,30 +2997,50 @@ html[data-theme="light"] #booksRoot{
             <button class="shelf-status-btn ${st==='completed'?'active':''}" data-status="completed" onclick="setBookStatus('${b.id}','completed')">Completed</button>
           </div>
           <div class="book-chapter open"><div class="book-chapter-body" style="padding-top:0;">
-            ${shelfSummaryHTML(b)}
+            ${inner || shelfSummaryHTML(b, '', false)}
           </div></div>
         </div>
       </div>`;
     }).join('');
+    return matchCount;
   }
-  function renderAllShelves(){
-    renderShelf('mindset', 'bookShelfMindset');
-    renderShelf('systems', 'bookShelfSystems');
-    renderShelf('investing', 'bookShelfInvesting');
+  function renderAllShelves(filterText){
+    let total = 0;
+    total += renderShelf('mindset', 'bookShelfMindset', filterText);
+    total += renderShelf('systems', 'bookShelfSystems', filterText);
+    total += renderShelf('investing', 'bookShelfInvesting', filterText);
+    total += renderShelf('power', 'bookShelfPower', filterText);
+    total += renderShelf('habits', 'bookShelfHabits', filterText);
+    return total;
   }
   window.setBookStatus = function(id, status){
     const s = bookLoadStatus();
     s[id] = status;
     bookSaveStatus(s);
-    renderAllShelves();
+    renderAllShelves(document.getElementById('bookSearch').value);
     renderBookStreak();
   };
 
+  function updateBookSearchStatus(q, classicsCount, shelfCount){
+    const el = document.getElementById('bookSearchStatus');
+    if(!el) return;
+    if(!q){ el.textContent = ''; return; }
+    const total = classicsCount + shelfCount;
+    el.textContent = total
+      ? `${total} book${total===1?'':'s'} match "${q}"`
+      : `No matches for "${q}" — try a different word.`;
+  }
+
+  function performBookSearch(rawText){
+    const c = renderClassics(rawText);
+    const s = renderAllShelves(rawText);
+    updateBookSearchStatus((rawText||'').trim(), c, s);
+  }
+
   renderBookStreak();
   renderVerseOfDay();
-  renderClassics('');
-  renderAllShelves();
-  document.getElementById('bookSearch').addEventListener('input', (e) => renderClassics(e.target.value));
+  performBookSearch('');
+  document.getElementById('bookSearch').addEventListener('input', (e) => performBookSearch(e.target.value));
 })();
 </script>
 
@@ -3758,6 +4123,11 @@ tickClock();
       times:[{day:'tue',time:'17:00'},{day:'fri',time:'20:30'}]
     },
     {
+      id:'arnav', name:"Arnav's Session at Voage Learning", student:'Arnav', platform:'Voage Learning',
+      session:'https://meet.google.com/fnr-hzha-tfc',
+      times:[{day:'thu',time:'19:30'},{day:'wed',time:'21:30'}]
+    },
+    {
       id:'sanaya', name:"Sanaya's Session at CY", student:'Sanaya', platform:'Codeyoung',
       session:'https://epicenter.codeyoung.com/index.html#/mentorDashboard',
       times:[{day:'tue',time:'05:30'},{day:'wed',time:'06:30'}]
@@ -4074,6 +4444,7 @@ tickClock();
     document.getElementById('addSessName').value = '';
     document.getElementById('addSessDate').value = todayISO();
     document.getElementById('addSessTime').value = '';
+    document.getElementById('addSessPlatform').value = '';
     document.getElementById('addSessLink').value = '';
     document.getElementById('calAddModal').classList.add('show');
     document.getElementById('calAddBackdrop').classList.add('show');
@@ -4081,6 +4452,10 @@ tickClock();
   window.closeAddSessionModal = function(){
     document.getElementById('calAddModal').classList.remove('show');
     document.getElementById('calAddBackdrop').classList.remove('show');
+  };
+  window.applyPlatformLink = function(){
+    const picked = document.getElementById('addSessPlatform').value;
+    if(picked) document.getElementById('addSessLink').value = picked;
   };
   window.saveAddSession = function(){
     const name = document.getElementById('addSessName').value.trim();
@@ -4887,7 +5262,7 @@ tickClock();
 <script>
 
 (function(){
-  const TABS = ['dashboard','vitality','stratos','officehours','pitstop','business','books'];
+  const TABS = ['dashboard','vitality','stratos','officehours','pitstop','business','books','adapt'];
   const panels = {};
   TABS.forEach(t => panels[t] = document.querySelector(`.tab-panel[data-tab="${t}"]`));
   const buttons = document.querySelectorAll('.shell-tab');
@@ -5001,6 +5376,20 @@ tickClock();
     try{ localStorage.setItem('mc-theme', next); }catch(e){}
     applyThemeIcon();
   });
+
+  // ---- Time-of-day brand icon (Duolingo-style mascot swap) ----
+  // Note: this only changes the little icon shown here in the app's own nav bar.
+  // The actual home-screen/PWA icon (manifest.json) can't be swapped dynamically
+  // for an installed app without a much bigger system (multiple icon sets + a
+  // reinstall), so this is the in-app equivalent, not the real app icon.
+  function applyTimeIcon(){
+    const el = document.getElementById('brandTimeIcon');
+    if(!el) return;
+    const h = new Date().getHours();
+    el.textContent = (h>=5 && h<12) ? '🌅' : (h>=12 && h<17) ? '☀️' : (h>=17 && h<21) ? '🌇' : '🌙';
+  }
+  applyTimeIcon();
+  setInterval(applyTimeIcon, 60000);
 
   // ---- About panel ----
   const aboutBtn = document.getElementById('aboutBtn');
@@ -5119,6 +5508,7 @@ tickClock();
 
   let activeVibrateInterval = null;
   let activeSessionKey = null;
+  let activeSessionLink = null;
 
   function stopSessionVibrationInternal(markDismissed){
     if(activeVibrateInterval){ clearInterval(activeVibrateInterval); activeVibrateInterval = null; }
@@ -5127,20 +5517,38 @@ tickClock();
     if(banner) banner.classList.remove('show');
     if(markDismissed && activeSessionKey) vibMarkDismissed(activeSessionKey);
     activeSessionKey = null;
+    activeSessionLink = null;
   }
   window.stopSessionVibration = function(){ stopSessionVibrationInternal(true); };
+  window.joinAlertedSession = function(){
+    if(activeSessionLink) window.open(activeSessionLink, '_blank', 'noopener');
+    stopSessionVibrationInternal(true);
+  };
 
-  function startSessionVibration(name, key){
+  // "live" = still inside the first 5 minutes, keeps buzzing until stopped.
+  // "late" = the check was delayed (phone locked / tab backgrounded and throttled
+  // by the browser), so the 5-minute window already passed by the time we noticed -
+  // still surface it with one buzz + a banner instead of silently giving up.
+  function startSessionVibration(name, key, link, late){
     activeSessionKey = key;
+    activeSessionLink = link || null;
     const banner = document.getElementById('sessionVibrateBanner');
+    const joinBtn = document.getElementById('svbJoinBtn');
     if(banner){
-      banner.querySelector('.svb-text').textContent = `🔔 ${name} is starting — join now`;
+      banner.querySelector('.svb-text').textContent = late
+        ? `🔔 ${name} started a few minutes ago`
+        : `🔔 ${name} is starting — join now`;
+      banner.classList.toggle('late', !!late);
+      if(joinBtn) joinBtn.style.display = link ? '' : 'none';
       banner.classList.add('show');
     }
     if('vibrate' in navigator){
       navigator.vibrate([500,200,500]);
-      activeVibrateInterval = setInterval(()=>{ navigator.vibrate([500,200,500]); }, 3000);
+      if(!late){
+        activeVibrateInterval = setInterval(()=>{ navigator.vibrate([500,200,500]); }, 3000);
+      }
     }
+    if(late) stopSessionVibrationInternal(true); // one buzz + banner, but don't keep the loop or re-trigger
   }
 
   function checkSessionVibrations(){
@@ -5153,14 +5561,14 @@ tickClock();
     (window.__missionControlSessions || []).forEach(s => {
       s.times.forEach(t => {
         if(t.day !== dow) return;
-        candidates.push({ key:'s:'+s.id+':'+t.time, name:s.name, time:t.time });
+        candidates.push({ key:'s:'+s.id+':'+t.time, name:s.name, time:t.time, link:s.session });
       });
     });
     try{
       const oneOffs = JSON.parse(localStorage.getItem('oh-oneoff-events')) || [];
       oneOffs.forEach(ev => {
         if(ev.date !== dayISO) return;
-        candidates.push({ key:'o:'+ev.id, name:ev.name, time:ev.time });
+        candidates.push({ key:'o:'+ev.id, name:ev.name, time:ev.time, link:ev.link });
       });
     }catch(e){}
 
@@ -5170,15 +5578,26 @@ tickClock();
       const start = new Date(now); start.setHours(hh,mm,0,0);
       const diffMs = now - start;
       if(diffMs >= 0 && diffMs <= 5*60*1000){
-        startSessionVibration(c.name, c.key);
+        startSessionVibration(c.name, c.key, c.link, false);
         return;
       }
-      if(diffMs > 5*60*1000) vibMarkDismissed(c.key); // window passed unattended - stop checking it today
+      // catch-up window: the phone may have been locked or the tab backgrounded and
+      // throttled, delaying this check well past the live window - still notify once.
+      if(diffMs > 5*60*1000 && diffMs <= 20*60*1000){
+        startSessionVibration(c.name, c.key, c.link, true);
+        return;
+      }
+      if(diffMs > 20*60*1000) vibMarkDismissed(c.key); // too stale to bother notifying now
     }
   }
 
   setInterval(checkSessionVibrations, 10000);
   checkSessionVibrations();
+  // catch up immediately whenever the tab/PWA regains focus - this is what actually
+  // fixes "the phone isn't vibrating": background tabs get their timers throttled by
+  // the browser, so without this, a check could be delayed until long after checking.
+  document.addEventListener('visibilitychange', () => { if(document.visibilityState === 'visible') checkSessionVibrations(); });
+  window.addEventListener('focus', checkSessionVibrations);
 })();
 </script>
 
