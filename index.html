@@ -1090,9 +1090,9 @@ html[data-theme="light"] #officeHoursRoot{
   font-size:13px;font-weight:700;cursor:pointer;margin-top:4px;
 }
 
-/* ---------- calendar (Google-Calendar-style week grid, fixed 16:9, no scroll) ---------- */
+/* ---------- calendar (Google-Calendar-style week/day grid, fixed row height, scrolls vertically) ---------- */
 #officeHoursRoot .cal-wrap{
-  width:100%;aspect-ratio:16/9;background:var(--oh-surface);border-radius:16px;box-shadow:var(--oh-shadow);
+  width:100%;background:var(--oh-surface);border-radius:16px;box-shadow:var(--oh-shadow);
   border:1px solid var(--oh-line);overflow:hidden;margin-bottom:20px;display:flex;flex-direction:column;
   align-items:stretch !important;
 }
@@ -1101,27 +1101,33 @@ html[data-theme="light"] #officeHoursRoot{
 #officeHoursRoot .cal-header-row{display:grid;grid-template-columns:8% repeat(7,1fr);flex-shrink:0;}
 #officeHoursRoot .cal-corner{background:var(--oh-surface);border-bottom:1px solid var(--oh-line);}
 #officeHoursRoot .cal-daycol-hdr{
-  text-align:center;padding:5px 1px;font-family:'IBM Plex Mono',monospace;font-size:clamp(7px,2vw,11px);font-weight:700;
+  text-align:center;padding:6px 1px;font-family:'IBM Plex Mono',monospace;font-size:clamp(9px,2vw,12px);font-weight:700;
   text-transform:uppercase;letter-spacing:0.03em;color:var(--oh-ink-soft);border-bottom:1px solid var(--oh-line);
   border-left:1px solid var(--oh-line);background:var(--oh-surface);
 }
 #officeHoursRoot .cal-daycol-hdr.today{color:var(--oh-brass);}
-#officeHoursRoot .cal-body{flex:1;min-height:0;display:grid;grid-template-columns:8% repeat(7,1fr);grid-template-rows:minmax(0,1fr);position:relative;}
+#officeHoursRoot .cal-scroll{overflow-y:auto;overflow-x:hidden;max-height:min(64vh,600px);}
+#officeHoursRoot .cal-body{display:grid;grid-template-columns:8% repeat(7,1fr);position:relative;}
 #officeHoursRoot .cal-time-col{position:relative;}
 #officeHoursRoot .cal-time-lbl{
-  position:absolute;right:3px;font-family:'IBM Plex Mono',monospace;font-size:clamp(6px,1.6vw,9px);color:var(--oh-ink-soft);
+  position:absolute;right:3px;font-family:'IBM Plex Mono',monospace;font-size:clamp(8px,1.6vw,10px);color:var(--oh-ink-soft);
   text-align:right;white-space:nowrap;transform:translateY(-50%);
 }
 #officeHoursRoot .cal-day-body{position:relative;border-left:1px solid var(--oh-line);}
 #officeHoursRoot .cal-hr-line{position:absolute;left:0;right:0;border-top:1px solid var(--oh-line);}
 #officeHoursRoot .cal-event{
-  position:absolute;border-radius:6px;padding:2px 4px;overflow:hidden;
+  position:absolute;border-radius:6px;padding:3px 5px;overflow:hidden;
   color:#fff;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,0.3);
   transition:transform .12s ease, box-shadow .12s ease, z-index 0s; z-index:1;
+  display:flex;flex-direction:column;justify-content:flex-start;
 }
 #officeHoursRoot .cal-event:hover{transform:scale(1.04);box-shadow:0 5px 14px rgba(0,0,0,0.4);z-index:4;}
-#officeHoursRoot .cal-event .cal-event-name{font-size:clamp(6.5px,1.8vw,10.5px);font-weight:700;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-#officeHoursRoot .cal-event .cal-event-time{font-family:'IBM Plex Mono',monospace;font-size:clamp(6px,1.4vw,9px);opacity:0.92;white-space:nowrap;overflow:hidden;}
+#officeHoursRoot .cal-event .cal-event-name{
+  font-size:clamp(9px,1.3vw,11.5px);font-weight:700;line-height:1.2;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+  white-space:normal;word-break:break-word;text-overflow:ellipsis;
+}
+#officeHoursRoot .cal-event .cal-event-time{font-family:'IBM Plex Mono',monospace;font-size:clamp(7.5px,1.2vw,9.5px);opacity:0.92;white-space:nowrap;overflow:hidden;margin-top:auto;}
 #officeHoursRoot .cal-event.live{outline:2px solid #fff;outline-offset:-2px;animation:calLivePulse 1.6s ease-in-out infinite;}
 @keyframes calLivePulse{0%,100%{box-shadow:0 2px 6px rgba(0,0,0,0.3);}50%{box-shadow:0 2px 14px rgba(255,255,255,0.55);}}
 
@@ -4458,6 +4464,8 @@ tickClock();
     ])].sort((a,b) => a-b);
     const CAL_ROWS = CAL_HOURS.length || 1;
     const gridCols = `8% repeat(${weekDates.length},1fr)`;
+    const ROW_PX = 56;
+    const bodyHeightPx = CAL_ROWS * ROW_PX;
 
     let hdr = `<div class="cal-corner"></div>`;
     weekDates.forEach(dt => {
@@ -4532,7 +4540,9 @@ tickClock();
 
     holder.innerHTML = `<div class="cal-wrap">
         <div class="cal-header-row" style="grid-template-columns:${gridCols}">${hdr}</div>
-        <div class="cal-body" style="grid-template-columns:${gridCols}">${timeCol}${dayCols}</div>
+        <div class="cal-scroll">
+          <div class="cal-body" style="grid-template-columns:${gridCols};height:${bodyHeightPx}px">${timeCol}${dayCols}</div>
+        </div>
       </div>`;
   }
   renderCalendar();
