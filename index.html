@@ -1529,6 +1529,17 @@ html[data-theme="light"] #booksRoot{
 #booksRoot .book-verse.done .book-verse-txt{color:var(--bk-ink-soft); text-decoration:line-through;}
 #booksRoot .book-empty{text-align:center; padding:30px 10px; color:var(--bk-ink-soft); font-size:13px; font-style:italic;}
 
+#booksRoot .book-verse-translate-btn{
+  display:inline-block; margin:6px 0 0 0; padding:3px 10px; border-radius:100px; border:1px solid var(--bk-line);
+  background:var(--bk-surface-soft); color:var(--bk-accent); font-size:10.5px; font-weight:700; cursor:pointer;
+  font-family:'IBM Plex Mono',monospace; letter-spacing:0.02em;
+}
+#booksRoot .book-verse-translation{display:none; margin-top:8px; padding:10px 12px; background:var(--bk-surface-soft); border-radius:10px; border:1px solid var(--bk-line);}
+#booksRoot .book-verse-translation.open{display:block;}
+#booksRoot .book-verse-translation-line{font-size:12.5px; line-height:1.65; color:var(--bk-ink-soft);}
+#booksRoot .book-verse-translation-line + .book-verse-translation-line{margin-top:6px;}
+#booksRoot .book-verse-translation-line b{color:var(--bk-accent); font-weight:700;}
+
 #booksRoot .book-sec-title{
   font-family:'Fraunces',serif; font-weight:600; font-size:16.5px; margin:22px 0 12px; display:flex; align-items:center; gap:8px;
 }
@@ -2596,6 +2607,102 @@ html[data-theme="light"] #adaptRoot{
     "A ruler's own self-discipline comes first — one who cannot govern his own senses cannot hope to govern a kingdom."
   ];
 
+  const GITA_VERSES = [
+    { ch:1, title:"Arjuna's Dilemma", verses:[
+      { en:"(1.47) Overwhelmed by grief at the thought of fighting his own kin, Arjuna's bow slipped from his hand and he sank down in his chariot, his mind in turmoil.",
+        hi:"अपने ही स्वजनों से युद्ध के विचार से अत्यंत दुखी होकर अर्जुन का धनुष हाथ से छूट गया और वे रथ में बैठकर व्याकुल हो गए।",
+        bn:"নিজের আত্মীয়দের সঙ্গে যুদ্ধ করতে হবে ভেবে অত্যন্ত দুঃখিত হয়ে অর্জুনের ধনুক হাত থেকে খসে পড়ল এবং তিনি রথে বসে ব্যাকুল হয়ে পড়লেন।" }
+    ]},
+    { ch:2, title:'The Yoga of Knowledge', verses:[
+      { en:"(2.47) You have the right to perform your actions, but never to the fruits those actions produce. Never let the fruit be your motive, and never be attached to inaction.",
+        hi:"तुम्हें केवल अपना कर्म करने का अधिकार है, उसके फल पर कभी नहीं। फल को अपने कर्म का उद्देश्य मत बनाओ, और न ही कर्म न करने में आसक्त बनो।",
+        bn:"কর্ম করার অধিকার তোমার আছে, কিন্তু তার ফলের ওপর কখনো নয়। ফলকে তোমার কর্মের উদ্দেশ্য কোরো না, আর কর্ম না করার প্রতিও আসক্ত হয়ো না।" }
+    ]},
+    { ch:3, title:'The Yoga of Action', verses:[
+      { en:"(3.35) It is far better to do one's own duty imperfectly than to do another's duty perfectly. Better to die performing one's own duty, for another's duty invites danger.",
+        hi:"अपने धर्म को अपूर्ण रूप से निभाना, दूसरे के धर्म को पूर्ण रूप से निभाने से कहीं बेहतर है। अपने धर्म में मृत्यु भी कल्याणकारी है, दूसरे का धर्म भय उत्पन्न करने वाला है।",
+        bn:"নিজের ধর্ম অসম্পূর্ণভাবে পালন করাও অন্যের ধর্ম নিখুঁতভাবে পালনের চেয়ে অনেক ভালো। নিজের ধর্মে মৃত্যুও কল্যাণকর, অন্যের ধর্ম বিপদ ডেকে আনে।" }
+    ]},
+    { ch:4, title:'The Yoga of Knowledge and Action', verses:[
+      { en:"(4.7–8) Whenever righteousness declines and unrighteousness rises, I manifest myself. I appear age after age to protect the good, destroy the wicked, and restore dharma.",
+        hi:"जब-जब धर्म की हानि और अधर्म की वृद्धि होती है, तब-तब मैं स्वयं को प्रकट करता हूँ। साधुओं की रक्षा, दुष्टों के विनाश और धर्म की पुनर्स्थापना के लिए मैं युग-युग में अवतरित होता हूँ।",
+        bn:"যখনই ধর্মের হ্রাস এবং অধর্মের বৃদ্ধি ঘটে, তখনই আমি নিজেকে প্রকাশ করি। সাধুদের রক্ষা, দুষ্টদের বিনাশ এবং ধর্ম প্রতিষ্ঠার জন্য আমি যুগে যুগে অবতীর্ণ হই।" }
+    ]},
+    { ch:5, title:'The Yoga of Renunciation', verses:[
+      { en:"(5.10) One who acts without attachment, offering the results to the Divine, remains untouched by wrongdoing — like a lotus leaf that water cannot wet.",
+        hi:"जो व्यक्ति आसक्ति रहित होकर कर्म करता है और उसके फल को ईश्वर को अर्पित कर देता है, वह पाप से उसी प्रकार अछूता रहता है जैसे कमल का पत्ता जल से।",
+        bn:"যে ব্যক্তি আসক্তি ছাড়াই কর্ম করে এবং তার ফল ঈশ্বরকে সমর্পণ করে, সে পাপ দ্বারা স্পর্শিত হয় না — ঠিক যেমন পদ্মপাতা জলে ভেজে না।" }
+    ]},
+    { ch:6, title:'The Yoga of Meditation', verses:[
+      { en:"(6.5) Let a person lift themselves through their own effort; let them not let themselves sink down. The self alone is the friend of the self, and the self alone can be its enemy.",
+        hi:"मनुष्य को स्वयं अपने प्रयास से अपना उद्धार करना चाहिए, स्वयं को गिरने नहीं देना चाहिए। आत्मा ही आत्मा का मित्र है और आत्मा ही आत्मा का शत्रु है।",
+        bn:"মানুষের উচিত নিজের চেষ্টায় নিজেকে উন্নীত করা, নিজেকে অধঃপতিত হতে না দেওয়া। আত্মাই আত্মার বন্ধু, আবার আত্মাই আত্মার শত্রু।" }
+    ]},
+    { ch:7, title:'The Yoga of Knowledge and Wisdom', verses:[
+      { en:"(7.7) There is nothing higher than Me, Arjuna. Everything that exists is strung upon Me, like pearls threaded on a string.",
+        hi:"हे अर्जुन, मुझसे श्रेष्ठ और कुछ भी नहीं है। यह सम्पूर्ण जगत उसी प्रकार मुझमें पिरोया हुआ है जैसे धागे में मोती।",
+        bn:"হে অর্জুন, আমার চেয়ে উচ্চতর আর কিছু নেই। এই সমস্ত জগৎ আমার মধ্যে সেভাবেই গাঁথা, যেমন সুতোয় গাঁথা মুক্তো।" }
+    ]},
+    { ch:8, title:'The Yoga of the Imperishable', verses:[
+      { en:"(8.7) Therefore, at all times remember me and carry out your duty. With your mind and intellect fixed on me, you will surely come to me.",
+        hi:"इसलिए तुम हर समय मेरा स्मरण करो और अपना कर्तव्य निभाओ। मन और बुद्धि मुझमें स्थिर करने पर तुम निश्चय ही मुझे प्राप्त होगे।",
+        bn:"তাই তুমি সবসময় আমাকে স্মরণ করো এবং তোমার কর্তব্য পালন করো। মন ও বুদ্ধি আমার মধ্যে স্থির রাখলে তুমি নিশ্চয়ই আমাকে লাভ করবে।" }
+    ]},
+    { ch:9, title:'The Yoga of Royal Knowledge', verses:[
+      { en:"(9.22) To those who worship me with unwavering devotion, always united with me, I provide what they lack and preserve what they have.",
+        hi:"जो भक्त अनन्य भाव से मेरा ध्यान करते हुए मेरी उपासना करते हैं, उनकी जो आवश्यकता है वह मैं पूरी करता हूँ और जो उनके पास है उसकी रक्षा करता हूँ।",
+        bn:"যে ভক্তরা অবিচল ভক্তিতে সর্বদা আমার সাথে যুক্ত থেকে আমার উপাসনা করে, তাদের যা প্রয়োজন তা আমি পূরণ করি এবং যা তাদের আছে তা রক্ষা করি।" }
+    ]},
+    { ch:10, title:'The Yoga of Divine Glories', verses:[
+      { en:"(10.20) I am the Self seated in the hearts of all beings. I am the beginning, the middle, and the end of all that exists.",
+        hi:"मैं समस्त प्राणियों के हृदय में स्थित आत्मा हूँ। समस्त भूतों का आदि, मध्य और अंत भी मैं ही हूँ।",
+        bn:"আমি সকল প্রাণীর হৃদয়ে অবস্থিত আত্মা। আমিই সকল সত্তার আদি, মধ্য এবং অন্ত।" }
+    ]},
+    { ch:11, title:'The Vision of the Universal Form', verses:[
+      { en:"(11.32) I am mighty Time, the source of destruction, come here to annihilate these worlds. Even without you, none of these warriors arrayed for battle will survive.",
+        hi:"मैं महाकाल हूँ, लोकों का नाश करने वाला, यहाँ इन सबका संहार करने आया हूँ। तुम्हारे बिना भी, युद्ध में खड़े ये सभी योद्धा जीवित नहीं रहेंगे।",
+        bn:"আমি মহাকাল, লোকসমূহের বিনাশকারী, এখানে এদের সবাইকে ধ্বংস করতে এসেছি। তুমি ছাড়াও, যুদ্ধে দণ্ডায়মান এই যোদ্ধারা কেউ বাঁচবে না।" }
+    ]},
+    { ch:12, title:'The Yoga of Devotion', verses:[
+      { en:"(12.13–14) One who hates no being, who is friendly and compassionate to all, free from possessiveness and false ego, equal in joy and sorrow, and forgiving — that devotee is dear to me.",
+        hi:"जो किसी प्राणी से द्वेष नहीं करता, सबके प्रति मैत्रीपूर्ण और करुणामय है, ममता व अहंकार से रहित है, सुख-दुख में सम है और क्षमाशील है — ऐसा भक्त मुझे प्रिय है।",
+        bn:"যে কোনো প্রাণীকে ঘৃণা করে না, সবার প্রতি বন্ধুত্বপূর্ণ ও করুণাময়, মমত্ব ও অহংকারমুক্ত, সুখ-দুঃখে সমান এবং ক্ষমাশীল — এমন ভক্ত আমার প্রিয়।" }
+    ]},
+    { ch:13, title:'The Field and the Knower of the Field', verses:[
+      { en:"(13.8–12) Humility, sincerity, non-violence, patience, simplicity, and steady devotion — these qualities are declared to be true knowledge; whatever is contrary to them is ignorance.",
+        hi:"विनम्रता, सरलता, अहिंसा, सहनशीलता, सादगी और स्थिर भक्ति — इन गुणों को ही सच्चा ज्ञान कहा गया है; जो इनके विपरीत है वह अज्ञान है।",
+        bn:"নম্রতা, সরলতা, অহিংসা, সহনশীলতা, সরলতা এবং স্থির ভক্তি — এই গুণগুলিকেই প্রকৃত জ্ঞান বলা হয়েছে; এর বিপরীত যা কিছু, তা অজ্ঞানতা।" }
+    ]},
+    { ch:14, title:'The Yoga of the Three Gunas', verses:[
+      { en:"(14.26) One who serves me with unwavering devotion, rising above the three qualities of nature, becomes fit to attain oneness with the Absolute.",
+        hi:"जो व्यक्ति अटूट भक्ति के साथ मेरी सेवा करता है, वह प्रकृति के तीनों गुणों से ऊपर उठकर ब्रह्म से एकत्व प्राप्त करने योग्य बन जाता है।",
+        bn:"যে ব্যক্তি অবিচল ভক্তিতে আমার সেবা করে, সে প্রকৃতির তিনটি গুণের ঊর্ধ্বে উঠে ব্রহ্মের সাথে একত্ব লাভের যোগ্য হয়ে ওঠে।" }
+    ]},
+    { ch:15, title:'The Yoga of the Supreme Being', verses:[
+      { en:"(15.7) The living beings in this world are eternal fragments of me, struggling in this world of matter, drawing to themselves the mind and five senses.",
+        hi:"इस संसार में सभी जीव मेरे ही सनातन अंश हैं, जो प्रकृति में संघर्षरत रहते हुए मन और पाँचों इंद्रियों को अपनी ओर खींचते हैं।",
+        bn:"এই জগতের সমস্ত জীব আমারই সনাতন অংশ, যারা প্রকৃতির মধ্যে সংগ্রাম করতে করতে মন ও পঞ্চ ইন্দ্রিয়কে নিজের দিকে টেনে নেয়।" }
+    ]},
+    { ch:16, title:'The Yoga of the Divine and Demonic Natures', verses:[
+      { en:"(16.21) There are three gates leading to self-destruction — lust, anger, and greed. A wise person should abandon all three.",
+        hi:"इस आत्मघाती नरक के तीन द्वार हैं — काम, क्रोध और लोभ। बुद्धिमान व्यक्ति को इन तीनों का त्याग कर देना चाहिए।",
+        bn:"আত্মবিনাশের তিনটি দ্বার আছে — কাম, ক্রোধ এবং লোভ। বুদ্ধিমান ব্যক্তির উচিত এই তিনটিই ত্যাগ করা।" }
+    ]},
+    { ch:17, title:'The Yoga of the Threefold Faith', verses:[
+      { en:"(17.20) A gift given simply because it ought to be given, without expecting anything back, at the right time and place, and to a worthy person, is considered a gift of goodness.",
+        hi:"जो दान केवल कर्तव्य समझकर, बदले की अपेक्षा किए बिना, उचित समय और स्थान पर तथा योग्य पात्र को दिया जाता है, वह सात्विक दान कहलाता है।",
+        bn:"যে দান শুধু কর্তব্য মনে করে, প্রতিদানের আশা না করে, উপযুক্ত সময় ও স্থানে এবং যোগ্য পাত্রকে দেওয়া হয়, তাকে সাত্ত্বিক দান বলা হয়।" }
+    ]},
+    { ch:18, title:'The Yoga of Liberation through Renunciation', verses:[
+      { en:"(18.66) Abandon all varieties of duty and simply surrender unto me alone. I shall liberate you from all sins; do not grieve.",
+        hi:"समस्त धर्मों को त्यागकर केवल मेरी शरण में आ जाओ। मैं तुम्हें सभी पापों से मुक्त कर दूँगा, शोक मत करो।",
+        bn:"সমস্ত ধর্ম ত্যাগ করে শুধু আমারই শরণ নাও। আমি তোমাকে সমস্ত পাপ থেকে মুক্ত করব, শোক কোরো না।" },
+      { en:"(18.78) Wherever there is Krishna, the master of yoga, and Arjuna, the mighty archer, there will surely be prosperity, victory, well-being, and steady righteousness.",
+        hi:"जहाँ योगेश्वर श्रीकृष्ण और महान धनुर्धर अर्जुन हैं, वहाँ निश्चय ही श्री, विजय, समृद्धि और अटल नीति होगी।",
+        bn:"যেখানে যোগেশ্বর শ্রীকৃষ্ণ এবং মহান ধনুর্ধর অর্জুন আছেন, সেখানে নিশ্চয়ই শ্রী, বিজয়, সমৃদ্ধি এবং অটল নীতি থাকবে।" }
+    ]}
+  ];
+
   const BOOKSHELF = [
     { id:'psychmoney', title:'The Psychology of Money', author:'Morgan Housel', category:'mindset',
       desc:'Explores how human behavior and soft skills shape financial success far more than raw math.',
@@ -2795,6 +2902,8 @@ html[data-theme="light"] #adaptRoot{
   ];
 
   const CLASSICS = [
+    { id:'gita', title:'Bhagavad Gita', author:'Vyasa (traditionally attributed)', type:'verses', data:GITA_VERSES,
+      note:"A curated selection of well-known verses spanning all 18 chapters, shown in English by default — tap 🌐 Hindi / Bengali under a verse to reveal both translations. These are original paraphrased renderings, not a certified word-for-word translation of the full ~700-verse text." },
     { id:'chanakya', title:'Chanakya Neeti', author:'Chanakya', type:'verses', data:CHANAKYA_NEETI,
       note:"A curated selection of well-known verses per chapter, not a guaranteed word-for-word complete transcription of the full ~300-verse text." },
     { id:'artofwar', title:'The Art of War', author:'Sun Tzu', type:'verses', data:ART_OF_WAR,
@@ -2886,8 +2995,11 @@ html[data-theme="light"] #adaptRoot{
     let html = '';
     book.data.forEach(chapter => {
       const verses = chapter.verses
-        .map((text, vi) => ({ id:`${chapter.ch}-${vi}`, text }))
-        .filter(v => !filterQ || v.text.toLowerCase().includes(filterQ));
+        .map((raw, vi) => {
+          const isObj = typeof raw === 'object' && raw !== null;
+          return { id:`${chapter.ch}-${vi}`, text: isObj ? raw.en : raw, hi: isObj ? raw.hi : null, bn: isObj ? raw.bn : null };
+        })
+        .filter(v => !filterQ || v.text.toLowerCase().includes(filterQ) || (v.hi && v.hi.includes(filterQ)) || (v.bn && v.bn.includes(filterQ)));
       if(filterQ && verses.length === 0) return;
       const learnedCount = chapter.verses.filter((_, vi) => progress[`${chapter.ch}-${vi}`]).length;
       const key = `${book.id}:${chapter.ch}`;
@@ -2903,13 +3015,26 @@ html[data-theme="light"] #adaptRoot{
         <div class="book-chapter-body">
           ${verses.map(v => `<label class="book-verse ${progress[v.id]?'done':''}">
             <input type="checkbox" ${progress[v.id]?'checked':''} onchange="toggleBookVerse('${book.id}','${v.id}')">
-            <span class="book-verse-txt">${v.text}</span>
+            <span class="book-verse-txt">
+              ${v.text}
+              ${(v.hi||v.bn) ? `<button type="button" class="book-verse-translate-btn" onclick="toggleVerseTranslation(event,'${book.id}','${v.id}')">🌐 Hindi / Bengali</button>
+              <div class="book-verse-translation" id="vt-${book.id}-${v.id}">
+                ${v.hi ? `<div class="book-verse-translation-line"><b>Hindi</b> — ${v.hi}</div>` : ''}
+                ${v.bn ? `<div class="book-verse-translation-line"><b>Bengali</b> — ${v.bn}</div>` : ''}
+              </div>` : ''}
+            </span>
           </label>`).join('')}
         </div>
       </div>`;
     });
     return html;
   }
+  window.toggleVerseTranslation = function(event, bookId, verseId){
+    event.preventDefault();
+    event.stopPropagation();
+    const el = document.getElementById(`vt-${bookId}-${verseId}`);
+    if(el) el.classList.toggle('open');
+  };
 
   function flatListHTML(book, filterQ){
     const progress = bookLoadProgress(book.id);
@@ -4224,6 +4349,26 @@ tickClock();
       id:'saharshkiren', name:"Saharsh Kiren's Session at Tutoroot", student:'Saharsh Kiren', platform:'Tutoroot',
       session:'https://www.tutoroot.com/faculty/dashboard',
       times:[{day:'wed',time:'20:00'},{day:'fri',time:'18:00'},{day:'sat',time:'18:00'},{day:'sun',time:'18:00'}]
+    },
+    {
+      id:'arnavtyagi', name:"Arnav Tyagi's Session at Codeyoung", student:'Arnav Tyagi', platform:'Codeyoung',
+      session:'https://epicenter.codeyoung.com/index.html#/mentorDashboard',
+      times:[{day:'tue',time:'23:30'},{day:'wed',time:'23:30'}]
+    },
+    {
+      id:'taneeshabasu', name:"Taneesha Basu's Session at Codeyoung", student:'Taneesha Basu', platform:'Codeyoung',
+      session:'https://epicenter.codeyoung.com/index.html#/mentorDashboard',
+      times:[{day:'tue',time:'03:30'},{day:'fri',time:'04:30'}]
+    },
+    {
+      id:'mokshagna', name:"Mokshagna Bandaru's Session at Codeyoung", student:'Mokshagna Bandaru', platform:'Codeyoung',
+      session:'https://epicenter.codeyoung.com/index.html#/mentorDashboard',
+      times:[{day:'wed',time:'03:30'},{day:'thu',time:'06:30'},{day:'sun',time:'20:00'}]
+    },
+    {
+      id:'sruthi', name:"Sruthi's Session at WinQuest", student:'Sruthi', platform:'WinQuest',
+      session:'https://meet.google.com/yxx-ybaj-fhq',
+      times:[{day:'fri',time:'06:00'}]
     }
   ];
   window.__missionControlSessions = SESSIONS; // shared read-only copy for the Dashboard tab
