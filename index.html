@@ -1054,6 +1054,12 @@ html[data-theme="light"] #officeHoursRoot{
   font-size:12.5px;font-weight:700;cursor:pointer;white-space:nowrap;
 }
 #officeHoursRoot .cal-add-btn:hover{filter:brightness(1.1);}
+#officeHoursRoot .cal-view-toggle{display:flex;gap:3px;background:var(--oh-surface-soft);border:1px solid var(--oh-line);border-radius:100px;padding:3px;}
+#officeHoursRoot .cal-view-btn{
+  height:30px;padding:0 14px;border-radius:100px;border:none;background:transparent;color:var(--oh-ink-soft);
+  font-family:'IBM Plex Mono',monospace;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;cursor:pointer;
+}
+#officeHoursRoot .cal-view-btn.active{background:var(--oh-brass);color:#fff;}
 #officeHoursRoot .cal-daycol-hdr .dnum{display:block;font-size:14px;margin-top:2px;font-weight:700;}
 
 /* ---------- add-session modal ---------- */
@@ -1984,6 +1990,10 @@ html[data-theme="light"] #adaptRoot{
       <button class="cal-nav-btn" onclick="calShiftWeek(1)" aria-label="Next week">›</button>
     </div>
     <div class="cal-datenav-range" id="calDateRange">—</div>
+    <div class="cal-view-toggle" id="calViewToggle">
+      <button class="cal-view-btn active" data-view="week" onclick="calSetView('week')">Week</button>
+      <button class="cal-view-btn" data-view="day" onclick="calSetView('day')">Day</button>
+    </div>
     <button class="cal-add-btn" onclick="openAddSessionModal()">+ Add Session</button>
   </div>
   <div id="sessionCalendar"></div>
@@ -4401,43 +4411,57 @@ tickClock();
   const MONTH_SHORT = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 
   let calWeekStart = calWeekStartOf(new Date());
+  let calDayDate = (() => { const d = new Date(); d.setHours(0,0,0,0); return d; })();
+  let calViewMode = 'week';
 
+  window.calSetView = function(mode){
+    if(mode === calViewMode) return;
+    calViewMode = mode;
+    document.querySelectorAll('#calViewToggle .cal-view-btn').forEach(b => b.classList.toggle('active', b.dataset.view === mode));
+    renderCalendar();
+  };
   window.calShiftWeek = function(dir){
-    calWeekStart = calAddDays(calWeekStart, dir*7);
+    if(calViewMode === 'day') calDayDate = calAddDays(calDayDate, dir);
+    else calWeekStart = calAddDays(calWeekStart, dir*7);
     renderCalendar();
   };
   window.calGoToday = function(){
     calWeekStart = calWeekStartOf(new Date());
+    calDayDate = (() => { const d = new Date(); d.setHours(0,0,0,0); return d; })();
     renderCalendar();
   };
 
-  /* ---------- calendar view: Google-Calendar-style week grid, fixed 16:9, no scrolling ---------- */
+  /* ---------- calendar view: Google-Calendar-style week/day grid, fixed 16:9, no scrolling ---------- */
   function renderCalendar(){
     const holder = document.getElementById('sessionCalendar');
     if(!holder) return;
     const todayStr = todayISO();
-    const weekDates = DAY_ORDER.map((d,i) => calAddDays(calWeekStart, i));
+    const weekDates = calViewMode === 'day' ? [calDayDate] : DAY_ORDER.map((d,i) => calAddDays(calWeekStart, i));
     const oneOffs = loadOneOffs();
 
     // date range label
-    const first = weekDates[0], last = weekDates[6];
-    const rangeLbl = first.getMonth() === last.getMonth()
-      ? `${MONTH_SHORT[first.getMonth()]} ${first.getDate()}–${last.getDate()}, ${last.getFullYear()}`
-      : `${MONTH_SHORT[first.getMonth()]} ${first.getDate()} – ${MONTH_SHORT[last.getMonth()]} ${last.getDate()}, ${last.getFullYear()}`;
+    const first = weekDates[0], last = weekDates[weekDates.length-1];
+    const rangeLbl = calViewMode === 'day'
+      ? `${DAY_LABEL[DAY_ORDER[first.getDay()]]}, ${MONTH_SHORT[first.getMonth()]} ${first.getDate()}, ${first.getFullYear()}`
+      : (first.getMonth() === last.getMonth()
+        ? `${MONTH_SHORT[first.getMonth()]} ${first.getDate()}–${last.getDate()}, ${last.getFullYear()}`
+        : `${MONTH_SHORT[first.getMonth()]} ${first.getDate()} – ${MONTH_SHORT[last.getMonth()]} ${last.getDate()}, ${last.getFullYear()}`);
     const rangeEl = document.getElementById('calDateRange');
     if(rangeEl) rangeEl.textContent = rangeLbl;
 
-    // only the hours that actually have a session (recurring or one-off, this week) get a row
+    // only the hours that actually have a session (recurring or one-off, on the displayed day(s)) get a row
+    const displayedDayLabels = new Set(weekDates.map(dt => DAY_ORDER[dt.getDay()]));
     const oneOffThisWeek = oneOffs.filter(ev => weekDates.some(dt => calDateISO(dt) === ev.date));
     const CAL_HOURS = [...new Set([
-      ...SESSIONS.flatMap(s => s.times.map(t => parseInt(t.time,10))),
+      ...SESSIONS.flatMap(s => s.times.filter(t => displayedDayLabels.has(t.day)).map(t => parseInt(t.time,10))),
       ...oneOffThisWeek.map(ev => parseInt(ev.time,10))
     ])].sort((a,b) => a-b);
     const CAL_ROWS = CAL_HOURS.length || 1;
+    const gridCols = `8% repeat(${weekDates.length},1fr)`;
 
     let hdr = `<div class="cal-corner"></div>`;
-    DAY_ORDER.forEach((d,i) => {
-      const dt = weekDates[i];
+    weekDates.forEach(dt => {
+      const d = DAY_ORDER[dt.getDay()];
       const isToday = calDateISO(dt) === todayStr;
       hdr += `<div class="cal-daycol-hdr ${isToday?'today':''}">${DAY_LABEL[d]}<span class="dnum">${dt.getDate()}</span></div>`;
     });
@@ -4449,8 +4473,8 @@ tickClock();
     timeCol += `</div>`;
 
     let dayCols = '';
-    DAY_ORDER.forEach((d,i) => {
-      const dt = weekDates[i];
+    weekDates.forEach(dt => {
+      const d = DAY_ORDER[dt.getDay()];
       const dISO = calDateISO(dt);
       const isToday = dISO === todayStr;
       let lines = '';
@@ -4507,8 +4531,8 @@ tickClock();
     });
 
     holder.innerHTML = `<div class="cal-wrap">
-        <div class="cal-header-row">${hdr}</div>
-        <div class="cal-body">${timeCol}${dayCols}</div>
+        <div class="cal-header-row" style="grid-template-columns:${gridCols}">${hdr}</div>
+        <div class="cal-body" style="grid-template-columns:${gridCols}">${timeCol}${dayCols}</div>
       </div>`;
   }
   renderCalendar();
@@ -4651,6 +4675,7 @@ tickClock();
     saveOneOffs(list);
     closeAddSessionModal();
     calWeekStart = calWeekStartOf(new Date(date+'T00:00:00'));
+    calDayDate = new Date(date+'T00:00:00');
     renderTodayStats();
     renderCalendar();
   };
