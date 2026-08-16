@@ -1465,11 +1465,98 @@ html[data-theme="light"] #businessRoot{
 }
 #businessRoot .biz-add-btn:hover{color:var(--accent);border-color:var(--accent);}
 
+/* ---- 90-Day Ledger (Savoring Money) ---- */
+#businessRoot .biz-sec-title{font-family:'Fraunces',serif;font-weight:600;font-size:16.5px;margin:26px 0 12px;}
+#businessRoot .ledger-card{
+  background:var(--biz-surface);border:1px solid var(--biz-line);border-radius:18px;
+  padding:26px 22px 30px;box-shadow:var(--biz-shadow);margin-bottom:18px;
+}
+#businessRoot .ledger-header{
+  display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap;
+  border-bottom:3px double var(--biz-ink);padding-bottom:14px;margin-bottom:8px;
+}
+#businessRoot .ledger-brand-block{display:flex;align-items:center;gap:14px;}
+#businessRoot .ledger-logo{height:44px;width:auto;flex-shrink:0;border-radius:8px;object-fit:contain;}
+#businessRoot .ledger-brand{font-family:'Fraunces',serif;font-weight:700;font-size:24px;letter-spacing:-0.01em;color:var(--biz-ink);}
+#businessRoot .ledger-brand span{color:#C79A3E;}
+#businessRoot .ledger-subtitle{
+  font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.08em;text-transform:uppercase;
+  color:var(--biz-ink-soft);margin-top:4px;
+}
+#businessRoot .ledger-rule{font-family:'IBM Plex Mono',monospace;font-size:11px;text-align:right;color:var(--biz-ink-soft);line-height:1.5;}
+
+#businessRoot .ledger-scoreboard{
+  display:flex;flex-wrap:wrap;gap:0;margin:20px 0 26px;border:1px solid var(--biz-line);border-radius:10px;
+  overflow:hidden;background:var(--biz-surface-soft);
+}
+#businessRoot .ledger-score-cell{flex:1;min-width:110px;padding:12px 14px;border-right:1px solid var(--biz-line);position:relative;}
+#businessRoot .ledger-score-cell:last-child{border-right:none;}
+#businessRoot .ledger-score-label{font-family:'IBM Plex Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.06em;color:var(--biz-ink-soft);}
+#businessRoot .ledger-score-value{font-family:'Fraunces',serif;font-weight:600;font-size:22px;margin-top:2px;color:var(--biz-ink);}
+#businessRoot .ledger-score-value.editable{cursor:text;}
+#businessRoot .ledger-score-value[contenteditable="true"]:focus{outline:2px dashed #C79A3E;outline-offset:2px;}
+
+#businessRoot .ledger-phase-title{
+  font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;
+  color:#C79A3E;margin:28px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--biz-line);
+}
+#businessRoot .ledger-phase-note{
+  font-family:'Inter',sans-serif;font-size:12.5px;color:var(--biz-ink-soft);font-weight:400;
+  text-transform:none;letter-spacing:0;display:block;margin-top:3px;
+}
+
+#businessRoot .ledger-entry{
+  background:var(--biz-surface-soft);border:1px solid var(--biz-line);border-radius:10px;margin-bottom:10px;
+  position:relative;overflow:hidden;transition:border-color .15s ease;
+}
+#businessRoot .ledger-entry.done{border-color:#C79A3E;}
+#businessRoot .ledger-entry-head{display:flex;align-items:center;gap:12px;padding:12px 14px;cursor:pointer;user-select:none;flex-wrap:wrap;}
+#businessRoot .ledger-week-num{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--biz-ink-soft);min-width:42px;}
+#businessRoot .ledger-entry-title{font-family:'Fraunces',serif;font-weight:600;font-size:15px;flex:1;line-height:1.3;color:var(--biz-ink);min-width:160px;}
+#businessRoot .ledger-entry-dates{font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:var(--biz-ink-soft);white-space:nowrap;}
+#businessRoot .ledger-stamp{
+  font-family:'IBM Plex Mono',monospace;font-size:9.5px;font-weight:700;letter-spacing:0.08em;
+  border:1.5px solid #C79A3E;color:#C79A3E;padding:3px 8px;border-radius:3px;transform:rotate(-6deg);
+  opacity:0;transition:opacity .2s ease;white-space:nowrap;
+}
+#businessRoot .ledger-entry.done .ledger-stamp{opacity:1;}
+#businessRoot .ledger-chevron{font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--biz-ink-soft);transition:transform .15s ease;width:14px;text-align:center;}
+#businessRoot .ledger-entry.open .ledger-chevron{transform:rotate(90deg);}
+
+#businessRoot .ledger-entry-body{display:none;padding:0 14px 16px 14px;border-top:1px dashed var(--biz-line);}
+#businessRoot .ledger-entry.open .ledger-entry-body{display:block;}
+
+#businessRoot .ledger-tasklist{list-style:none;margin:12px 0 0;padding:0;}
+#businessRoot .ledger-task{display:flex;align-items:flex-start;gap:10px;padding:6px 0;font-size:13px;color:var(--biz-ink);}
+#businessRoot .ledger-task label{cursor:pointer;flex:1;}
+#businessRoot .ledger-task input[type=checkbox]{
+  appearance:none;width:16px;height:16px;border:1.5px solid var(--biz-ink);border-radius:2px;margin-top:1px;
+  flex-shrink:0;cursor:pointer;position:relative;background:var(--biz-surface);
+}
+#businessRoot .ledger-task input[type=checkbox]:checked{background:#C79A3E;border-color:#C79A3E;}
+#businessRoot .ledger-task input[type=checkbox]:checked::after{
+  content:"";position:absolute;left:4px;top:1px;width:4px;height:8px;border:solid var(--biz-surface);
+  border-width:0 2px 2px 0;transform:rotate(40deg);
+}
+#businessRoot .ledger-task-day{font-family:'IBM Plex Mono',monospace;font-size:10px;text-transform:uppercase;color:var(--biz-ink-soft);min-width:34px;padding-top:1px;}
+#businessRoot .ledger-task.done label{text-decoration:line-through;color:var(--biz-ink-soft);}
+
+#businessRoot .ledger-footer{
+  margin-top:28px;padding-top:14px;border-top:3px double var(--biz-ink);font-family:'IBM Plex Mono',monospace;
+  font-size:10.5px;color:var(--biz-ink-soft);display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;
+}
+#businessRoot .ledger-reset-btn{
+  background:none;border:1px solid var(--biz-line);color:var(--biz-ink-soft);font-family:'IBM Plex Mono',monospace;
+  font-size:10px;padding:6px 10px;border-radius:6px;cursor:pointer;
+}
+#businessRoot .ledger-reset-btn:hover{color:#C79A3E;border-color:#C79A3E;}
+
 @media (min-aspect-ratio: 9/16), (max-height: 480px){
   #businessRoot{padding:16px 16px 56px;}
   #businessRoot header{margin-bottom:14px;}
   #businessRoot h1{font-size:clamp(22px,5vw,28px);}
   #businessRoot .biz-card{padding:16px;}
+  #businessRoot .ledger-card{padding:18px 16px 22px;}
 }
 
 /* ---------- Books tab ---------- */
@@ -2119,6 +2206,46 @@ html[data-theme="light"] #adaptRoot{
 
   <div id="bizCompanies"></div>
 
+  <h2 class="biz-sec-title">📖 90-Day Ledger — Savoring Money</h2>
+  <div class="ledger-card" id="ledgerCard">
+    <div class="ledger-header">
+      <div class="ledger-brand-block">
+        <img class="ledger-logo" src="savoring-money-logo.png" alt="Savoring Money logo">
+        <div>
+          <div class="ledger-brand">Savoring<span>Money</span></div>
+          <div class="ledger-subtitle">90-day publishing ledger · Aug 17 – Nov 14, 2026</div>
+        </div>
+      </div>
+      <div class="ledger-rule">Only rule:<br>publish &gt; perfect</div>
+    </div>
+
+    <div class="ledger-scoreboard">
+      <div class="ledger-score-cell">
+        <div class="ledger-score-label">Published</div>
+        <div class="ledger-score-value" id="ledgerPublishedCount">0 / 12</div>
+      </div>
+      <div class="ledger-score-cell">
+        <div class="ledger-score-label">Leads</div>
+        <div class="ledger-score-value editable" id="ledgerLeadsVal" contenteditable="true">0</div>
+      </div>
+      <div class="ledger-score-cell">
+        <div class="ledger-score-label">Product sales</div>
+        <div class="ledger-score-value editable" id="ledgerSalesVal" contenteditable="true">0</div>
+      </div>
+      <div class="ledger-score-cell">
+        <div class="ledger-score-label">Subscribers</div>
+        <div class="ledger-score-value editable" id="ledgerSubsVal" contenteditable="true">0</div>
+      </div>
+    </div>
+
+    <div id="ledgerPhases"></div>
+
+    <div class="ledger-footer">
+      <span>Never plan the next video before publishing the current one.</span>
+      <button class="ledger-reset-btn" id="ledgerResetBtn">Reset all</button>
+    </div>
+  </div>
+
 </div>
 </div>
 </div>
@@ -2425,6 +2552,177 @@ html[data-theme="light"] #adaptRoot{
     bizSave(companyId, tasks);
     renderBizAll();
   };
+})();
+</script>
+
+<script>
+(function(){
+  const LEDGER_TASK_TEMPLATE = [
+    {day:"Mon", label:"Research the story (max 60 min — if you can't find it in an hour, pick another topic)"},
+    {day:"Tue", label:"Write the script, 800–1200 words (Hook → Explanation → Story → CTA)"},
+    {day:"Wed", label:"Record voice + screen capture, no retakes unless something's genuinely wrong"},
+    {day:"Thu", label:"Edit — good enough is: viewer understands it"},
+    {day:"Fri", label:"Thumbnail + title + description"},
+    {day:"Sat", label:"Publish long-form + cut 2–3 Shorts from it"}
+  ];
+
+  const LEDGER_PHASES = [
+    {
+      name: "Phase 1 — Build the machine",
+      note: "Don't care about views yet. We're learning how fast you can actually produce.",
+      weeks: [
+        {title:"How McDonald's Actually Makes Money", start:"Aug 17", end:"Aug 22"},
+        {title:"Why Costco Is So Different From Other Supermarkets", start:"Aug 24", end:"Aug 29"},
+        {title:"How IKEA Makes Money While Selling Cheap Furniture", start:"Aug 31", end:"Sep 5"},
+        {title:"The Billion-Dollar Mistake That Almost Destroyed a Company", start:"Sep 7", end:"Sep 12"}
+      ]
+    },
+    {
+      name: "Phase 2 — Find the winning format",
+      note: "Four deliberately different angles: business model, contradiction, pricing psychology, hidden revenue. Whichever performs, phase 3 doubles down on it.",
+      weeks: [
+        {title:"How Netflix Actually Makes Money", start:"Sep 14", end:"Sep 19"},
+        {title:"Why Airlines Can Be Billion-Dollar Businesses and Still Lose Money", start:"Sep 21", end:"Sep 26"},
+        {title:"The Real Reason Luxury Brands Are So Expensive", start:"Sep 28", end:"Oct 3"},
+        {title:"How a Company Can Make Millions Without Selling Anything", start:"Oct 5", end:"Oct 10"}
+      ]
+    },
+    {
+      name: "Phase 3 — Double down",
+      note: "Titles TBD from Phase 2 data — pick the best-performing angle (company breakdowns / financial mysteries / money psychology) and make 4 more in that lane.",
+      weeks: [
+        {title:"Video 9 — pick topic from best-performing Phase 2 angle", start:"Oct 12", end:"Oct 17"},
+        {title:"Video 10 — same lane as #9", start:"Oct 19", end:"Oct 24"},
+        {title:"Video 11 — same lane", start:"Oct 26", end:"Oct 31"},
+        {title:"Video 12 — same lane + first paid-product CTA test", start:"Nov 2", end:"Nov 14"}
+      ]
+    }
+  ];
+
+  const LEDGER_KEY = 'sm-ledger-state';
+  function ledgerLoad(){
+    try{ return JSON.parse(localStorage.getItem(LEDGER_KEY)) || { tasks:{}, leads:'0', sales:'0', subs:'0' }; }
+    catch(e){ return { tasks:{}, leads:'0', sales:'0', subs:'0' }; }
+  }
+  function ledgerSave(state){ try{ localStorage.setItem(LEDGER_KEY, JSON.stringify(state)); }catch(e){} }
+  let ledgerState = ledgerLoad();
+
+  function ledgerTaskKey(weekIdx, taskIdx){ return `w${weekIdx}-t${taskIdx}`; }
+  function ledgerWeekDone(weekIdx){
+    return LEDGER_TASK_TEMPLATE.every((_,ti) => ledgerState.tasks[ledgerTaskKey(weekIdx,ti)]);
+  }
+
+  function ledgerUpdateScoreboard(){
+    let total = 0, done = 0, wi = 0;
+    LEDGER_PHASES.forEach(p => p.weeks.forEach(() => { total++; if(ledgerWeekDone(wi)) done++; wi++; }));
+    const pubEl = document.getElementById('ledgerPublishedCount');
+    if(pubEl) pubEl.textContent = `${done} / ${total}`;
+    const leadsEl = document.getElementById('ledgerLeadsVal');
+    if(leadsEl) leadsEl.textContent = ledgerState.leads ?? '0';
+    const salesEl = document.getElementById('ledgerSalesVal');
+    if(salesEl) salesEl.textContent = ledgerState.sales ?? '0';
+    const subsEl = document.getElementById('ledgerSubsVal');
+    if(subsEl) subsEl.textContent = ledgerState.subs ?? '0';
+  }
+
+  const ledgerOpenWeeks = new Set();
+
+  function ledgerRender(){
+    const container = document.getElementById('ledgerPhases');
+    if(!container) return;
+    container.innerHTML = '';
+    let weekCounter = 0;
+
+    LEDGER_PHASES.forEach(phase => {
+      const h = document.createElement('div');
+      h.className = 'ledger-phase-title';
+      h.innerHTML = `${phase.name}<span class="ledger-phase-note">${phase.note}</span>`;
+      container.appendChild(h);
+
+      phase.weeks.forEach(week => {
+        const wi = weekCounter++;
+        const isOpen = ledgerOpenWeeks.has(wi);
+        const entry = document.createElement('div');
+        entry.className = 'ledger-entry' + (isOpen ? ' open' : '') + (ledgerWeekDone(wi) ? ' done' : '');
+        entry.id = `ledger-entry-${wi}`;
+
+        const head = document.createElement('div');
+        head.className = 'ledger-entry-head';
+        head.innerHTML = `
+          <span class="ledger-chevron">›</span>
+          <span class="ledger-week-num">WK ${wi+1}</span>
+          <span class="ledger-entry-title">${week.title}</span>
+          <span class="ledger-entry-dates">${week.start}–${week.end}</span>
+          <span class="ledger-stamp">PUBLISHED</span>
+        `;
+        head.addEventListener('click', () => {
+          entry.classList.toggle('open');
+          if(entry.classList.contains('open')) ledgerOpenWeeks.add(wi); else ledgerOpenWeeks.delete(wi);
+        });
+
+        const body = document.createElement('div');
+        body.className = 'ledger-entry-body';
+        const ul = document.createElement('ul');
+        ul.className = 'ledger-tasklist';
+        LEDGER_TASK_TEMPLATE.forEach((t, ti) => {
+          const key = ledgerTaskKey(wi, ti);
+          const li = document.createElement('li');
+          li.className = 'ledger-task' + (ledgerState.tasks[key] ? ' done' : '');
+          const cbId = `ledger-cb-${wi}-${ti}`;
+          li.innerHTML = `
+            <span class="ledger-task-day">${t.day}</span>
+            <input type="checkbox" id="${cbId}" ${ledgerState.tasks[key] ? 'checked' : ''}>
+            <label for="${cbId}">${t.label}</label>
+          `;
+          const cb = li.querySelector('input');
+          cb.addEventListener('change', () => {
+            ledgerState.tasks[key] = cb.checked;
+            li.classList.toggle('done', cb.checked);
+            entry.classList.toggle('done', ledgerWeekDone(wi));
+            ledgerUpdateScoreboard();
+            ledgerSave(ledgerState);
+          });
+          ul.appendChild(li);
+        });
+        body.appendChild(ul);
+
+        entry.appendChild(head);
+        entry.appendChild(body);
+        container.appendChild(entry);
+      });
+    });
+  }
+
+  function ledgerAttachScoreEdit(id, field){
+    const el = document.getElementById(id);
+    if(!el) return;
+    el.addEventListener('blur', () => {
+      const val = el.textContent.trim().replace(/[^0-9]/g,'') || '0';
+      ledgerState[field] = val;
+      el.textContent = val;
+      ledgerSave(ledgerState);
+    });
+    el.addEventListener('keydown', (e) => {
+      if(e.key === 'Enter'){ e.preventDefault(); el.blur(); }
+    });
+  }
+
+  const ledgerResetBtn = document.getElementById('ledgerResetBtn');
+  if(ledgerResetBtn){
+    ledgerResetBtn.addEventListener('click', () => {
+      if(!confirm('Reset all checkmarks and scoreboard values for the 90-Day Ledger?')) return;
+      ledgerState = { tasks:{}, leads:'0', sales:'0', subs:'0' };
+      ledgerSave(ledgerState);
+      ledgerRender();
+      ledgerUpdateScoreboard();
+    });
+  }
+
+  ledgerRender();
+  ledgerUpdateScoreboard();
+  ledgerAttachScoreEdit('ledgerLeadsVal','leads');
+  ledgerAttachScoreEdit('ledgerSalesVal','sales');
+  ledgerAttachScoreEdit('ledgerSubsVal','subs');
 })();
 </script>
 
