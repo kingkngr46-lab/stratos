@@ -1440,116 +1440,117 @@ html[data-theme="light"] #businessRoot{
 #businessRoot header p.sub{color:var(--biz-ink-soft);font-size:14px;max-width:440px;margin:0 auto;line-height:1.55;}
 
 #businessRoot .biz-card{
-  background:var(--biz-surface);border-radius:18px;padding:20px;box-shadow:var(--biz-shadow);
-  border:1px solid var(--biz-line);border-left:5px solid var(--accent);margin-bottom:18px;
+  background:var(--brand-surface,var(--biz-surface));color:var(--brand-ink,var(--biz-ink));border-radius:18px;padding:20px;box-shadow:var(--biz-shadow);
+  border:1px solid var(--brand-line,var(--biz-line));border-left:5px solid var(--accent);margin-bottom:18px;
 }
 #businessRoot .biz-card-hdr{display:flex;align-items:center;gap:14px;margin-bottom:14px;}
-#businessRoot .biz-logo{width:52px;height:52px;object-fit:contain;border-radius:10px;background:var(--biz-surface-soft);padding:4px;flex-shrink:0;}
-#businessRoot .biz-name{font-family:'Fraunces',serif;font-weight:600;font-size:18px;}
-#businessRoot .biz-progress-lbl{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--biz-ink-soft);text-transform:uppercase;letter-spacing:0.04em;margin-top:2px;}
-#businessRoot .biz-progress-track{height:4px;border-radius:2px;background:var(--biz-line);overflow:hidden;margin-bottom:16px;}
+#businessRoot .biz-logo{width:52px;height:52px;object-fit:contain;border-radius:10px;background:var(--brand-surface-soft,var(--biz-surface-soft));padding:4px;flex-shrink:0;}
+#businessRoot .biz-name{font-family:'Fraunces',serif;font-weight:600;font-size:18px;color:var(--brand-ink,var(--biz-ink));}
+#businessRoot .biz-progress-lbl{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--brand-ink-soft,var(--biz-ink-soft));text-transform:uppercase;letter-spacing:0.04em;margin-top:2px;}
+#businessRoot .biz-status{font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:var(--accent);text-transform:uppercase;letter-spacing:0.05em;margin-top:3px;font-weight:600;}
+#businessRoot .biz-progress-track{height:4px;border-radius:2px;background:var(--brand-line,var(--biz-line));overflow:hidden;margin-bottom:16px;}
 #businessRoot .biz-progress-fill{height:100%;background:var(--accent);border-radius:2px;transition:width .4s ease;}
 #businessRoot .biz-tasks{display:flex;flex-direction:column;gap:2px;margin-bottom:12px;}
 #businessRoot .biz-task{
-  display:flex;align-items:center;gap:10px;padding:10px 4px;border-top:1px dashed var(--biz-line);cursor:pointer;
+  display:flex;align-items:center;gap:10px;padding:10px 4px;border-top:1px dashed var(--brand-line,var(--biz-line));cursor:pointer;
 }
 #businessRoot .biz-task:first-child{border-top:none;}
 #businessRoot .biz-task input{width:18px;height:18px;min-width:18px;accent-color:var(--accent);}
-#businessRoot .biz-task-txt{flex:1;font-size:14px;line-height:1.5;}
-#businessRoot .biz-task.done .biz-task-txt{color:var(--biz-ink-soft);text-decoration:line-through;}
-#businessRoot .biz-task-del{color:var(--biz-ink-soft);font-size:13px;padding:6px;min-width:28px;min-height:28px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;}
+#businessRoot .biz-task-txt{flex:1;font-size:14px;line-height:1.5;color:var(--brand-ink,var(--biz-ink));}
+#businessRoot .biz-task.done .biz-task-txt{color:var(--brand-ink-soft,var(--biz-ink-soft));text-decoration:line-through;}
+#businessRoot .biz-task-del{color:var(--brand-ink-soft,var(--biz-ink-soft));font-size:13px;padding:6px;min-width:28px;min-height:28px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;}
 #businessRoot .biz-task-del:hover{color:var(--accent);}
 #businessRoot .biz-add-btn{
-  width:100%;min-height:44px;background:var(--biz-surface-soft);border:1px dashed var(--biz-line);border-radius:10px;
-  color:var(--biz-ink-soft);font-size:13px;font-weight:600;cursor:pointer;
+  width:100%;min-height:44px;background:var(--brand-surface-soft,var(--biz-surface-soft));border:1px dashed var(--brand-line,var(--biz-line));border-radius:10px;
+  color:var(--brand-ink-soft,var(--biz-ink-soft));font-size:13px;font-weight:600;cursor:pointer;
 }
 #businessRoot .biz-add-btn:hover{color:var(--accent);border-color:var(--accent);}
 
 /* ---- 90-Day Ledger (Savoring Money) ---- */
 #businessRoot .biz-sec-title{font-family:'Fraunces',serif;font-weight:600;font-size:16.5px;margin:26px 0 12px;}
 #businessRoot .ledger-card{
-  background:var(--biz-surface);border:1px solid var(--biz-line);border-radius:18px;
+  background:var(--ledger-bg,var(--biz-surface));color:var(--ledger-ink,var(--biz-ink));border:1px solid var(--ledger-line,var(--biz-line));border-radius:18px;
   padding:26px 22px 30px;box-shadow:var(--biz-shadow);margin-bottom:18px;
 }
 #businessRoot .ledger-header{
   display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap;
-  border-bottom:3px double var(--biz-ink);padding-bottom:14px;margin-bottom:8px;
+  border-bottom:3px double var(--ledger-ink,var(--biz-ink));padding-bottom:14px;margin-bottom:8px;
 }
 #businessRoot .ledger-brand-block{display:flex;align-items:center;gap:14px;}
 #businessRoot .ledger-logo{height:44px;width:auto;flex-shrink:0;border-radius:8px;object-fit:contain;}
-#businessRoot .ledger-brand{font-family:'Fraunces',serif;font-weight:700;font-size:24px;letter-spacing:-0.01em;color:var(--biz-ink);}
-#businessRoot .ledger-brand span{color:#C79A3E;}
+#businessRoot .ledger-brand{font-family:'Fraunces',serif;font-weight:700;font-size:24px;letter-spacing:-0.01em;color:var(--ledger-ink,var(--biz-ink));}
+#businessRoot .ledger-brand span{color:var(--ledger-accent,#C79A3E);}
 #businessRoot .ledger-subtitle{
   font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.08em;text-transform:uppercase;
-  color:var(--biz-ink-soft);margin-top:4px;
+  color:var(--ledger-ink-soft,var(--biz-ink-soft));margin-top:4px;
 }
-#businessRoot .ledger-rule{font-family:'IBM Plex Mono',monospace;font-size:11px;text-align:right;color:var(--biz-ink-soft);line-height:1.5;}
+#businessRoot .ledger-rule{font-family:'IBM Plex Mono',monospace;font-size:11px;text-align:right;color:var(--ledger-ink-soft,var(--biz-ink-soft));line-height:1.5;}
 
 #businessRoot .ledger-scoreboard{
-  display:flex;flex-wrap:wrap;gap:0;margin:20px 0 26px;border:1px solid var(--biz-line);border-radius:10px;
-  overflow:hidden;background:var(--biz-surface-soft);
+  display:flex;flex-wrap:wrap;gap:0;margin:20px 0 26px;border:1px solid var(--ledger-line,var(--biz-line));border-radius:10px;
+  overflow:hidden;background:var(--ledger-surface-soft,var(--biz-surface-soft));
 }
-#businessRoot .ledger-score-cell{flex:1;min-width:110px;padding:12px 14px;border-right:1px solid var(--biz-line);position:relative;}
+#businessRoot .ledger-score-cell{flex:1;min-width:110px;padding:12px 14px;border-right:1px solid var(--ledger-line,var(--biz-line));position:relative;}
 #businessRoot .ledger-score-cell:last-child{border-right:none;}
-#businessRoot .ledger-score-label{font-family:'IBM Plex Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.06em;color:var(--biz-ink-soft);}
-#businessRoot .ledger-score-value{font-family:'Fraunces',serif;font-weight:600;font-size:22px;margin-top:2px;color:var(--biz-ink);}
+#businessRoot .ledger-score-label{font-family:'IBM Plex Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.06em;color:var(--ledger-ink-soft,var(--biz-ink-soft));}
+#businessRoot .ledger-score-value{font-family:'Fraunces',serif;font-weight:600;font-size:22px;margin-top:2px;color:var(--ledger-ink,var(--biz-ink));}
 #businessRoot .ledger-score-value.editable{cursor:text;}
-#businessRoot .ledger-score-value[contenteditable="true"]:focus{outline:2px dashed #C79A3E;outline-offset:2px;}
+#businessRoot .ledger-score-value[contenteditable="true"]:focus{outline:2px dashed var(--ledger-accent,#C79A3E);outline-offset:2px;}
 
 #businessRoot .ledger-phase-title{
   font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;
-  color:#C79A3E;margin:28px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--biz-line);
+  color:var(--ledger-accent,#C79A3E);margin:28px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--ledger-line,var(--biz-line));
 }
 #businessRoot .ledger-phase-note{
-  font-family:'Inter',sans-serif;font-size:12.5px;color:var(--biz-ink-soft);font-weight:400;
+  font-family:'Inter',sans-serif;font-size:12.5px;color:var(--ledger-ink-soft,var(--biz-ink-soft));font-weight:400;
   text-transform:none;letter-spacing:0;display:block;margin-top:3px;
 }
 
 #businessRoot .ledger-entry{
-  background:var(--biz-surface-soft);border:1px solid var(--biz-line);border-radius:10px;margin-bottom:10px;
+  background:var(--ledger-surface-soft,var(--biz-surface-soft));border:1px solid var(--ledger-line,var(--biz-line));border-radius:10px;margin-bottom:10px;
   position:relative;overflow:hidden;transition:border-color .15s ease;
 }
-#businessRoot .ledger-entry.done{border-color:#C79A3E;}
+#businessRoot .ledger-entry.done{border-color:var(--ledger-accent,#C79A3E);}
 #businessRoot .ledger-entry-head{display:flex;align-items:center;gap:12px;padding:12px 14px;cursor:pointer;user-select:none;flex-wrap:wrap;}
-#businessRoot .ledger-week-num{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--biz-ink-soft);min-width:42px;}
-#businessRoot .ledger-entry-title{font-family:'Fraunces',serif;font-weight:600;font-size:15px;flex:1;line-height:1.3;color:var(--biz-ink);min-width:160px;}
-#businessRoot .ledger-entry-dates{font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:var(--biz-ink-soft);white-space:nowrap;}
+#businessRoot .ledger-week-num{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--ledger-ink-soft,var(--biz-ink-soft));min-width:42px;}
+#businessRoot .ledger-entry-title{font-family:'Fraunces',serif;font-weight:600;font-size:15px;flex:1;line-height:1.3;color:var(--ledger-ink,var(--biz-ink));min-width:160px;}
+#businessRoot .ledger-entry-dates{font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:var(--ledger-ink-soft,var(--biz-ink-soft));white-space:nowrap;}
 #businessRoot .ledger-stamp{
   font-family:'IBM Plex Mono',monospace;font-size:9.5px;font-weight:700;letter-spacing:0.08em;
-  border:1.5px solid #C79A3E;color:#C79A3E;padding:3px 8px;border-radius:3px;transform:rotate(-6deg);
+  border:1.5px solid var(--ledger-accent,#C79A3E);color:var(--ledger-accent,#C79A3E);padding:3px 8px;border-radius:3px;transform:rotate(-6deg);
   opacity:0;transition:opacity .2s ease;white-space:nowrap;
 }
 #businessRoot .ledger-entry.done .ledger-stamp{opacity:1;}
-#businessRoot .ledger-chevron{font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--biz-ink-soft);transition:transform .15s ease;width:14px;text-align:center;}
+#businessRoot .ledger-chevron{font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--ledger-ink-soft,var(--biz-ink-soft));transition:transform .15s ease;width:14px;text-align:center;}
 #businessRoot .ledger-entry.open .ledger-chevron{transform:rotate(90deg);}
 
-#businessRoot .ledger-entry-body{display:none;padding:0 14px 16px 14px;border-top:1px dashed var(--biz-line);}
+#businessRoot .ledger-entry-body{display:none;padding:0 14px 16px 14px;border-top:1px dashed var(--ledger-line,var(--biz-line));}
 #businessRoot .ledger-entry.open .ledger-entry-body{display:block;}
 
 #businessRoot .ledger-tasklist{list-style:none;margin:12px 0 0;padding:0;}
-#businessRoot .ledger-task{display:flex;align-items:flex-start;gap:10px;padding:6px 0;font-size:13px;color:var(--biz-ink);}
+#businessRoot .ledger-task{display:flex;align-items:flex-start;gap:10px;padding:6px 0;font-size:13px;color:var(--ledger-ink,var(--biz-ink));}
 #businessRoot .ledger-task label{cursor:pointer;flex:1;}
 #businessRoot .ledger-task input[type=checkbox]{
-  appearance:none;width:16px;height:16px;border:1.5px solid var(--biz-ink);border-radius:2px;margin-top:1px;
-  flex-shrink:0;cursor:pointer;position:relative;background:var(--biz-surface);
+  appearance:none;width:16px;height:16px;border:1.5px solid var(--ledger-ink,var(--biz-ink));border-radius:2px;margin-top:1px;
+  flex-shrink:0;cursor:pointer;position:relative;background:var(--ledger-bg,var(--biz-surface));
 }
-#businessRoot .ledger-task input[type=checkbox]:checked{background:#C79A3E;border-color:#C79A3E;}
+#businessRoot .ledger-task input[type=checkbox]:checked{background:var(--ledger-accent,#C79A3E);border-color:var(--ledger-accent,#C79A3E);}
 #businessRoot .ledger-task input[type=checkbox]:checked::after{
-  content:"";position:absolute;left:4px;top:1px;width:4px;height:8px;border:solid var(--biz-surface);
+  content:"";position:absolute;left:4px;top:1px;width:4px;height:8px;border:solid var(--ledger-bg,var(--biz-surface));
   border-width:0 2px 2px 0;transform:rotate(40deg);
 }
-#businessRoot .ledger-task-day{font-family:'IBM Plex Mono',monospace;font-size:10px;text-transform:uppercase;color:var(--biz-ink-soft);min-width:34px;padding-top:1px;}
-#businessRoot .ledger-task.done label{text-decoration:line-through;color:var(--biz-ink-soft);}
+#businessRoot .ledger-task-day{font-family:'IBM Plex Mono',monospace;font-size:10px;text-transform:uppercase;color:var(--ledger-ink-soft,var(--biz-ink-soft));min-width:34px;padding-top:1px;}
+#businessRoot .ledger-task.done label{text-decoration:line-through;color:var(--ledger-ink-soft,var(--biz-ink-soft));}
 
 #businessRoot .ledger-footer{
-  margin-top:28px;padding-top:14px;border-top:3px double var(--biz-ink);font-family:'IBM Plex Mono',monospace;
-  font-size:10.5px;color:var(--biz-ink-soft);display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;
+  margin-top:28px;padding-top:14px;border-top:3px double var(--ledger-ink,var(--biz-ink));font-family:'IBM Plex Mono',monospace;
+  font-size:10.5px;color:var(--ledger-ink-soft,var(--biz-ink-soft));display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;
 }
 #businessRoot .ledger-reset-btn{
-  background:none;border:1px solid var(--biz-line);color:var(--biz-ink-soft);font-family:'IBM Plex Mono',monospace;
+  background:none;border:1px solid var(--ledger-line,var(--biz-line));color:var(--ledger-ink-soft,var(--biz-ink-soft));font-family:'IBM Plex Mono',monospace;
   font-size:10px;padding:6px 10px;border-radius:6px;cursor:pointer;
 }
-#businessRoot .ledger-reset-btn:hover{color:#C79A3E;border-color:#C79A3E;}
+#businessRoot .ledger-reset-btn:hover{color:var(--ledger-accent,#C79A3E);border-color:var(--ledger-accent,#C79A3E);}
 
 @media (min-aspect-ratio: 9/16), (max-height: 480px){
   #businessRoot{padding:16px 16px 56px;}
@@ -2202,15 +2203,15 @@ html[data-theme="light"] #adaptRoot{
     <p class="sub">Savoring Money and We The Mind — track what actually needs doing for each, one checkbox at a time.</p>
   </header>
 
-  <div class="frame"><span class="frame-tag">Build Log</span>A business is just a list of small things done in order. Check one off, then the next.</div>
+  <div class="frame"><span class="frame-tag">Build Log</span>Savoring Money is the active build right now (Phase 1). We The Mind's Math/Science channel is intentionally on hold until Phase 1 has run clean for ~2 months — the site and tutoring funnel keep moving in the meantime.</div>
 
   <div id="bizCompanies"></div>
 
   <h2 class="biz-sec-title">📖 90-Day Ledger — Savoring Money</h2>
-  <div class="ledger-card" id="ledgerCard">
+  <div class="ledger-card" id="ledgerCard" style="--ledger-bg:#FFFFFF;--ledger-surface-soft:#F5F1E4;--ledger-ink:#13284A;--ledger-ink-soft:rgba(19,40,74,0.62);--ledger-line:#D9D2BC;--ledger-accent:#C79A3E">
     <div class="ledger-header">
       <div class="ledger-brand-block">
-        <img class="ledger-logo" src="savoring-money-logo.png" alt="Savoring Money logo">
+        <img class="ledger-logo" src="savoring-money-logo.png" alt="Savoring Money logo" onerror="this.style.display='none'">
         <div>
           <div class="ledger-brand">Savoring<span>Money</span></div>
           <div class="ledger-subtitle">90-day publishing ledger · Aug 17 – Nov 14, 2026</div>
@@ -2243,6 +2244,46 @@ html[data-theme="light"] #adaptRoot{
     <div class="ledger-footer">
       <span>Never plan the next video before publishing the current one.</span>
       <button class="ledger-reset-btn" id="ledgerResetBtn">Reset all</button>
+    </div>
+  </div>
+
+  <h2 class="biz-sec-title">📘 90-Day Build Ledger — We The Mind</h2>
+  <div class="ledger-card" id="wtmLedgerCard" style="--ledger-bg:#FFFFFF;--ledger-surface-soft:#FFF3EC;--ledger-ink:#33261F;--ledger-ink-soft:rgba(51,38,31,0.62);--ledger-line:#F3DFCB;--ledger-accent:#E23B3B">
+    <div class="ledger-header">
+      <div class="ledger-brand-block">
+        <img class="ledger-logo" src="we-the-mind-logo.png" alt="We The Mind logo" onerror="this.style.display='none'">
+        <div>
+          <div class="ledger-brand">We The <span>Mind</span></div>
+          <div class="ledger-subtitle">90-day site &amp; funnel build ledger · Aug 17 – Nov 14, 2026</div>
+        </div>
+      </div>
+      <div class="ledger-rule">Budget:<br>&lt;5 hrs/week</div>
+    </div>
+
+    <div class="ledger-scoreboard">
+      <div class="ledger-score-cell">
+        <div class="ledger-score-label">Milestones</div>
+        <div class="ledger-score-value" id="wtmLedgerMilestoneCount">0 / 12</div>
+      </div>
+      <div class="ledger-score-cell">
+        <div class="ledger-score-label">Site leads</div>
+        <div class="ledger-score-value editable" id="wtmLedgerLeadsVal" contenteditable="true">0</div>
+      </div>
+      <div class="ledger-score-cell">
+        <div class="ledger-score-label">Bookings closed</div>
+        <div class="ledger-score-value editable" id="wtmLedgerBookingsVal" contenteditable="true">0</div>
+      </div>
+      <div class="ledger-score-cell">
+        <div class="ledger-score-label">Referrals</div>
+        <div class="ledger-score-value editable" id="wtmLedgerReferralsVal" contenteditable="true">0</div>
+      </div>
+    </div>
+
+    <div id="wtmLedgerPhases"></div>
+
+    <div class="ledger-footer">
+      <span>Portal and worksheets before a new channel — the funnel comes first.</span>
+      <button class="ledger-reset-btn" id="wtmLedgerResetBtn">Reset all</button>
     </div>
   </div>
 
@@ -2466,8 +2507,10 @@ html[data-theme="light"] #adaptRoot{
 <script>
 (function(){
   const BIZ_COMPANIES = [
-    { id:'savoringmoney', name:'Savoring Money', logo:'savoring-money-logo.png', accent:'#C79A3E' },
-    { id:'wethemind', name:'We The Mind', logo:'we-the-mind-logo.png', accent:'#E23B3B' }
+    { id:'savoringmoney', name:'Savoring Money', logo:'savoring-money-icon.png', accent:'#C79A3E', status:'Phase 1 — active now',
+      brand:'--brand-surface:#FFFFFF;--brand-surface-soft:#F5F1E4;--brand-ink:#13284A;--brand-ink-soft:rgba(19,40,74,0.62);--brand-line:#D9D2BC' },
+    { id:'wethemind', name:'We The Mind', logo:'we-the-mind-icon.png', accent:'#E23B3B', status:'Site + tutoring live · Math/Sci channel = Phase 2',
+      brand:'--brand-surface:#FFFFFF;--brand-surface-soft:#FFF3EC;--brand-ink:#33261F;--brand-ink-soft:rgba(51,38,31,0.62);--brand-line:#F3DFCB' }
   ];
 
   function bizLoad(companyId){
@@ -2489,11 +2532,11 @@ html[data-theme="light"] #adaptRoot{
       ];
     }
     return [
-      'Plan next course module',
-      'Build lesson content',
-      'Review with a test student',
-      'Publish module',
-      'Promote the update'
+      'Take the Resources page worksheets from "Coming Soon" to actually live',
+      'Get the Firebase Portal (student/teacher/admin login) working end-to-end',
+      'Land the first paid session booked straight through the pricing page',
+      'Tighten the PayPal/UPI → WhatsApp confirmation flow so leads don’t stall',
+      'Recheck Phase 1 progress in Stratos before greenlighting the Math/Sci channel'
     ];
   }
 
@@ -2505,12 +2548,13 @@ html[data-theme="light"] #adaptRoot{
     }
     const done = tasks.filter(t => t.done).length;
     const pct = tasks.length ? Math.round((done/tasks.length)*100) : 0;
-    return `<div class="biz-card" style="--accent:${company.accent}">
+    return `<div class="biz-card" style="--accent:${company.accent};${company.brand}">
       <div class="biz-card-hdr">
-        <img class="biz-logo" src="${company.logo}" alt="${company.name} logo">
+        <img class="biz-logo" src="${company.logo}" alt="${company.name} logo" onerror="this.style.display='none'">
         <div class="biz-card-title">
           <div class="biz-name">${company.name}</div>
           <div class="biz-progress-lbl">${done} / ${tasks.length} done</div>
+          ${company.status ? `<div class="biz-status">${company.status}</div>` : ''}
         </div>
       </div>
       <div class="biz-progress-track"><div class="biz-progress-fill" style="width:${pct}%"></div></div>
@@ -2552,6 +2596,218 @@ html[data-theme="light"] #adaptRoot{
     bizSave(companyId, tasks);
     renderBizAll();
   };
+})();
+</script>
+
+<script>
+(function(){
+  // We The Mind runs on under 5 hrs/week, so each week is 2-3 concrete
+  // checkpoints rather than a daily production cadence like Savoring Money.
+  const WTM_PHASES = [
+    {
+      name: "Phase 1 — Close the funnel gaps",
+      note: "The site already exists. This phase is about turning its unfinished corners (worksheets, Portal) into things that actually work.",
+      weeks: [
+        { title:"Ship the Resources page", start:"Aug 17", end:"Aug 23", tasks:[
+          "Pick the 3 highest-demand worksheets from the backlog",
+          "Build and publish the first live worksheet (replace “Coming Soon”)",
+          "Link it from the relevant SAT / exam-prep page"
+        ]},
+        { title:"Clear the worksheet backlog", start:"Aug 24", end:"Aug 30", tasks:[
+          "Publish worksheet #2",
+          "Publish worksheet #3",
+          "Click through every Resources link end-to-end and fix anything broken"
+        ]},
+        { title:"Start the Portal", start:"Aug 31", end:"Sep 6", tasks:[
+          "Set up Firebase Auth for student login",
+          "Build the bare student dashboard shell",
+          "Test login/logout with one dummy account"
+        ]},
+        { title:"Portal — teacher side", start:"Sep 7", end:"Sep 13", tasks:[
+          "Add teacher-side login and view",
+          "Connect one real class/session to it",
+          "Write down what's still missing before real students touch it"
+        ]}
+      ]
+    },
+    {
+      name: "Phase 2 — Turn the funnel into bookings",
+      note: "Traffic and content don't matter yet if a lead can't cleanly become a paid session. Fix that path first.",
+      weeks: [
+        { title:"Fix the payment handoff", start:"Sep 14", end:"Sep 20", tasks:[
+          "Rewrite the WhatsApp confirmation message so it's instant and clear",
+          "Add a backup contact method in case WhatsApp stalls",
+          "Time an actual payment-to-confirmation from start to finish"
+        ]},
+        { title:"Ask for the referral", start:"Sep 21", end:"Sep 27", tasks:[
+          "Message 5 current tutoring students/parents about the pricing page",
+          "Make the referral terms visible somewhere on the site",
+          "Track who actually clicks through"
+        ]},
+        { title:"Land the first site-only booking", start:"Sep 28", end:"Oct 4", tasks:[
+          "Follow up with anyone who clicked but didn't book",
+          "Remove one piece of friction from the booking flow",
+          "Get one paid session booked with no word-of-mouth push"
+        ]},
+        { title:"Prove it wasn't a fluke", start:"Oct 5", end:"Oct 11", tasks:[
+          "Collect a testimonial from that booking",
+          "Add it to the site",
+          "Repeat the ask with a second batch of students"
+        ]}
+      ]
+    },
+    {
+      name: "Phase 3 — Decide on the Math/Sci channel",
+      note: "This is a checkpoint, not a launch. The Math/Sci channel only starts once Savoring Money's Phase 1 gate has actually held for ~2 months.",
+      weeks: [
+        { title:"Check the real gate, not the hoped-for one", start:"Oct 12", end:"Oct 18", tasks:[
+          "Open Stratos and check Savoring Money's actual Phase 1 status",
+          "Confirm at least 2 long-forms published on schedule",
+          "Confirm no missed uploads caused by exhaustion"
+        ]},
+        { title:"Draft, don't record", start:"Oct 19", end:"Oct 25", tasks:[
+          "Sketch 4 possible Math/Sci video topics",
+          "Note which existing SAT/exam-prep content each one could reuse",
+          "Do not touch a camera yet"
+        ]},
+        { title:"Portal go / no-go", start:"Oct 26", end:"Nov 1", tasks:[
+          "Decide if the Portal is ready for a real student or needs more time",
+          "If ready, onboard one real student as a pilot",
+          "If not, write down exactly what's blocking it"
+        ]},
+        { title:"90-day review", start:"Nov 2", end:"Nov 14", tasks:[
+          "Tally milestones, leads, bookings and referrals for the quarter",
+          "Compare actual pace against the <5 hr/week budget",
+          "Make the formal call on greenlighting the Math/Sci channel"
+        ]}
+      ]
+    }
+  ];
+
+  const WTM_LEDGER_KEY = 'wtm-ledger-state';
+  function wtmLedgerLoad(){
+    try{ return JSON.parse(localStorage.getItem(WTM_LEDGER_KEY)) || { tasks:{}, leads:'0', bookings:'0', referrals:'0' }; }
+    catch(e){ return { tasks:{}, leads:'0', bookings:'0', referrals:'0' }; }
+  }
+  function wtmLedgerSave(state){ try{ localStorage.setItem(WTM_LEDGER_KEY, JSON.stringify(state)); }catch(e){} }
+  let wtmLedgerState = wtmLedgerLoad();
+
+  function wtmTaskKey(weekIdx, taskIdx){ return `w${weekIdx}-t${taskIdx}`; }
+  function wtmWeekDone(weekIdx, taskCount){
+    for(let ti=0; ti<taskCount; ti++){ if(!wtmLedgerState.tasks[wtmTaskKey(weekIdx,ti)]) return false; }
+    return true;
+  }
+
+  function wtmUpdateScoreboard(){
+    let total = 0, done = 0, wi = 0;
+    WTM_PHASES.forEach(p => p.weeks.forEach(w => { total++; if(wtmWeekDone(wi, w.tasks.length)) done++; wi++; }));
+    const msEl = document.getElementById('wtmLedgerMilestoneCount');
+    if(msEl) msEl.textContent = `${done} / ${total}`;
+    const leadsEl = document.getElementById('wtmLedgerLeadsVal');
+    if(leadsEl) leadsEl.textContent = wtmLedgerState.leads ?? '0';
+    const bookingsEl = document.getElementById('wtmLedgerBookingsVal');
+    if(bookingsEl) bookingsEl.textContent = wtmLedgerState.bookings ?? '0';
+    const refEl = document.getElementById('wtmLedgerReferralsVal');
+    if(refEl) refEl.textContent = wtmLedgerState.referrals ?? '0';
+  }
+
+  const wtmOpenWeeks = new Set();
+
+  function wtmLedgerRender(){
+    const container = document.getElementById('wtmLedgerPhases');
+    if(!container) return;
+    container.innerHTML = '';
+    let weekCounter = 0;
+
+    WTM_PHASES.forEach(phase => {
+      const h = document.createElement('div');
+      h.className = 'ledger-phase-title';
+      h.innerHTML = `${phase.name}<span class="ledger-phase-note">${phase.note}</span>`;
+      container.appendChild(h);
+
+      phase.weeks.forEach(week => {
+        const wi = weekCounter++;
+        const isOpen = wtmOpenWeeks.has(wi);
+        const entry = document.createElement('div');
+        entry.className = 'ledger-entry' + (isOpen ? ' open' : '') + (wtmWeekDone(wi, week.tasks.length) ? ' done' : '');
+        entry.id = `wtm-ledger-entry-${wi}`;
+
+        const head = document.createElement('div');
+        head.className = 'ledger-entry-head';
+        head.innerHTML = `
+          <span class="ledger-chevron">›</span>
+          <span class="ledger-week-num">WK ${wi+1}</span>
+          <span class="ledger-entry-title">${week.title}</span>
+          <span class="ledger-entry-dates">${week.start}–${week.end}</span>
+          <span class="ledger-stamp">SHIPPED</span>
+        `;
+        head.addEventListener('click', () => {
+          entry.classList.toggle('open');
+          if(entry.classList.contains('open')) wtmOpenWeeks.add(wi); else wtmOpenWeeks.delete(wi);
+        });
+
+        const body = document.createElement('div');
+        body.className = 'ledger-entry-body';
+        const ul = document.createElement('ul');
+        ul.className = 'ledger-tasklist';
+        week.tasks.forEach((label, ti) => {
+          const key = wtmTaskKey(wi, ti);
+          const li = document.createElement('li');
+          li.className = 'ledger-task' + (wtmLedgerState.tasks[key] ? ' done' : '');
+          const cbId = `wtm-ledger-cb-${wi}-${ti}`;
+          li.innerHTML = `
+            <input type="checkbox" id="${cbId}" ${wtmLedgerState.tasks[key] ? 'checked' : ''}>
+            <label for="${cbId}">${label}</label>
+          `;
+          const cb = li.querySelector('input');
+          cb.addEventListener('change', () => {
+            wtmLedgerState.tasks[key] = cb.checked;
+            li.classList.toggle('done', cb.checked);
+            entry.classList.toggle('done', wtmWeekDone(wi, week.tasks.length));
+            wtmUpdateScoreboard();
+            wtmLedgerSave(wtmLedgerState);
+          });
+          ul.appendChild(li);
+        });
+        body.appendChild(ul);
+
+        entry.appendChild(head);
+        entry.appendChild(body);
+        container.appendChild(entry);
+      });
+    });
+  }
+
+  function wtmAttachScoreEdit(id, field){
+    const el = document.getElementById(id);
+    if(!el) return;
+    el.addEventListener('blur', () => {
+      const val = el.textContent.trim().replace(/[^0-9]/g,'') || '0';
+      wtmLedgerState[field] = val;
+      el.textContent = val;
+      wtmLedgerSave(wtmLedgerState);
+    });
+    el.addEventListener('keydown', (e) => {
+      if(e.key === 'Enter'){ e.preventDefault(); el.blur(); }
+    });
+  }
+
+  const wtmLedgerResetBtn = document.getElementById('wtmLedgerResetBtn');
+  if(wtmLedgerResetBtn){
+    wtmLedgerResetBtn.addEventListener('click', () => {
+      if(!confirm('Reset all checkmarks and scoreboard values for the We The Mind Build Ledger?')) return;
+      wtmLedgerState = { tasks:{}, leads:'0', bookings:'0', referrals:'0' };
+      wtmLedgerSave(wtmLedgerState);
+      wtmLedgerRender();
+      wtmUpdateScoreboard();
+    });
+  }
+
+  wtmLedgerRender();
+  wtmUpdateScoreboard();
+  wtmAttachScoreEdit('wtmLedgerLeadsVal','leads');
+  wtmAttachScoreEdit('wtmLedgerBookingsVal','bookings');
+  wtmAttachScoreEdit('wtmLedgerReferralsVal','referrals');
 })();
 </script>
 
