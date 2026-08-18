@@ -2259,6 +2259,8 @@ html[data-theme="light"] #adaptRoot{
   <div class="chips" id="chipsMoment"></div>
   <div class="chip-group-label">💭 the feeling</div>
   <div class="chips" id="chipsFeeling"></div>
+  <div class="chip-group-label">🌟 something good</div>
+  <div class="chips" id="chipsGood"></div>
 
   <div class="placeholder" id="placeholder">Pick one above. Fifteen seconds from now you'll have something to do about it.</div>
 
@@ -5770,6 +5772,7 @@ tickClock();
   // scenarios grouped into "moment" (what happened) and "feeling" (how it's sitting with you)
   const MOMENT_KEYS = ["insulted","badday","angry","embarrassed","rejected","conflict"];
   const FEELING_KEYS = ["low","overwhelmed","burnout","anxious","panic","lonely","guilty","jealous","disappointed","moneystress"];
+  const GOOD_KEYS = ["goodoverwhelm","goodnews"];
 
   // shared breathing pattern used by any scenario with breathing:true — 4s in, 4s hold, 6s out
   const BREATH_PATTERN = { inhale:4, hold:4, exhale:6, cycles:4 };
@@ -6024,6 +6027,39 @@ tickClock();
       ],
       songs:[{icon:"🎧", name:"\"Stronger\" — Kelly Clarkson", why:"Something to move to while the immediate spiral cools off."},
              {icon:"🎬", name:"Skip the screen for now", why:"This one needs a clear head and maybe a notebook, not a distraction."}]
+    },
+    goodoverwhelm:{
+      label:"Overwhelmed — but by good things", icon:"🎉", accent:"var(--green)", gauge:85,
+      caption:"good kind of too-much",
+      breathing:true,
+      quotes:[
+        {text:"Let yourself actually feel the good thing instead of already moving past it.", attr:"— common reframe"},
+        {text:"Joy deserves the same attention you give to stress.", attr:"— common reframe"}
+      ],
+      activities:[
+        {icon:"📝", title:"Brain-dump the good stuff", time:"3 min", text:"Write down everything good that's landed at once, unsorted. Seeing it on paper instead of swirling in your head makes it easier to actually take in instead of just feeling frazzled by it."},
+        {icon:"🫁", title:"Slow the breath, then enjoy it", time:"60 sec", text:"Excitement speeds up your breathing just like stress does. Use the pacer below for one round — it's easier to actually savor something good once your body isn't racing."},
+        {icon:"🎯", title:"Pick one thing to sit with first", time:"2 min", text:"You don't have to process every good thing at once. Choose the one that matters most right now and give it your full attention before moving to the next."},
+        {icon:"📞", title:"Tell someone who'll be genuinely glad", time:"3 min", text:"Say the good news out loud to someone who'll actually be happy for you. Sharing it tends to make it feel more real and less like it's just spinning in your head."}
+      ],
+      songs:[{icon:"🎧", name:"\"Good as Hell\" — Lizzo", why:"Loud, celebratory, and built for a moment that deserves to be felt, not managed."},
+             {icon:"🎬", name:"Call someone instead of a screen", why:"This one's better shared live than watched alone."}]
+    },
+    goodnews:{
+      label:"Something genuinely good just happened", icon:"⭐", accent:"var(--amber)", gauge:20,
+      caption:"let this one actually land",
+      quotes:[
+        {text:"Savoring a good moment doesn't take anything away from the next one.", attr:"— common reframe"},
+        {text:"Enjoyment is a skill — happy people practice it on purpose.", attr:"— common positive-psychology finding"}
+      ],
+      activities:[
+        {icon:"⏸️", title:"Sit with it for one full minute", time:"1 min", text:"Before you move on to the next thing, stop and actually feel this for sixty seconds — no phone, no planning what's next. Good moments fade fast if you rush past them."},
+        {icon:"📓", title:"Write it down before the glow fades", time:"2 min", text:"Good moments blur together in memory faster than you'd think. A quick note now — what happened, how it felt — gives you something real to look back on later."},
+        {icon:"📞", title:"Tell someone who'll be happy for you", time:"3 min", text:"Good news shared tends to feel bigger and more real than good news kept to yourself. Call or message someone who'll genuinely enjoy hearing it."},
+        {icon:"🎉", title:"Do a small ritual to mark it", time:"3 min", text:"Doesn't have to be big — your favorite snack, a song, texting a photo. A small deliberate marker tells your brain this one's worth remembering."}
+      ],
+      songs:[{icon:"🎧", name:"\"Walking on Sunshine\" — Katrina & The Waves", why:"Pure, uncomplicated good-mood fuel — no reason to save it for later."},
+             {icon:"🎬", name:"\"Julie & Julia\"", why:"A warm, unhurried film about savoring the good stuff as it happens."}]
     }
   };
 
@@ -6035,6 +6071,7 @@ tickClock();
 
   const chipsMomentEl = document.getElementById('chipsMoment');
   const chipsFeelingEl = document.getElementById('chipsFeeling');
+  const chipsGoodEl = document.getElementById('chipsGood');
   const panelEl = document.getElementById('panel');
   const placeholderEl = document.getElementById('placeholder');
   const needleEl = document.getElementById('needle');
@@ -6062,6 +6099,7 @@ tickClock();
   }
   MOMENT_KEYS.forEach(k => buildChip(k, chipsMomentEl));
   FEELING_KEYS.forEach(k => buildChip(k, chipsFeelingEl));
+  GOOD_KEYS.forEach(k => buildChip(k, chipsGoodEl));
 
   document.getElementById('quickfixBtn').addEventListener('click', () => {
     const keys = Object.keys(SCENARIOS);
@@ -6076,7 +6114,7 @@ tickClock();
   }
 
   function allChips(){
-    return [...chipsMomentEl.children, ...chipsFeelingEl.children];
+    return [...chipsMomentEl.children, ...chipsFeelingEl.children, ...chipsGoodEl.children];
   }
 
   function breathingHTML(){
@@ -6132,7 +6170,7 @@ tickClock();
 
   function showScenario(key){
     const s = SCENARIOS[key];
-    const allKeys = [...MOMENT_KEYS, ...FEELING_KEYS];
+    const allKeys = [...MOMENT_KEYS, ...FEELING_KEYS, ...GOOD_KEYS];
     allChips().forEach((c,i) => c.classList.toggle('active', allKeys[i] === key));
     setGauge(s.gauge, s.caption);
     placeholderEl.style.display = 'none';
