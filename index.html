@@ -1493,6 +1493,18 @@ html[data-theme="light"] #businessRoot{
 #businessRoot .ledger-rule-text{font-family:'Fraunces',serif;font-weight:700;font-style:italic;font-size:14px;color:var(--ledger-ink,var(--biz-ink));white-space:nowrap;}
 #businessRoot .ledger-rule-text .gt{color:var(--ledger-accent,#C79A3E);font-weight:900;font-style:normal;padding:0 2px;}
 
+#businessRoot .ledger-doc-link{
+  display:flex;align-items:center;gap:12px;text-decoration:none;
+  background:var(--ledger-surface-soft,var(--biz-surface-soft));border:1px solid var(--ledger-line,var(--biz-line));
+  border-radius:12px;padding:12px 14px;margin-bottom:18px;transition:border-color .15s ease,transform .12s ease;
+}
+#businessRoot .ledger-doc-link:hover{border-color:var(--ledger-accent,#C79A3E);transform:translateY(-1px);}
+#businessRoot .ledger-doc-icon{font-size:20px;flex-shrink:0;}
+#businessRoot .ledger-doc-text{flex:1;min-width:0;}
+#businessRoot .ledger-doc-title{display:block;font-family:'Fraunces',serif;font-weight:600;font-size:13.5px;color:var(--ledger-ink,var(--biz-ink));}
+#businessRoot .ledger-doc-sub{display:block;font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--ledger-ink-soft,var(--biz-ink-soft));margin-top:2px;}
+#businessRoot .ledger-doc-arrow{font-size:15px;color:var(--ledger-accent,#C79A3E);flex-shrink:0;}
+
 #businessRoot .ledger-scoreboard{
   display:flex;flex-wrap:wrap;gap:0;margin:20px 0 26px;border:1px solid var(--ledger-line,var(--biz-line));border-radius:10px;
   overflow:hidden;background:var(--ledger-surface-soft,var(--biz-surface-soft));
@@ -1594,6 +1606,9 @@ html[data-theme="light"] #businessRoot{
   #businessRoot .ledger-rule-badge{padding:6px 10px;}
   #businessRoot .ledger-rule-label{font-size:8px;}
   #businessRoot .ledger-rule-text{font-size:12px;}
+  #businessRoot .ledger-doc-link{padding:10px 12px;gap:10px;margin-bottom:14px;}
+  #businessRoot .ledger-doc-title{font-size:12.5px;}
+  #businessRoot .ledger-doc-sub{font-size:9px;}
   #businessRoot .ledger-scoreboard{margin:14px 0 18px;}
   #businessRoot .ledger-score-cell{min-width:42%;padding:10px;}
   #businessRoot .ledger-score-label{font-size:9px;}
@@ -2327,6 +2342,15 @@ html[data-theme="light"] #adaptRoot{
         <div class="ledger-score-value editable" id="ledgerSubsVal" contenteditable="true">0</div>
       </div>
     </div>
+
+    <a class="ledger-doc-link" href="https://docs.google.com/document/d/1TR_YW-aFbsFAp7kaOG8ic0I_zC8WeTyFY9S_CQ991TQ/edit?usp=sharing" target="_blank" rel="noopener">
+      <span class="ledger-doc-icon">📄</span>
+      <span class="ledger-doc-text">
+        <span class="ledger-doc-title">Process for Creating YouTube Videos</span>
+        <span class="ledger-doc-sub">The full workflow this ledger is built from — open in Docs</span>
+      </span>
+      <span class="ledger-doc-arrow">↗</span>
+    </a>
 
     <div id="ledgerPhases"></div>
 
