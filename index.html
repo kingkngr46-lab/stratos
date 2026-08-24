@@ -359,6 +359,9 @@ body, body *{
   --db-stratos:#3FC2E0;
   --db-office:#D6A24F;
   --db-pitstop:#E27FA8;
+  --db-business:#6FA8DC;
+  --db-books:#C79A3E;
+  --db-adapt:#4FBF8B;
   --db-alert:#E0654A;
   --db-alert-soft:rgba(196,67,46,0.16);
 }
@@ -373,6 +376,9 @@ html[data-theme="light"] #dashboardRoot{
   --db-stratos:#0090B0;
   --db-office:#A9762F;
   --db-pitstop:#B9457A;
+  --db-business:#3A6FA8;
+  --db-books:#A9762F;
+  --db-adapt:#2E9B6C;
   --db-alert:#C4432E;
   --db-alert-soft:#FBEAE6;
 }
@@ -433,6 +439,9 @@ html[data-theme="light"] #dashboardRoot{
 #dashboardRoot .summary-card.stratos{--accent:var(--db-stratos);}
 #dashboardRoot .summary-card.officehours{--accent:var(--db-office);}
 #dashboardRoot .summary-card.pitstop{--accent:var(--db-pitstop);}
+#dashboardRoot .summary-card.business{--accent:var(--db-business);}
+#dashboardRoot .summary-card.books{--accent:var(--db-books);}
+#dashboardRoot .summary-card.adapt{--accent:var(--db-adapt);}
 
 #dashboardRoot .summary-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;}
 #dashboardRoot .summary-name{font-family:'Fraunces',serif;font-style:italic;font-weight:600;font-size:18px;display:flex;align-items:center;gap:8px;}
@@ -1723,11 +1732,12 @@ html[data-theme="light"] #booksRoot{
 #booksRoot .bsc-stat{font-size:12px; color:var(--bk-ink-soft);}
 #booksRoot .bsc-stat b{display:block; font-family:'Fraunces',serif; font-size:16px; color:var(--bk-ink);}
 #booksRoot .bsc-checkin{
-  min-height:44px; padding:0 18px; border-radius:100px; border:none; background:var(--bk-accent); color:#fff;
-  font-family:'IBM Plex Mono',monospace; font-weight:700; font-size:11.5px; text-transform:uppercase; letter-spacing:0.04em;
-  cursor:pointer; white-space:nowrap;
+  min-height:44px; padding:8px 18px; border-radius:16px; border:none; background:var(--bk-accent); color:#fff;
+  font-family:'IBM Plex Mono',monospace; font-weight:700; font-size:11.5px; text-transform:uppercase; letter-spacing:0.03em;
+  cursor:pointer; white-space:normal; text-align:left; line-height:1.4; max-width:260px;
 }
 #booksRoot .bsc-checkin.done{background:var(--bk-surface-soft); color:var(--bk-ink-soft); border:1px solid var(--bk-line);}
+#booksRoot .bsc-checkin-sub{display:block; font-weight:400; text-transform:none; font-size:10px; opacity:0.85; margin-top:2px; letter-spacing:0.01em;}
 
 /* ---- top-level classic book card ---- */
 #booksRoot .book-card{
@@ -1981,6 +1991,33 @@ html[data-theme="light"] #adaptRoot{
       </div>
       <div class="summary-stat">90 SECONDS</div>
       <div class="summary-detail">For the days that go sideways — one tap, one reset.</div>
+    </div>
+
+    <div class="summary-card business" data-goto="business">
+      <div class="summary-top">
+        <div class="summary-name">💼 Business</div>
+        <div class="summary-arrow">→</div>
+      </div>
+      <div class="summary-stat" id="dashBusinessStat">—</div>
+      <div class="summary-detail" id="dashBusinessDetail">Loading…</div>
+    </div>
+
+    <div class="summary-card books" data-goto="books">
+      <div class="summary-top">
+        <div class="summary-name">📚 Books</div>
+        <div class="summary-arrow">→</div>
+      </div>
+      <div class="summary-stat" id="dashBooksStat">—</div>
+      <div class="summary-detail" id="dashBooksDetail">Loading…</div>
+    </div>
+
+    <div class="summary-card adapt" data-goto="adapt">
+      <div class="summary-top">
+        <div class="summary-name">🌱 Adapt & Rest</div>
+        <div class="summary-arrow">→</div>
+      </div>
+      <div class="summary-stat" id="dashAdaptStat">—</div>
+      <div class="summary-detail" id="dashAdaptDetail">Loading…</div>
     </div>
   </div>
 
@@ -3640,12 +3677,44 @@ html[data-theme="light"] #adaptRoot{
     });
     return longest;
   }
-  window.bookCheckInToday = function(){
-    const checkins = bookLoadCheckins();
-    checkins[bookTodayISO()] = true;
-    bookSaveCheckins(checkins);
-    renderBookStreak();
+  // picks the most relevant book to jump back into: something already "reading",
+  // then anything with partial progress, then today's featured passage as a last resort
+  function bookFindContinue(){
+    const status = bookLoadStatus();
+    for(const b of BOOKSHELF){
+      if(status[b.id] === 'reading') return { book:b, reason:'Pick up where you left off' };
+    }
+    for(const b of CLASSICS){
+      const { done, total } = bookCounts(b);
+      if(done > 0 && done < total) return { book:b, reason:`${done}/${total} learned — keep going` };
+    }
+    for(const b of BOOKSHELF){
+      if(status[b.id] === 'completed') continue;
+      const progress = bookLoadProgress(b.id);
+      const doneCount = b.summary.filter((_,i) => progress[String(i)]).length;
+      if(doneCount > 0) return { book:b, reason:`${doneCount}/${b.summary.length} learned — keep going` };
+    }
+    const dayNum = Math.floor(Date.now() / 86400000);
+    const v = ALL_PASSAGES.length ? ALL_PASSAGES[dayNum % ALL_PASSAGES.length] : null;
+    const title = v ? v.label.split(' · ')[0] : null;
+    const match = title ? (CLASSICS.find(b => b.title === title) || BOOKSHELF.find(b => b.title === title)) : null;
+    if(match) return { book:match, reason:"Today's featured passage" };
+    return { book: CLASSICS[0] || BOOKSHELF[0], reason:'Start here' };
+  }
+
+  window.bookContinueReading = function(){
+    const target = bookFindContinue();
+    if(!target) return;
+    bookLibraryOpen.add(target.book.id);
+    const q = document.getElementById('bookSearch').value;
+    renderClassics(q);
+    renderAllShelves(q);
+    requestAnimationFrame(() => {
+      const card = document.getElementById('book-card-' + target.book.id);
+      if(card) card.scrollIntoView({ behavior:'smooth', block:'center' });
+    });
   };
+
   function renderBookStreak(){
     const holder = document.getElementById('bookStreakCard');
     if(!holder) return;
@@ -3653,20 +3722,25 @@ html[data-theme="light"] #adaptRoot{
     const longest = bookComputeLongest();
     const completedCount = Object.values(bookLoadStatus()).filter(s => s === 'completed').length;
     const checkedToday = !!bookLoadCheckins()[bookTodayISO()];
+    const next = bookFindContinue();
     holder.innerHTML = `
       <div><div class="bsc-num">${streak}🔥</div><div class="bsc-lab">Day Streak</div></div>
       <div class="bsc-stats">
         <div class="bsc-stat"><b>${longest}</b>longest</div>
         <div class="bsc-stat"><b>${completedCount}</b>completed</div>
       </div>
-      <button class="bsc-checkin ${checkedToday?'done':''}" onclick="bookCheckInToday()" ${checkedToday?'disabled':''}>${checkedToday?'✓ Read Today':'Mark Today as Read'}</button>`;
+      <button class="bsc-checkin ${checkedToday?'done':''}" onclick="bookContinueReading()">
+        ${checkedToday ? '✓ Read today · ' : ''}${next ? next.book.title : 'Continue reading'}
+        <span class="bsc-checkin-sub">${next ? next.reason : ''}</span>
+      </button>`;
   }
 
   /* ---------- verse-of-the-day (pulled from all verse-type classics) ---------- */
   const ALL_PASSAGES = [];
   CLASSICS.forEach(book => {
     if(book.type === 'verses'){
-      book.data.forEach(chapter => chapter.verses.forEach((text,vi) => {
+      book.data.forEach(chapter => chapter.verses.forEach((raw,vi) => {
+        const text = (typeof raw === 'object' && raw !== null) ? raw.en : raw;
         ALL_PASSAGES.push({ text, label:`${book.title} · Chapter ${chapter.ch}` });
       }));
     } else if(book.type === 'flat'){
@@ -3773,7 +3847,7 @@ html[data-theme="light"] #adaptRoot{
       matchCount++;
       const { done, total } = bookCounts(book);
       const isOpen = bookLibraryOpen.has(book.id) || !!q;
-      html += `<div class="book-card ${isOpen?'open':''}">
+      html += `<div class="book-card ${isOpen?'open':''}" id="book-card-${book.id}">
         <div class="book-card-hdr" onclick="toggleBookLibrary('${book.id}')">
           <div>
             <div class="book-card-title">${book.title}</div>
@@ -3806,11 +3880,18 @@ html[data-theme="light"] #adaptRoot{
   window.toggleBookVerse = function(bookId, id){
     const progress = bookLoadProgress(bookId);
     progress[id] = !progress[id];
+    const justChecked = !!progress[id];
     if(!progress[id]) delete progress[id];
     bookSaveProgress(bookId, progress);
+    if(justChecked){
+      const checkins = bookLoadCheckins();
+      checkins[bookTodayISO()] = true;
+      bookSaveCheckins(checkins);
+    }
     const q = document.getElementById('bookSearch').value;
     renderClassics(q);
     renderAllShelves(q);
+    renderBookStreak();
   };
 
   /* ---------- modern-book shelf (tracked, not reproduced) ---------- */
@@ -3841,7 +3922,7 @@ html[data-theme="light"] #adaptRoot{
       const progress = bookLoadProgress(b.id);
       const done = b.summary.filter((_, i) => progress[String(i)]).length;
       const isOpen = bookLibraryOpen.has(b.id) || !!q;
-      return `<div class="book-card ${isOpen?'open':''}">
+      return `<div class="book-card ${isOpen?'open':''}" id="book-card-${b.id}">
         <div class="book-card-hdr" onclick="toggleBookLibrary('${b.id}')">
           <div>
             <div class="book-card-title">${b.title}</div>
@@ -5721,6 +5802,70 @@ tickClock();
     }
   }
 
+  /* ---------- Business summary (reads biz-tasks-*) ---------- */
+  function renderBusinessSummary(){
+    try{
+      const companies = ['savoringmoney','wethemind'];
+      let done = 0, total = 0;
+      companies.forEach(id => {
+        try{
+          const tasks = JSON.parse(localStorage.getItem('biz-tasks-'+id)) || [];
+          total += tasks.length;
+          done += tasks.filter(t => t.done).length;
+        }catch(e){}
+      });
+      document.getElementById('dashBusinessStat').textContent = total ? `${done} / ${total} steps done` : 'Not started';
+      document.getElementById('dashBusinessDetail').textContent = total
+        ? (done === total ? 'Every open step is checked off.' : `${total-done} step${total-done===1?'':'s'} left across both companies.`)
+        : 'Open Business to set up your build log.';
+    }catch(e){
+      document.getElementById('dashBusinessStat').textContent = 'Not started';
+      document.getElementById('dashBusinessDetail').textContent = 'Open Business to set up your build log.';
+    }
+  }
+
+  /* ---------- Books summary (reads books-status / books-reading-checkins) ---------- */
+  function renderBooksSummary(){
+    try{
+      const status = JSON.parse(localStorage.getItem('books-status') || '{}');
+      const completed = Object.values(status).filter(s => s === 'completed').length;
+      const checkins = JSON.parse(localStorage.getItem('books-reading-checkins') || '{}');
+      let streak = 0;
+      let cursor = new Date();
+      while(true){
+        const k = dateKey(cursor);
+        if(checkins[k]){ streak++; cursor.setDate(cursor.getDate()-1); } else break;
+      }
+      document.getElementById('dashBooksStat').textContent = streak > 0 ? `${streak} day streak` : `${completed} completed`;
+      document.getElementById('dashBooksDetail').textContent = streak > 0
+        ? `${completed} book${completed===1?'':'s'} completed so far.`
+        : "Haven't checked in today — open Books to keep it going.";
+    }catch(e){
+      document.getElementById('dashBooksStat').textContent = 'Not started';
+      document.getElementById('dashBooksDetail').textContent = 'Open Books to start the Passage of the Day.';
+    }
+  }
+
+  /* ---------- Adapt & Rest summary (reads adapt-rest-checkins) ---------- */
+  function renderAdaptSummary(){
+    try{
+      const checkins = JSON.parse(localStorage.getItem('adapt-rest-checkins') || '{}');
+      let streak = 0;
+      let cursor = new Date();
+      while(true){
+        const k = dateKey(cursor);
+        if(checkins[k]){ streak++; cursor.setDate(cursor.getDate()-1); } else break;
+      }
+      document.getElementById('dashAdaptStat').textContent = streak > 0 ? `${streak} day streak` : 'Not used today';
+      document.getElementById('dashAdaptDetail').textContent = streak > 0
+        ? "A tool's been used today — nice."
+        : 'One toolkit item or brain-rest timer keeps this going.';
+    }catch(e){
+      document.getElementById('dashAdaptStat').textContent = 'Not used today';
+      document.getElementById('dashAdaptDetail').textContent = 'Open Adapt & Rest for a quick reset.';
+    }
+  }
+
   /* ---------- card navigation ---------- */
   document.querySelectorAll('.summary-card').forEach(card=>{
     card.addEventListener('click', ()=>{
@@ -5735,6 +5880,9 @@ tickClock();
     renderVitality();
     renderStratos();
     renderOfficeHoursAndAlert();
+    renderBusinessSummary();
+    renderBooksSummary();
+    renderAdaptSummary();
   }
   renderAll();
   setInterval(renderAll, 30000);
